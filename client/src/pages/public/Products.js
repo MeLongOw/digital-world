@@ -3,6 +3,7 @@ import { useSearchParams } from "react-router-dom";
 import { apiGetProducts } from "../../apis";
 import { Product } from "../../components";
 import Pagination from "../../components/Pagination";
+import SortBy from "../../components/SortBy";
 import icons from "../../utils/icons";
 
 const { RiArrowDropDownLine } = icons;
@@ -55,7 +56,7 @@ const Products = () => {
                 </div>
                 <div className="flex-1 ">
                     <p className="mb-[10px]">Sort by</p>
-                    <></>
+                    <SortBy/>
                 </div>
             </div>
             <div className="flex flex-wrap mx-[-10px] ">

@@ -20,7 +20,7 @@ const Cart = () => {
 
     const totalPrice = useMemo(() => {
         const arrPrice = currentUser?.cart?.map(
-            (item) => item.product.price * item.quantity
+            (item) => item.product?.price * item.quantity
         );
         const totalPrice = arrPrice?.reduce(
             (total, currentValue) => total + +currentValue,
@@ -74,7 +74,7 @@ const Cart = () => {
                         className="pb-5 mb-5 border-gray-700 border-b flex relative"
                     >
                         <img
-                            src={item.product.thumb}
+                            src={item.product?.thumb}
                             alt=""
                             className="w-[80px] h-[80px] object-contain"
                         />
@@ -82,8 +82,8 @@ const Cart = () => {
                             <div className="flex justify-between mb-[10px]">
                                 <div className="flex flex-col">
                                     <Link className="hover:text-main">
-                                        {item.product.title &&
-                                            capitalize(item.product.title)}
+                                        {item.product?.title &&
+                                            capitalize(item.product?.title)}
                                     </Link>
                                     <span>
                                         32GB
@@ -114,7 +114,7 @@ const Cart = () => {
                                     />
                                 </div>
                                 <span className="flex-1 text-right">
-                                    {formatMoney(item.product.price)} VND
+                                    {formatMoney(item.product?.price)} VND
                                 </span>
                             </div>
                         </div>

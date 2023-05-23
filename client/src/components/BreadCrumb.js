@@ -14,6 +14,8 @@ const BreadCrumb = ({ pathname }) => {
                 </h4>
                 <div className="text-sm text-gray-500 flex">
                     {route.map((item, index) => {
+                        // if(route[1] === 'admin') return;
+
                         if (index === 0) {
                             return (
                                 <Link

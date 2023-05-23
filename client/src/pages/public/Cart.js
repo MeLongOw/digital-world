@@ -17,7 +17,7 @@ const Cart = () => {
     const currentUser = useSelector((state) => state.user.current);
     const totalPrice = useMemo(() => {
         const arrPrice = currentUser?.cart?.map(
-            (item) => item.product.price * item.quantity
+            (item) => item.product?.price * item.quantity
         );
         const totalPrice = arrPrice?.reduce(
             (total, currentValue) => total + +currentValue,
@@ -72,8 +72,8 @@ const Cart = () => {
                                 to={`/${path.DETAIL_PRODUCT}/${item.product.slug}`}
                                 className="font-base capitalize hover:text-main"
                             >
-                                {item.product.title &&
-                                    capitalize(item.product.title)}
+                                {item.product?.title &&
+                                    capitalize(item.product?.title)}
                             </Link>
                             <span className="text-xs">
                                 {item.product.color &&
@@ -102,7 +102,7 @@ const Cart = () => {
                             />
                         </div>
                         <div className="flex-3 flex justify-end text-lg text-gray-800 font-semibold">
-                            {formatMoney(item.product.price)} VND
+                            {formatMoney(item.product?.price)} VND
                         </div>
                     </div>
                 </div>

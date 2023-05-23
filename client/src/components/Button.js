@@ -2,7 +2,7 @@ import React, { memo } from "react";
 
 const Button = ({
     name,
-    handleClick,
+    handleClick = ()=>{},
     className,
     backgroundColor = "bg-main",
     iconsBefore,
@@ -20,7 +20,7 @@ const Button = ({
                       } text-white font-semibold hover:cursor-pointer w-full flex justify-center items-center ${backgroundColor}`
             }
             onClick={() => {
-                handleClick && handleClick();
+                handleClick();
             }}
         >
             {iconsBefore && <div>{iconsBefore}</div>}

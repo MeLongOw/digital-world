@@ -1,8 +1,8 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
-import { removeAccentAndCreateSlug } from "../utils/helpers";
 import { useSelector } from "react-redux";
 import icons from "../utils/icons";
+import path from "../utils/path";
 
 const { TfiMenu } = icons;
 
@@ -19,8 +19,8 @@ const Sidebar = () => {
             </div>
             {categories?.map((item) => (
                 <NavLink
-                    key={removeAccentAndCreateSlug(item.title)}
-                    to={removeAccentAndCreateSlug(item.title)}
+                    key={item.title}
+                    to={`/${path.PRODUCTS}/${item.title.toLowerCase()}`}
                     className={({ isActive }) => {
                         const style =
                             "px-5 pt-[15px] pb-[14px] text-sm hover:text-main";

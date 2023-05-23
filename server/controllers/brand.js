@@ -2,6 +2,8 @@ const Brand = require("../models/brand");
 const asyncHandler = require("express-async-handler");
 
 const createBrand = asyncHandler(async (req, res) => {
+    console.log(req.body)
+
     const response = await Brand.create(req.body);
     return res.status(200).json({
         success: response ? true : false,
@@ -13,12 +15,13 @@ const getBrands = asyncHandler(async (req, res) => {
     const response = await Brand.find().select("title _id");
     return res.status(200).json({
         success: response ? true : false,
-        Brands: response ? response : "Can not get brands",
+        brands: response ? response : "Can not get brands",
     });
 });
 
 const updateBrand = asyncHandler(async (req, res) => {
     const { bid } = req.params;
+    console.log(req.body)
     const response = await Brand.findByIdAndUpdate(bid, req.body, {
         new: true,
     });

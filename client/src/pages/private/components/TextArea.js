@@ -1,6 +1,6 @@
 import React from "react";
 
-const InputField = ({
+const TextArea = ({
     value,
     setValue,
     nameKey,
@@ -13,8 +13,7 @@ const InputField = ({
     return (
         <div className="w-full text-sm text-gray-700 mb-2">
             {title && <label>{title}</label>}
-            <input
-                type={type || "text"}
+            <textarea
                 className="px-4 py-2 rounded-sm border w-full mt-2 text-sm placeholder:text-gray-300"
                 placeholder={title}
                 value={value}
@@ -28,4 +27,4 @@ const InputField = ({
     );
 };
 
-export default InputField;
+export default TextArea;

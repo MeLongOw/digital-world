@@ -1,16 +1,26 @@
-import { MdEmail, MdLocalShipping } from "react-icons/md";
+import { MdEmail, MdLocalShipping, MdModeEdit } from "react-icons/md";
 import { TbTruckReturn } from "react-icons/tb";
 import {
     BsFillBagFill,
     BsFillSuitHeartFill,
     BsShieldShaded,
-    BsFillCartFill
+    BsFillCartFill,
+    BsBell,
 } from "react-icons/bs";
 import { FaUserCircle, FaCheck } from "react-icons/fa";
 import { IoIosArrowForward, IoIosArrowRoundBack } from "react-icons/io";
 import { TfiMenu } from "react-icons/tfi";
 import { RiArrowDropDownLine } from "react-icons/ri";
 import { GrFormNextLink, GrFormPreviousLink } from "react-icons/gr";
+import { RxDashboard, RxAvatar } from "react-icons/rx";
+import {
+    RiProductHuntLine,
+    RiCoupon2Line,
+    RiDeleteBin5Line,
+} from "react-icons/ri";
+import { HiOutlineClipboardDocumentCheck } from "react-icons/hi2";
+import { IoMdRefresh } from "react-icons/io";
+import { SiBrandfolder } from "react-icons/si";
 
 import {
     AiFillHome,
@@ -23,6 +33,8 @@ import {
     AiFillGift,
     AiOutlineArrowRight,
     AiFillPhone,
+    AiOutlineShoppingCart,
+    AiOutlineSearch,
 } from "react-icons/ai";
 
 const icons = {
@@ -30,9 +42,9 @@ const icons = {
     MdEmail,
     BsFillBagFill,
     FaUserCircle,
+    AiOutlineSearch,
     AiFillHome,
     AiFillStar,
-    AiOutlineStar,
     AiFillEye,
     BsFillSuitHeartFill,
     AiOutlineMenu,
@@ -50,7 +62,19 @@ const icons = {
     GrFormNextLink,
     GrFormPreviousLink,
     BsFillCartFill,
-    FaCheck
+    FaCheck,
+    RxDashboard,
+    RiProductHuntLine,
+    AiOutlineShoppingCart,
+    HiOutlineClipboardDocumentCheck,
+    AiOutlineStar,
+    RiCoupon2Line,
+    BsBell,
+    RxAvatar,
+    MdModeEdit,
+    RiDeleteBin5Line,
+    IoMdRefresh,
+    SiBrandfolder
 };
 
 export default icons;

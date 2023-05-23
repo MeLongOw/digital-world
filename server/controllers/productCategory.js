@@ -22,6 +22,8 @@ const updateCategory = asyncHandler(async (req, res) => {
     const response = await ProductCategory.findByIdAndUpdate(pcid, req.body, {
         new: true,
     });
+    console.log(response)
+    
     return res.status(200).json({
         success: response ? true : false,
         updatedProdCategory: response

@@ -4,6 +4,7 @@ import { productSlice } from "./product/productSlice";
 import { userSlice } from "./user/userSlice";
 import storage from "redux-persist/lib/storage";
 import { persistReducer, persistStore } from "redux-persist";
+import { adminSlice } from "./admin/adminSlice";
 
 const commonConfig = {
     key: "shop/user",
@@ -20,6 +21,7 @@ export const store = configureStore({
         app: appSlice.reducer,
         products: productSlice.reducer,
         user: persistReducer(userConfig, userSlice.reducer),
+        admin: adminSlice.reducer,
     },
 });
 

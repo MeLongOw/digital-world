@@ -10,7 +10,7 @@ import { getCurrent } from "../../store/user/asyncThunk";
 const { AiOutlineClose } = icons;
 
 const WishList = () => {
-    const { wishlist } = useSelector((state) => state.user.current);
+    const currentUser = useSelector((state) => state.user.current);
     const token = useSelector((state) => state.user.token);
     const dispatch = useDispatch();
 
@@ -39,8 +39,8 @@ const WishList = () => {
                 <div className="flex-1">REMOVE</div>
                 <div className="flex-2">DETAIL</div>
             </div>
-            {wishlist.length ? (
-                wishlist?.map((item) => (
+            {currentUser?.wishlist.length ? (
+                currentUser?.wishlist?.map((item) => (
                     <div
                         key={item?._id}
                         className="flex gap-5 border border-t-0 p-5 font-sm items-center text-gray-700"
