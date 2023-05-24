@@ -19,8 +19,9 @@ var productSchema = new mongoose.Schema(
             required: true,
         },
         brand: {
-            type: String,
-            required: true,
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Brand",
+            require: true,
         },
         thumb: {
             type: String,
@@ -31,10 +32,9 @@ var productSchema = new mongoose.Schema(
             required: true,
         },
         category: {
-            type: String,
-            required: true,
-            // type: mongoose.Schema.Types.ObjectId,
-            // ref: 'ProductCategory',
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "ProductCategory",
+            require: true,
         },
         quantity: {
             type: Number,
@@ -50,7 +50,6 @@ var productSchema = new mongoose.Schema(
         color: {
             type: String,
             // required: true,
-
         },
         ratings: [
             {

@@ -6,6 +6,7 @@ router.get('/', ctrls.getBrands)
 router.post('/', verifyAccessToken, isAdmin, ctrls.createBrand)
 router.put('/update/:bid', verifyAccessToken, isAdmin, ctrls.updateBrand)
 router.delete('/delete/:bid', verifyAccessToken, isAdmin, ctrls.deleteBrand)
+router.delete('/deletemany', verifyAccessToken, isAdmin, ctrls.deleteManyBrands)
 
 
 module.exports = router;

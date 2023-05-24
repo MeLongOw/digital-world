@@ -1,11 +1,15 @@
 const router = require("express").Router();
-const productCategoryControllers = require("../controllers/productCategory");
+const ctrls = require("../controllers/productCategory");
 const { verifyAccessToken, isAdmin } = require("../middlewares/verifyToken");
+const uploader = require('../configs/cloudinary.config')
 
-router.get('/',productCategoryControllers.getCategories)
-router.post('/',verifyAccessToken, isAdmin, productCategoryControllers.createCategory)
-router.put('/update/:pcid',verifyAccessToken, isAdmin, productCategoryControllers.updateCategory)
-router.delete('/delete/:pcid',verifyAccessToken, isAdmin, productCategoryControllers.deleteCategory)
+
+router.get('/',ctrls.getCategories)
+router.post('/',verifyAccessToken, isAdmin, ctrls.createCategory)
+router.put("/uploadimage/:pcid", verifyAccessToken, isAdmin , uploader.single('image'), ctrls.uploadImageCategory);
+router.put('/update/:pcid',verifyAccessToken, isAdmin, ctrls.updateCategory)
+router.delete('/delete/:pcid',verifyAccessToken, isAdmin, ctrls.deleteCategory)
+router.delete('/deletemany',verifyAccessToken, isAdmin, ctrls.deleteManyCategories)
 
 
 module.exports = router;

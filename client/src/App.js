@@ -32,7 +32,6 @@ import path from "./utils/path";
 function App() {
     const dispatch = useDispatch();
     const categories = useSelector((state) => state.app.categories);
-    console.log(categories);
     const isLoggedIn = useSelector((state) => state.user.isLoggedIn);
     useEffect(() => {
         dispatch(getCategories());

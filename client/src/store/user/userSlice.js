@@ -28,8 +28,6 @@ export const userSlice = createSlice({
         });
 
         builder.addCase(getCurrent.fulfilled, (state, action) => {
-            
-            console.log('user   ',action.payload)
             state.current = action.payload;
         });
 

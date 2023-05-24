@@ -4,7 +4,6 @@ const slugify = require("slugify");
 
 const createProduct = asyncHandler(async (req, res) => {
     if (!Object.keys(req.body).length) throw new Error("Missing input(s)");
-    console.log('123123211423424242',req.body)
     if (req.body && req.body.title) req.body.slug = slugify(req.body.title);
     const newProduct = await Product.create(req.body);
     return res.status(200).json({
@@ -14,8 +13,8 @@ const createProduct = asyncHandler(async (req, res) => {
 });
 
 const getProduct = asyncHandler(async (req, res) => {
-    const {slug} = req.params;
-    const product = await Product.findOne({slug});
+    const { slug } = req.params;
+    const product = await Product.findOne({ slug });
     return res.status(200).json({
         success: product ? true : false,
         product: product ? product : "Not found product.",
@@ -24,6 +23,7 @@ const getProduct = asyncHandler(async (req, res) => {
 
 const getProducts = asyncHandler(async (req, res) => {
     const queries = { ...req.query };
+
     const excludeFields = ["limit", "sort", "page", "fields"];
     excludeFields.forEach((el) => delete queries[el]);
 
@@ -38,6 +38,13 @@ const getProducts = asyncHandler(async (req, res) => {
     //Filtering
     if (queries?.title)
         formattedQueries.title = { $regex: queries.title, $options: "i" };
+    if (queries?.brand)
+        formattedQueries.brand = { $regex: queries.brand, $options: "i" };
+    if (queries?.color)
+        formattedQueries.color = { $regex: queries.color, $options: "i" };
+    if (queries?.category)
+        formattedQueries.category = { $regex: queries.category, $options: "i" };
+
     let queryCommand = Product.find(formattedQueries);
 
     //Sorting
@@ -59,7 +66,7 @@ const getProducts = asyncHandler(async (req, res) => {
     queryCommand.skip(skip).limit(limit);
 
     //Execute query
-    queryCommand
+    queryCommand.populate('category').populate('brand')
         .exec()
         .then(async (response) => {
             const counts = await Product.find(
@@ -91,11 +98,20 @@ const updateProduct = asyncHandler(async (req, res) => {
 
 const deleteProduct = asyncHandler(async (req, res) => {
     const { pid } = req.params;
-    if (req.body && req.body.title) req.body.slug = slugify(req.body.title);
     const deleteProduct = await Product.findByIdAndDelete(pid);
     return res.status(200).json({
         success: deleteProduct ? true : false,
         deleteProduct: deleteProduct ? deleteProduct : "Can not delete product",
+    });
+});
+const deleteManyProducts = asyncHandler(async (req, res) => {
+    const { _ids } = req.body;
+    const deleteProduct = await Product.deleteMany({ _id: { $in: _ids } });
+    return res.status(200).json({
+        success: deleteProduct ? true : false,
+        deleteProduct: deleteProduct
+            ? deleteProduct
+            : "Can not delete products",
     });
 });
 
@@ -153,6 +169,7 @@ const ratings = asyncHandler(async (req, res) => {
 const uploadImagesProduct = asyncHandler(async (req, res) => {
     const { pid } = req.params;
     if (!req.files) throw new Error("Missing input(s)");
+    console.log(req.files)
     const response = await Product.findByIdAndUpdate(
         pid,
         {
@@ -172,6 +189,7 @@ module.exports = {
     getProducts,
     updateProduct,
     deleteProduct,
+    deleteManyProducts,
     ratings,
     uploadImagesProduct,
 };

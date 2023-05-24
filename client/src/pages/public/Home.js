@@ -88,13 +88,13 @@ const Home = () => {
                                         {item.title}
                                     </h4>
                                     <ul className="text-sm">
-                                        {item.brand.map((item) => (
+                                        {item.brand?.map((item) => (
                                             <li
-                                                key={item}
+                                                key={item?._id}
                                                 className="flex items-center text-gray-500"
                                             >
                                                 <IoIosArrowForward size={14} />
-                                                <p>{item}</p>
+                                                <p>{item?.title}</p>
                                             </li>
                                         ))}
                                     </ul>

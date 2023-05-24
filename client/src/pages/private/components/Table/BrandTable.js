@@ -4,6 +4,7 @@ import {
     apiDeleteBrand,
     apiAddBrand,
     apiEditBrand,
+    apiDeleteManyBrands,
 } from "../../../../apis";
 import Button from "../../../../components/Button";
 import SearchBox from "../SearchBox";
@@ -52,8 +53,8 @@ export default function BrandTable() {
         }
     };
 
-    const fetchBrands = async () => {
-        const response = await apiGetBrands();
+    const fetchBrands = async (params) => {
+        const response = await apiGetBrands(params);
 
         if (response?.success) {
             setData(response.brands);
@@ -69,8 +70,8 @@ export default function BrandTable() {
     };
 
     const handleDelete = async (cid) => {
-        let isSuccess = true;
-        Swal.fire({
+        let isSuccess = false;
+        await Swal.fire({
             title: "Are you sure?",
             text: "You won't be able to revert this!",
             icon: "warning",
@@ -83,17 +84,17 @@ export default function BrandTable() {
                 const response = await apiDeleteBrand(token, cid);
                 if (response?.success) {
                     Swal.fire("Success!", response.mes, "success").then(() => {
+                        isSuccess = true;
                         fetchBrands();
                     });
                 } else {
-                    isSuccess = response?.success;
+                    isSuccess = true;
                     Swal.fire("error!", response.mes, "error");
                 }
             } else {
-                isSuccess = !result.isConfirmed;
+                isSuccess = true;
             }
         });
-        console.log({ isSuccess });
         return isSuccess;
     };
 
@@ -107,6 +108,37 @@ export default function BrandTable() {
         setPayload(defautPayload);
     };
 
+    const handleDeleteSelected = async () => {
+        let isSuccess = false;
+        await Swal.fire({
+            title: "Are you sure?",
+            text: "You won't be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, delete it!",
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                const response = await apiDeleteManyBrands(token, {
+                    _ids: isCheck,
+                });
+                if (response?.success) {
+                    isSuccess = true;
+                    Swal.fire("Success!", response.mes, "success").then(() => {
+                        setIsCheck([]);
+                        fetchBrands();
+                    });
+                } else {
+                    isSuccess = true;
+                    Swal.fire("error!", response.mes, "error");
+                }
+            } else {
+                isSuccess = true;
+            }
+        });
+        return isSuccess;
+    };
     const handleSubmitModal = async () => {
         const { _id, ...data } = payload;
         if (isEdit) {
@@ -141,8 +173,13 @@ export default function BrandTable() {
         <div className="relative">
             {/* Action */}
             <div className="flex justify-between py-3">
-                <SearchBox />
-                <div className="flex items-center">
+                <SearchBox isOption={false} fetch={fetchBrands} />
+                <div className="flex items-center gap-4">
+                    <DeleteButton
+                        height="40px"
+                        disabled={!isCheck?.length}
+                        handleDelete={handleDeleteSelected}
+                    />
                     <Button name="Add new" rounded handleClick={handleAddNew} />
                     <RefreshButton handleClick={fetchBrands} />
                 </div>
@@ -231,7 +268,7 @@ export default function BrandTable() {
                                     </td>
 
                                     <td className="px-6 py-4 text-sm text-gray-800 break-words">
-                                        1
+                                        {item?.productCount}
                                     </td>
                                     <td className="px-6 py-4 text-sm font-medium text-right whitespace-nowrap ">
                                         <div className="flex justify-end gap-2 items-center">

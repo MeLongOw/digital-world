@@ -4,6 +4,7 @@ import {
     apiDeleteProduct,
     apiAddProduct,
     apiEditProduct,
+    apiDeleteManyProducts,
 } from "../../../../apis";
 import Button from "../../../../components/Button";
 import SearchBox from "../SearchBox";
@@ -28,8 +29,16 @@ const defautPayload = {
     category: "",
 };
 
+const selectSearchOptions = [
+    { value: "title", label: "Title" },
+    { value: "brand", label: "Brand" },
+    { value: "color", label: "Color" },
+    { value: "category", label: "Category" },
+];
+
 export default function ProductTable() {
     const [data, setData] = useState(null);
+    console.log(data)
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isEdit, setIsEdit] = useState(false);
     const [payload, setPayload] = useState(defautPayload);
@@ -45,13 +54,15 @@ export default function ProductTable() {
             setIsCheckAll(false);
         }
     }, [isCheck, data]);
+
     const handleSelectAll = (e) => {
         setIsCheckAll(!isCheckAll);
-        setIsCheck(data.map((item) => item._id));
+        setIsCheck(data?.map((item) => item._id));
         if (isCheckAll) {
             setIsCheck([]);
         }
     };
+
     const handleClickCheckBox = (id) => {
         if (isCheck.includes(id)) {
             setIsCheck(isCheck.filter((item) => item !== id));
@@ -60,8 +71,12 @@ export default function ProductTable() {
         }
     };
 
-    const fetchProducts = async () => {
-        const response = await apiGetProducts({ sort: "-createdAt" });
+    const fetchProducts = async (query) => {
+        const response = await apiGetProducts({
+            sort: "-createdAt",
+            limit: 1000,
+            ...query,
+        });
         if (response?.success) {
             setData(response.products);
         }
@@ -69,7 +84,6 @@ export default function ProductTable() {
     };
 
     const handleEdit = (product) => {
-        console.log({ product });
         const {
             _id,
             title,
@@ -95,8 +109,8 @@ export default function ProductTable() {
     };
 
     const handleDelete = async (cid) => {
-        let isSuccess = true;
-        Swal.fire({
+        let isSuccess = false;
+        await Swal.fire({
             title: "Are you sure?",
             text: "You won't be able to revert this!",
             icon: "warning",
@@ -108,18 +122,50 @@ export default function ProductTable() {
             if (result.isConfirmed) {
                 const response = await apiDeleteProduct(token, cid);
                 if (response?.success) {
+                    isSuccess = true;
                     Swal.fire("Success!", response.mes, "success").then(() => {
                         fetchProducts();
                     });
                 } else {
-                    isSuccess = response?.success;
+                    isSuccess = true;
                     Swal.fire("error!", response.mes, "error");
                 }
             } else {
-                isSuccess = !result.isConfirmed;
+                isSuccess = true;
             }
         });
-        console.log({ isSuccess });
+        return isSuccess;
+    };
+
+    const handleDeleteSelected = async () => {
+        let isSuccess = false;
+        await Swal.fire({
+            title: "Are you sure?",
+            text: "You won't be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, delete it!",
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                const response = await apiDeleteManyProducts(token, {
+                    _ids: isCheck,
+                });
+                if (response?.success) {
+                    isSuccess = true;
+                    Swal.fire("Success!", response.mes, "success").then(() => {
+                        setIsCheck([]);
+                        fetchProducts();
+                    });
+                } else {
+                    isSuccess = true;
+                    Swal.fire("error!", response.mes, "error");
+                }
+            } else {
+                isSuccess = true;
+            }
+        });
         return isSuccess;
     };
 
@@ -136,7 +182,6 @@ export default function ProductTable() {
     const handleSubmitModal = async () => {
         const { _id, ...data } = payload;
         if (isEdit) {
-            console.log({ payload });
             const response = await apiEditProduct(token, _id, data);
             if (response?.success) {
                 Swal.fire("Success!", response.mes, "success").then(() => {
@@ -146,7 +191,6 @@ export default function ProductTable() {
                 Swal.fire("error!", response.mes, "error");
             }
         } else {
-            console.log({ data });
             const response = await apiAddProduct(token, data);
             if (response?.success) {
                 Swal.fire("Success!", response.mes, "success").then(() => {
@@ -169,8 +213,16 @@ export default function ProductTable() {
         <div className="relative">
             {/* Action */}
             <div className="flex justify-between py-3">
-                <SearchBox />
-                <div className="flex items-center">
+                <SearchBox
+                    fetch={fetchProducts}
+                    options={selectSearchOptions}
+                />
+                <div className="flex items-center gap-4">
+                    <DeleteButton
+                        height="40px"
+                        disabled={!isCheck?.length}
+                        handleDelete={handleDeleteSelected}
+                    />
                     <Button name="Add new" rounded handleClick={handleAddNew} />
                     <RefreshButton handleClick={fetchProducts} />
                 </div>
@@ -179,7 +231,7 @@ export default function ProductTable() {
             {/* Table */}
             <div className="w-full inline-block align-middle">
                 <div className="overflow-x-auto border rounded-lg">
-                    <table className="w-full divide-y divide-gray-200 bg-white overflow-x-auto table-fixed">
+                    <table className="w-full divide-y divide-gray-200 bg-white overflow-x-auto table-fixed overflow-y-scroll">
                         <thead className="bg-gray-50">
                             <tr>
                                 <th scope="col" className="w-[2%] py-3 pl-4">
@@ -219,7 +271,7 @@ export default function ProductTable() {
                                 </th>
                                 <th
                                     scope="col"
-                                    className="w-[5%] px-6 py-3 text-xs font-bold text-left text-gray-500 uppercase "
+                                    className="w-[7%] px-6 py-3 text-xs font-bold text-left text-gray-500 uppercase "
                                 >
                                     Brand
                                 </th>
@@ -237,7 +289,7 @@ export default function ProductTable() {
                                 </th>
                                 <th
                                     scope="col"
-                                    className="w-[5%] px-6 py-3 text-xs font-bold text-left text-gray-500 uppercase "
+                                    className="w-[7%] px-6 py-3 text-xs font-bold text-left text-gray-500 uppercase "
                                 >
                                     Color
                                 </th>
@@ -309,7 +361,7 @@ export default function ProductTable() {
                                         {formatMoney(item.price)}
                                     </td>
                                     <td className="px-6 py-4 text-sm text-gray-800 break-words ">
-                                        {item.brand}
+                                        {item?.brand?.title}
                                     </td>
                                     <td className="px-6 py-4 text-sm text-gray-800 break-words">
                                         <img
@@ -334,7 +386,7 @@ export default function ProductTable() {
                                         {item.color}
                                     </td>
                                     <td className="px-6 py-4 text-sm text-gray-800 break-words ">
-                                        {item.category}
+                                        {item.category?.title}
                                     </td>
                                     <td className="px-6 py-4 text-sm text-gray-800 break-words ">
                                         {item.totalRatings}

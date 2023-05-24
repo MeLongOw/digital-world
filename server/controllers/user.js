@@ -283,10 +283,8 @@ const updateCart = asyncHandler(async (req, res) => {
     const alreadyProductInCart = user?.cart?.find(
         (item) => item.product.toString() === pid
     );
-    console.log(alreadyProductInCart);
     if (alreadyProductInCart) {
         if (alreadyProductInCart.color === color) {
-
             const response = await User.updateOne(
                 { cart: { $elemMatch: alreadyProductInCart } },
                 { $set: { "cart.$.quantity": quantity } },

@@ -39,8 +39,7 @@ const Cart = () => {
 
     const handleUpdateCart = async (pid, quantity) => {
         const response = await apiUpdateCart(token, { pid, quantity });
-        console.log(response);
-        if (response.success) {
+        if (response?.success) {
             fetchCurrent();
         }
     };

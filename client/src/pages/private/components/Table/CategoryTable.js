@@ -4,6 +4,9 @@ import {
     apiDeleteCategory,
     apiAddCategory,
     apiEditCategory,
+    apiDeleteManyCategories,
+    apiGetBrands,
+    apiUpdateImageCategory,
 } from "../../../../apis";
 import Button from "../../../../components/Button";
 import SearchBox from "../SearchBox";
@@ -14,31 +17,29 @@ import RefreshButton from "../RefreshButton";
 import EditButton from "../EditButton";
 import Modal from "../Modal";
 import InputField from "../../../../components/InputField";
+import InputSelect from "../../../../components/InputSelect";
+import InputFile from "../../../../components/InputFile";
 
 const defautPayload = {
     _id: "",
     title: "",
-    brand: "",
-    image: "",
+    brand: [],
+    selectedFiles: [],
+    brandSelectOptionDefaultValue: [],
 };
 
 export default function CategoryTable() {
     const [data, setData] = useState(null);
+    console.log({ data });
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isEdit, setIsEdit] = useState(false);
     const [payload, setPayload] = useState(defautPayload);
-    const token = useSelector((state) => state.user.token);
-
     const [isCheckAll, setIsCheckAll] = useState(false);
     const [isCheck, setIsCheck] = useState([]);
+    const [brands, setBrands] = useState([]);
 
-    useEffect(() => {
-        if (data?.length === isCheck?.length) {
-            setIsCheckAll(true);
-        } else {
-            setIsCheckAll(false);
-        }
-    }, [isCheck, data]);
+    const token = useSelector((state) => state.user.token);
+
     const handleSelectAll = (e) => {
         setIsCheckAll(!isCheckAll);
         setIsCheck(data.map((item) => item._id));
@@ -54,24 +55,45 @@ export default function CategoryTable() {
         }
     };
 
-    const fetchCategories = async () => {
-        const response = await apiGetCategories();
+    const fetchCategories = async (param) => {
+        const response = await apiGetCategories(param);
         if (response?.success) {
             setData(response.prodCategories);
         }
         return response?.success;
     };
 
+    const fetchBrand = async () => {
+        const response = await apiGetBrands();
+        if (response?.success) {
+            const arrBrands = response?.brands?.map((item) => ({
+                value: item._id,
+                label: item.title,
+            }));
+            setBrands(arrBrands);
+        }
+        return response?.success;
+    };
+
     const handleEdit = (item) => {
-        const { _id, title, brand, image } = item;
+        const { _id, title, brand } = item;
+        console.log({ brand });
         setIsModalOpen(true);
         setIsEdit(true);
-        setPayload({ _id, title, brand, image });
+        setPayload((prev) => ({
+            ...prev,
+            _id,
+            title,
+            brandSelectOptionDefaultValue: brand?.map((item) => ({
+                value: item._id,
+                label: item.title,
+            })),
+        }));
     };
 
     const handleDelete = async (cid) => {
-        let isSuccess = true;
-        Swal.fire({
+        let isSuccess = false;
+        await Swal.fire({
             title: "Are you sure?",
             text: "You won't be able to revert this!",
             icon: "warning",
@@ -83,18 +105,18 @@ export default function CategoryTable() {
             if (result.isConfirmed) {
                 const response = await apiDeleteCategory(token, cid);
                 if (response?.success) {
+                    isSuccess = true;
                     Swal.fire("Success!", response.mes, "success").then(() => {
                         fetchCategories();
                     });
                 } else {
-                    isSuccess = response?.success;
+                    isSuccess = true;
                     Swal.fire("error!", response.mes, "error");
                 }
             } else {
-                isSuccess = !result.isConfirmed;
+                isSuccess = true;
             }
         });
-        console.log({ isSuccess });
         return isSuccess;
     };
 
@@ -109,11 +131,26 @@ export default function CategoryTable() {
     };
 
     const handleSubmitModal = async () => {
-        const { _id, ...data } = payload;
+        const { _id, selectedFiles, ...data } = payload;
+
+        const handleUpdateImageCategory = async (_id) => {
+            const uploaders = selectedFiles.map((file) => {
+                const formData = new FormData();
+                formData.append("image", file);
+                return apiUpdateImageCategory(token, _id, formData);
+            });
+
+            await Promise.all(uploaders).then((values) => {
+                values?.map((value) => console.log(value));
+            });
+        };
+
+        //Create Colection
         if (isEdit) {
-            console.log({ payload });
             const response = await apiEditCategory(token, _id, data);
             if (response?.success) {
+                await handleUpdateImageCategory(_id);
+
                 Swal.fire("Success!", response.mes, "success").then(() => {
                     fetchCategories();
                 });
@@ -121,9 +158,12 @@ export default function CategoryTable() {
                 Swal.fire("error!", response.mes, "error");
             }
         } else {
-            console.log({ payload });
             const response = await apiAddCategory(token, data);
             if (response?.success) {
+                await handleUpdateImageCategory(
+                    response.createdProdCategory._id
+                );
+
                 Swal.fire("Success!", response.mes, "success").then(() => {
                     fetchCategories();
                 });
@@ -131,21 +171,68 @@ export default function CategoryTable() {
                 Swal.fire("error!", response.mes, "error");
             }
         }
+
         setIsModalOpen(false);
         setIsEdit(false);
         setPayload(defautPayload);
     };
 
+    const handleDeleteSelected = async () => {
+        let isSuccess = false;
+        await Swal.fire({
+            title: "Are you sure?",
+            text: "You won't be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, delete it!",
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                const response = await apiDeleteManyCategories(token, {
+                    _ids: isCheck,
+                });
+                if (response?.success) {
+                    isSuccess = true;
+                    Swal.fire("Success!", response.mes, "success").then(() => {
+                        setIsCheck([]);
+                        fetchCategories();
+                    });
+                } else {
+                    isSuccess = true;
+                    Swal.fire("error!", response.mes, "error");
+                }
+            } else {
+                isSuccess = true;
+            }
+        });
+        return isSuccess;
+    };
+
+    useEffect(() => {
+        if (data?.length === isCheck?.length) {
+            setIsCheckAll(true);
+        } else {
+            setIsCheckAll(false);
+        }
+    }, [isCheck, data]);
+
     useEffect(() => {
         fetchCategories();
+        fetchBrand();
     }, []);
 
     return (
         <div className="relative">
             {/* Action */}
             <div className="flex justify-between py-3">
-                <SearchBox />
-                <div className="flex items-center">
+                <SearchBox isOption={false} fetch={fetchCategories} />
+                <div className="flex items-center gap-4">
+                    <DeleteButton
+                        height="40px"
+                        disabled={!isCheck?.length}
+                        handleDelete={handleDeleteSelected}
+                    />
                     <Button name="Add new" rounded handleClick={handleAddNew} />
                     <RefreshButton handleClick={fetchCategories} />
                 </div>
@@ -182,7 +269,7 @@ export default function CategoryTable() {
                                 </th>
                                 <th
                                     scope="col"
-                                    className="w-[10%] px-6 py-3 text-xs font-bold text-left text-gray-500 uppercase "
+                                    className="w-[15%] px-6 py-3 text-xs font-bold text-left text-gray-500 uppercase "
                                 >
                                     title
                                 </th>
@@ -249,9 +336,9 @@ export default function CategoryTable() {
                                             {item.brand?.map((brand) => (
                                                 <div
                                                     className="border mr-2 my-2 p-2"
-                                                    key={brand}
+                                                    key={brand?.title}
                                                 >
-                                                    {brand}
+                                                    {brand?.title}
                                                 </div>
                                             ))}
                                         </div>
@@ -264,7 +351,7 @@ export default function CategoryTable() {
                                         />
                                     </td>
                                     <td className="px-6 py-4 text-sm text-gray-800 break-words">
-                                        1
+                                        {item?.productCount}
                                     </td>
                                     <td className="px-6 py-4 text-sm font-medium text-right whitespace-nowrap ">
                                         <div className="flex justify-end gap-2 items-center">
@@ -300,16 +387,19 @@ export default function CategoryTable() {
                     value={payload.title}
                     setValue={setPayload}
                 />
-                <InputField
+                <InputSelect
                     title="Brand"
+                    defaultValue={payload.brandSelectOptionDefaultValue}
                     nameKey="brand"
                     value={payload.brand}
                     setValue={setPayload}
+                    selectOptions={brands}
                 />
-                <InputField
+                <InputFile
+                    type="file"
                     title="Image"
-                    nameKey="image"
-                    value={payload.image}
+                    nameKey="selectedFiles"
+                    value={payload.uploader}
                     setValue={setPayload}
                 />
             </Modal>

@@ -6,7 +6,7 @@ const { IoMdRefresh } = icons;
 const RefreshButton = ({ handleClick = () => {} }) => {
     const [isLoading, setIsLoading] = useState(false);
     return (
-        <div>
+        <button>
             <IoMdRefresh
                 size={32}
                 onClick={() => {
@@ -17,11 +17,11 @@ const RefreshButton = ({ handleClick = () => {} }) => {
                             setIsLoading(false);
                         }, 1000);
                 }}
-                className={`ml-5 ${
+                className={`${
                     isLoading && "animate-spin"
                 } hover:cursor-pointer`}
             />
-        </div>
+        </button>
     );
 };
 

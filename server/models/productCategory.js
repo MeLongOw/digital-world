@@ -9,25 +9,21 @@ var productCategorySchema = new mongoose.Schema(
             unique: true,
             index: true,
         },
-        brand: {
-            type: Array,
-            required: true,
-        },
+        brand: [{ type: mongoose.Types.ObjectId, ref: "Brand", require: true }],
         image: {
             type: String,
-            required: true,
+            // required: true,
         },
     },
     { timestamps: true }
 );
 
-// productCategorySchema.virtual('productCount', {
-//     ref: 'Product',
-//     localField: '_id',
-//     foreignField: 'category',
-//     count: true
-//   });
+productCategorySchema.virtual("productCount", {
+    ref: "Product",
+    localField: "_id",
+    foreignField: "category",
+    count: true,
+});
 
 //Export the model
 module.exports = mongoose.model("ProductCategory", productCategorySchema);
- 

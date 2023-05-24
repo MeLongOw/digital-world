@@ -46,7 +46,7 @@ const Sidebar = () => {
                 <img src={logo} alt="" className="w-full object-contain" />
             </Link>
             <div className="p-5">
-                {sidebarItem.map((item, index) => (
+                {sidebarItem?.map((item, index) => (
                     <NavLink
                         to={item.path}
                         key={index}

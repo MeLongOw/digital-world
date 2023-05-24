@@ -15,7 +15,7 @@ const InputField = ({
             {title && <label>{title}</label>}
             <input
                 type={type || "text"}
-                className="px-4 py-2 rounded-sm border w-full mt-2 text-sm placeholder:text-gray-300"
+                className="px-4 py-2 rounded-md border w-full mt-2 text-sm placeholder:text-gray-300"
                 placeholder={title}
                 value={value}
                 onChange={(e) =>

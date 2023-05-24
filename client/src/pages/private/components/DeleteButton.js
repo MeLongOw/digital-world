@@ -3,27 +3,32 @@ import icons from "../../../utils/icons";
 
 const { RiDeleteBin5Line, AiOutlineLoading } = icons;
 
-const DeleteButton = ({ handleDelete = async () => {} }) => {
+const DeleteButton = ({
+    height = "35px",
+    disabled = false,
+    handleDelete = async () => {},
+}) => {
     const [isLoading, setIsLoading] = useState(false);
 
     return (
-        <div
-            className="h-[35px] w-[35px] border rounded-md flex justify-center items-center hover:cursor-pointer "
+        <button
+            className={`h-[${height}] aspect-square flex-shrink-0 border rounded-md flex justify-center 
+            items-center hover:cursor-pointer bg-white disabled:opacity-25 disabled:cursor-default`}
             onClick={async () => {
                 setIsLoading(true);
                 const isSuccess = await handleDelete();
-                console.log({ isSuccess });
                 if (isSuccess) {
                     setIsLoading(false);
-                }
+                }   
             }}
+            disabled={disabled}
         >
             {isLoading ? (
                 <AiOutlineLoading className="animate-spin" />
             ) : (
                 <RiDeleteBin5Line size={20} />
             )}
-        </div>
+        </button>
     );
 };
 

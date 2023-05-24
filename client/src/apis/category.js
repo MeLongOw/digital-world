@@ -22,3 +22,22 @@ export const apiEditCategory = (token, cid, data) =>
         headers: { Authorization: `Bearer ${token}` },
         data,
     });
+
+    export const apiDeleteManyCategories = (token, data) =>
+    axios({
+        url: `/prodcategory/deletemany`,
+        method: "delete",
+        headers: { Authorization: `Bearer ${token}` },
+        data,
+    });
+
+    export const apiUpdateImageCategory = (token, cid, data) =>
+    axios({
+        url: `/prodcategory/uploadimage/${cid}`,
+        method: "put",
+        headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "multipart/form-data",
+        },
+        data,
+    });

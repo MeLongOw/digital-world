@@ -29,7 +29,7 @@ const Sidebar = () => {
                             : `${style}`;
                     }}
                 >
-                    {<span>{`${item.title} (${item.brand.length})`}</span>}
+                    {<span>{`${item.title} (${item.brand?.length})`}</span>}
                 </NavLink>
             ))}
         </div>
