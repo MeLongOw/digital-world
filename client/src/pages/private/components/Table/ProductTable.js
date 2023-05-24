@@ -38,7 +38,6 @@ const selectSearchOptions = [
 
 export default function ProductTable() {
     const [data, setData] = useState(null);
-    console.log(data)
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isEdit, setIsEdit] = useState(false);
     const [payload, setPayload] = useState(defautPayload);

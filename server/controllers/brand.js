@@ -2,7 +2,6 @@ const Brand = require("../models/brand");
 const asyncHandler = require("express-async-handler");
 
 const createBrand = asyncHandler(async (req, res) => {
-
     const response = await Brand.create(req.body);
     return res.status(200).json({
         success: response ? true : false,
@@ -12,18 +11,72 @@ const createBrand = asyncHandler(async (req, res) => {
 
 const getBrands = asyncHandler(async (req, res) => {
     if (req.query?.title) {
-        const response = await Brand.find({
-            title: {
-                $regex: req.query.title,
-                $options: "i",
+        // const response = await Brand.find({
+        //     title: {
+        //         $regex: req.query.title,
+        //         $options: "i",
+        //     },
+        // }).populate('productCount');
+
+        const response = await Brand.aggregate([
+            {
+                $match: {
+                    title: {
+                        $regex: req.query.title,
+                        $options: "i",
+                    },
+                },
             },
-        }).populate('productCount');
+            {
+                $lookup: {
+                    from: "products",
+                    localField: "_id",
+                    foreignField: "brand",
+                    as: "productCount",
+                },
+            },
+            {
+                $project: {
+                    title: 1,
+                    productCount: { $size: "$productCount" },
+                    createdAt: 1,
+                    updatedAt: 1,
+                },
+            },
+            {
+                $sort: { createdAt: -1 },
+            },
+        ]);
+
         return res.status(200).json({
             success: response ? true : false,
             brands: response ? response : "Can not get brands",
         });
     } else {
-        const response = await Brand.find().populate('productCount');
+        // const response = await Brand.find().populate('productCount');
+
+        const response = await Brand.aggregate([
+            {
+                $lookup: {
+                    from: "products",
+                    localField: "_id",
+                    foreignField: "brand",
+                    as: "productCount",
+                },
+            },
+            {
+                $project: {
+                    title: 1,
+                    productCount: { $size: "$productCount" },
+                    createdAt: 1,
+                    updatedAt: 1,
+                },
+            },
+            {
+                $sort: { createdAt: -1 },
+            },
+        ]);
+
         return res.status(200).json({
             success: response ? true : false,
             brands: response ? response : "Can not get brands",

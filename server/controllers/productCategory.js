@@ -12,24 +12,99 @@ const createCategory = asyncHandler(async (req, res) => {
 
 const getCategories = asyncHandler(async (req, res) => {
     if (req.query?.title) {
-        const response = await ProductCategory.find({
-            title: {
-                $regex: req.query.title,
-                $options: "i",
+        // const response = await ProductCategory.find({
+        //     title: {
+        //         $regex: req.query.title,
+        //         $options: "i",
+        //     },
+        // })
+        //     .sort("-createdAt")
+        //     .populate("brand")
+        //     .populate("productCount");
+
+        const response = await ProductCategory.aggregate([
+            {
+                $match: {
+                    title: {
+                        $regex: req.query.title,
+                        $options: "i",
+                    },
+                },
             },
-        })
-            .sort("-createdAt")
-            .populate("brand")
-            .populate("productCount");
+            {
+                $lookup: {
+                    from: "brands",
+                    localField: "brand",
+                    foreignField: "_id",
+                    as: "brand",
+                },
+            },
+            {
+                $lookup: {
+                    from: "products", 
+                    localField: "_id",
+                    foreignField: "category",
+                    as: "productCount",
+                },
+            },
+            {
+                $project: {
+                    title: 1,
+                    brand: 1,
+                    image: 1,
+                    productCount: { $size: "$productCount" },
+                    createdAt: 1,
+                    updatedAt: 1,
+                },
+            },
+            {
+                $sort: { createdAt: -1 },
+            },
+        ]);
+
+
         return res.status(200).json({
             success: response ? true : false,
             prodCategories: response ? response : "Can not get categories",
         });
     } else {
-        const response = await ProductCategory.find()
-            .sort("-createdAt")
-            .populate("productCount")
-            .populate("brand");
+        // const response = await ProductCategory.find()
+        //     .sort("-createdAt")
+        //     .populate("productCount")
+        //     .populate("brand");
+
+        const response = await ProductCategory.aggregate([
+            {
+                $lookup: {
+                    from: "brands",
+                    localField: "brand",
+                    foreignField: "_id",
+                    as: "brand",
+                },
+            },
+            {
+                $lookup: {
+                    from: "products", 
+                    localField: "_id",
+                    foreignField: "category",
+                    as: "productCount",
+                },
+            },
+            {
+                $project: {
+                    title: 1,
+                    brand: 1,
+                    image: 1,
+                    productCount: { $size: "$productCount" },
+                    createdAt: 1,
+                    updatedAt: 1,
+                },
+            },
+            {
+                $sort: { createdAt: -1 },
+            },
+        ]);
+
         return res.status(200).json({
             success: response ? true : false,
             prodCategories: response ? response : "Can not get categories",

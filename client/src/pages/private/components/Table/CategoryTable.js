@@ -30,7 +30,6 @@ const defautPayload = {
 
 export default function CategoryTable() {
     const [data, setData] = useState(null);
-    console.log({ data });
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isEdit, setIsEdit] = useState(false);
     const [payload, setPayload] = useState(defautPayload);
@@ -41,8 +40,8 @@ export default function CategoryTable() {
     const token = useSelector((state) => state.user.token);
 
     const handleSelectAll = (e) => {
-        setIsCheckAll(!isCheckAll);
-        setIsCheck(data.map((item) => item._id));
+        setIsCheckAll(!isCheckAll); 
+        setIsCheck(data?.map((item) => item._id));
         if (isCheckAll) {
             setIsCheck([]);
         }
@@ -77,7 +76,6 @@ export default function CategoryTable() {
 
     const handleEdit = (item) => {
         const { _id, title, brand } = item;
-        console.log({ brand });
         setIsModalOpen(true);
         setIsEdit(true);
         setPayload((prev) => ({
@@ -134,15 +132,13 @@ export default function CategoryTable() {
         const { _id, selectedFiles, ...data } = payload;
 
         const handleUpdateImageCategory = async (_id) => {
-            const uploaders = selectedFiles.map((file) => {
+            const uploaders = selectedFiles?.map((file) => {
                 const formData = new FormData();
                 formData.append("image", file);
                 return apiUpdateImageCategory(token, _id, formData);
             });
 
-            await Promise.all(uploaders).then((values) => {
-                values?.map((value) => console.log(value));
-            });
+            await Promise.all(uploaders);
         };
 
         //Create Colection
@@ -333,7 +329,7 @@ export default function CategoryTable() {
                                     </td>
                                     <td className="px-6 py-4 text-sm text-gray-800 break-words ">
                                         <div className="flex flex-wrap">
-                                            {item.brand?.map((brand) => (
+                                            {item?.brand?.map((brand) => (
                                                 <div
                                                     className="border mr-2 my-2 p-2"
                                                     key={brand?.title}
