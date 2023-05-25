@@ -5,6 +5,8 @@ import {
     apiAddProduct,
     apiEditProduct,
     apiDeleteManyProducts,
+    apiGetBrands,
+    apiGetCategories,
 } from "../../../../apis";
 import Button from "../../../../components/Button";
 import SearchBox from "../SearchBox";
@@ -16,7 +18,10 @@ import EditButton from "../EditButton";
 import Modal from "../Modal";
 import InputField from "../../../../components/InputField";
 import { formatMoney } from "../../../../utils/helpers";
-import TextArea from "../TextArea";
+
+import InputSelect from "../../../../components/InputSelect";
+import InputDynamic from "../../../../components/InputDynamic";
+import InputFieldValue from "../../../../components/InputVariants";
 
 const defautPayload = {
     _id: "",
@@ -24,8 +29,8 @@ const defautPayload = {
     price: "",
     brand: "",
     thumb: "",
-    description: "",
-    color: "",
+    description: [''],
+    variants: [{ label: "", variants: [''] }],
     category: "",
 };
 
@@ -41,6 +46,9 @@ export default function ProductTable() {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isEdit, setIsEdit] = useState(false);
     const [payload, setPayload] = useState(defautPayload);
+    const [brands, setBrands] = useState([]);
+    const [categories, setCategories] = useState([]);
+    console.log({ variants: payload.variants });
     const token = useSelector((state) => state.user.token);
 
     const [isCheckAll, setIsCheckAll] = useState(false);
@@ -73,7 +81,7 @@ export default function ProductTable() {
     const fetchProducts = async (query) => {
         const response = await apiGetProducts({
             sort: "-createdAt",
-            limit: 1000,
+            limit: 10,
             ...query,
         });
         if (response?.success) {
@@ -82,29 +90,48 @@ export default function ProductTable() {
         return response?.success;
     };
 
+    const fetchBrands = async (query) => {
+        const response = await apiGetBrands();
+        if (response?.success) {
+            const arrBrands = response?.brands?.map((item) => ({
+                value: item._id,
+                label: item.title,
+            }));
+            setBrands(arrBrands);
+        }
+        return response?.success;
+    };
+
+    const fetchCategories = async (query) => {
+        const response = await apiGetCategories();
+        if (response?.success) {
+            const arrProdCategories = response?.prodCategories?.map((item) => ({
+                value: item._id,
+                label: item.title,
+            }));
+            setCategories(arrProdCategories);
+        }
+        return response?.success;
+    };
+
     const handleEdit = (product) => {
-        const {
-            _id,
-            title,
-            price,
-            brand,
-            thumb,
-            description,
-            color,
-            category,
-        } = product;
+        const { brand, category, ...data } = product;
         setIsModalOpen(true);
         setIsEdit(true);
-        setPayload({
-            _id,
-            title,
-            price,
+        setPayload((prev) => ({
+            ...prev,
+            ...data,
             brand,
-            thumb,
-            description,
-            color,
+            brandSelectDefault: {
+                value: brand._id,
+                label: brand.title,
+            },
             category,
-        });
+            categorySelectDefault: {
+                value: category._id,
+                label: category.title,
+            },
+        }));
     };
 
     const handleDelete = async (cid) => {
@@ -206,6 +233,8 @@ export default function ProductTable() {
 
     useEffect(() => {
         fetchProducts();
+        fetchBrands();
+        fetchCategories();
     }, []);
 
     return (
@@ -252,73 +281,73 @@ export default function ProductTable() {
                                 </th>
                                 <th
                                     scope="col"
-                                    className="w-[5%] px-6 py-3 text-xs font-bold text-left text-gray-500 uppercase "
+                                    className="w-[5%] px-3 py-3 text-xs font-bold text-left text-gray-500 uppercase "
                                 >
                                     ID
                                 </th>
                                 <th
                                     scope="col"
-                                    className="w-[7%] px-6 py-3 text-xs font-bold text-left text-gray-500 uppercase "
+                                    className="w-[7%] px-3 py-3 text-xs font-bold text-left text-gray-500 uppercase "
                                 >
                                     Title
                                 </th>
                                 <th
                                     scope="col"
-                                    className="w-[8%] px-6 py-3 text-xs font-bold text-left text-gray-500 uppercase "
+                                    className="w-[8%] px-3 py-3 text-xs font-bold text-left text-gray-500 uppercase "
                                 >
                                     Price
                                 </th>
                                 <th
                                     scope="col"
-                                    className="w-[7%] px-6 py-3 text-xs font-bold text-left text-gray-500 uppercase "
+                                    className="w-[7%] px-3 py-3 text-xs font-bold text-left text-gray-500 uppercase "
                                 >
                                     Brand
                                 </th>
                                 <th
                                     scope="col"
-                                    className="w-[8%] px-6 py-3 text-xs font-bold text-left text-gray-500 uppercase "
+                                    className="w-[8%] px-3 py-3 text-xs font-bold text-left text-gray-500 uppercase "
                                 >
                                     Image
                                 </th>
                                 <th
                                     scope="col"
-                                    className="w-[15%] px-6 py-3 text-xs font-bold text-left text-gray-500 uppercase "
+                                    className="w-[15%] px-3 py-3 text-xs font-bold text-left text-gray-500 uppercase "
                                 >
                                     Description
                                 </th>
                                 <th
                                     scope="col"
-                                    className="w-[7%] px-6 py-3 text-xs font-bold text-left text-gray-500 uppercase "
+                                    className="w-[10%] px-3 py-3 text-xs font-bold text-left text-gray-500 uppercase "
                                 >
-                                    Color
+                                    Variants
                                 </th>
                                 <th
                                     scope="col"
-                                    className="w-[8%] px-6 py-3 text-xs font-bold text-left text-gray-500 uppercase "
+                                    className="w-[7%] px-3 py-3 text-xs font-bold text-left text-gray-500 uppercase "
                                 >
                                     Category
                                 </th>
                                 <th
                                     scope="col"
-                                    className="w-[4%] px-6 py-3 text-xs font-bold text-left text-gray-500 uppercase "
+                                    className="w-[4%] px-3 py-3 text-xs font-bold text-left text-gray-500 uppercase "
                                 >
                                     Rating
                                 </th>
                                 <th
                                     scope="col"
-                                    className="w-[5%] px-6 py-3 text-xs font-bold text-left text-gray-500 uppercase "
+                                    className="w-[5%] px-3 py-3 text-xs font-bold text-left text-gray-500 uppercase "
                                 >
                                     Sold
                                 </th>
                                 <th
                                     scope="col"
-                                    className="w-[5%] px-6 py-3 text-xs font-bold text-left text-gray-500 uppercase "
+                                    className="w-[5%] px-3 py-3 text-xs font-bold text-left text-gray-500 uppercase "
                                 >
                                     Quantity
                                 </th>
                                 <th
                                     scope="col"
-                                    className="w-[7%] px-6 py-3 text-xs font-bold text-right text-gray-500 uppercase "
+                                    className="w-[7%] px-3 py-3 text-xs font-bold text-right text-gray-500 uppercase "
                                 >
                                     Action
                                 </th>
@@ -350,30 +379,30 @@ export default function ProductTable() {
                                             </label>
                                         </div>
                                     </td>
-                                    <td className="px-6 py-4 text-sm font-medium text-gray-800 break-words">
+                                    <td className="pl-3 py-4 text-sm font-medium text-gray-800 break-words">
                                         {item._id}
                                     </td>
-                                    <td className="px-6 py-4 text-sm text-gray-800 break-words">
+                                    <td className="pl-3 py-4 text-sm text-gray-800 break-words">
                                         {item.title}
                                     </td>
-                                    <td className="px-6 py-4 text-sm text-gray-800 break-words">
+                                    <td className="pl-3 py-4 text-sm text-gray-800 break-words">
                                         {formatMoney(item.price)}
                                     </td>
-                                    <td className="px-6 py-4 text-sm text-gray-800 break-words ">
+                                    <td className="pl-3 py-4 text-sm text-gray-800 break-words ">
                                         {item?.brand?.title}
                                     </td>
-                                    <td className="px-6 py-4 text-sm text-gray-800 break-words">
+                                    <td className="pl-3 py-4 text-sm text-gray-800 break-words">
                                         <img
                                             className="w-[100px] h-[100px] object-contain"
                                             src={item.thumb}
                                             alt=""
                                         />
                                     </td>
-                                    <td className="px-6 py-4 text-sm text-gray-800 break-words">
+                                    <td className="pl-3 py-4 text-sm text-gray-800 break-words">
                                         <ul className="flex flex-col">
                                             {item.description?.map((item) => (
                                                 <li
-                                                    className="list-disc list-inside text-xs"
+                                                    className="list-disc list-outside text-xs"
                                                     key={item}
                                                 >
                                                     {item}
@@ -381,22 +410,40 @@ export default function ProductTable() {
                                             ))}
                                         </ul>
                                     </td>
-                                    <td className="px-6 py-4 text-sm text-gray-800 break-words ">
-                                        {item.color}
+                                    <td className="pl-3 py-4 text-sm text-gray-800 break-words ">
+                                        <ul>
+                                            {item?.variants?.map(
+                                                (variant, index) => (
+                                                    <li
+                                                        className="list-disc list-outside text-xs"
+                                                        key={index}
+                                                    >
+                                                        <span className="font-semibold text-gray-800">
+                                                            {`${variant.label}`}
+                                                        </span>
+                                                        <span>
+                                                            {`: ${variant.variants.join(
+                                                                " / "
+                                                            )}`}
+                                                        </span>
+                                                    </li>
+                                                )
+                                            )}
+                                        </ul>
                                     </td>
-                                    <td className="px-6 py-4 text-sm text-gray-800 break-words ">
+                                    <td className="pl-3 py-4 text-sm text-gray-800 break-words ">
                                         {item.category?.title}
                                     </td>
-                                    <td className="px-6 py-4 text-sm text-gray-800 break-words ">
+                                    <td className="pl-3 py-4 text-sm text-gray-800 break-words ">
                                         {item.totalRatings}
                                     </td>
-                                    <td className="px-6 py-4 text-sm text-gray-800 break-words ">
+                                    <td className="pl-3 py-4 text-sm text-gray-800 break-words ">
                                         {item.sold}
                                     </td>
-                                    <td className="px-6 py-4 text-sm text-gray-800 break-words ">
+                                    <td className="pl-3 py-4 text-sm text-gray-800 break-words ">
                                         {item.quantity}
                                     </td>
-                                    <td className="px-6 py-4 text-sm font-medium text-right whitespace-nowrap ">
+                                    <td className="px-3 py-4 text-sm font-medium text-right whitespace-nowrap ">
                                         <div className="flex justify-end gap-2 items-center">
                                             <EditButton
                                                 handleEdit={() =>
@@ -437,11 +484,23 @@ export default function ProductTable() {
                     value={payload.price}
                     setValue={setPayload}
                 />
-                <InputField
+                <InputSelect
+                    isMulti={false}
                     title="Brand"
+                    defaultValue={payload.brandSelectDefault}
                     nameKey="brand"
                     value={payload.brand}
                     setValue={setPayload}
+                    selectOptions={brands}
+                />
+                <InputSelect
+                    isMulti={false}
+                    title="Category"
+                    defaultValue={payload?.categorySelectDefault}
+                    nameKey="category"
+                    value={payload.category}
+                    setValue={setPayload}
+                    selectOptions={categories}
                 />
                 <InputField
                     title="Thumb"
@@ -449,23 +508,17 @@ export default function ProductTable() {
                     value={payload.thumb}
                     setValue={setPayload}
                 />
-                <TextArea
+                <InputDynamic
                     type=""
                     title="Description"
                     nameKey="description"
                     value={payload.description}
                     setValue={setPayload}
                 />
-                <InputField
-                    title="Color"
-                    nameKey="color"
-                    value={payload.color}
-                    setValue={setPayload}
-                />
-                <InputField
-                    title="Category"
-                    nameKey="category"
-                    value={payload.category}
+                <InputFieldValue
+                    title="Variants"
+                    nameKey="variants"
+                    value={payload.variants}
                     setValue={setPayload}
                 />
             </Modal>

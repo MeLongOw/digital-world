@@ -2,6 +2,7 @@ import React from "react";
 import Select from "react-select";
 
 const InputSelect = ({
+    isMulti = true,
     setValue,
     nameKey,
     title,
@@ -13,19 +14,26 @@ const InputSelect = ({
 }) => {
     return (
         <div className="w-full text-sm text-gray-700 mb-2">
-            {title && <label>{title}</label>}
+            {title && <label className='flex mb-[10px]'>{title}</label>}
             <Select
                 defaultValue={defaultValue}
-                isMulti
+                isMulti={isMulti}
                 name="colors"
                 options={selectOptions}
                 className="basic-multi-select"
                 classNamePrefix="select"
-                onChange={(array) => {
-                    setValue((prev) => ({
-                        ...prev,
-                        [nameKey]: array.map((item) => item.value),
-                    }));
+                onChange={(data) => {
+                    setValue((prev) =>
+                        isMulti
+                            ? {
+                                  ...prev,
+                                  [nameKey]: data.map((item) => item.value),
+                              }
+                            : {
+                                  ...prev,
+                                  [nameKey]: data.value,
+                              }
+                    );
                 }}
                 onFocus={() => setInvalidFields([])}
             />

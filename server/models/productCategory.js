@@ -18,12 +18,12 @@ var productCategorySchema = new mongoose.Schema(
     { timestamps: true }
 );
 
-productCategorySchema.virtual("productCount", {
-    ref: "Product",
-    localField: "_id",
-    foreignField: "category",
-    count: true,
-});
+// productCategorySchema.virtual("productCount", {
+//     ref: "Product",
+//     localField: "_id",
+//     foreignField: "category",
+//     count: true,
+// });
 
 //Export the model
 module.exports = mongoose.model("ProductCategory", productCategorySchema);

@@ -25,7 +25,6 @@ const defautPayload = {
     title: "",
     brand: [],
     selectedFiles: [],
-    brandSelectOptionDefaultValue: [],
 };
 
 export default function CategoryTable() {
@@ -82,7 +81,8 @@ export default function CategoryTable() {
             ...prev,
             _id,
             title,
-            brandSelectOptionDefaultValue: brand?.map((item) => ({
+            brand,
+            brandSelectDefault: brand?.map((item) => ({
                 value: item._id,
                 label: item.title,
             })),
@@ -130,6 +130,7 @@ export default function CategoryTable() {
 
     const handleSubmitModal = async () => {
         const { _id, selectedFiles, ...data } = payload;
+        console.log({data})
 
         const handleUpdateImageCategory = async (_id) => {
             const uploaders = selectedFiles?.map((file) => {
@@ -385,7 +386,7 @@ export default function CategoryTable() {
                 />
                 <InputSelect
                     title="Brand"
-                    defaultValue={payload.brandSelectOptionDefaultValue}
+                    defaultValue={payload?.brandSelectDefault}
                     nameKey="brand"
                     value={payload.brand}
                     setValue={setPayload}

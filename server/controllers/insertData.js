@@ -19,8 +19,7 @@ const createProduct = async (product) => {
         quantity: Math.round(Math.random() * 1000),
         sold: Math.round(Math.random() * 100),
         images: product?.images,
-        color: product?.variants?.find((item) => item.label === "Color")
-            ?.variants[0],
+        variants: product?.variants,
         totalRatings: Math.ceil(Math.random() * 5),
     });
 };

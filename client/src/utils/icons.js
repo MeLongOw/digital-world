@@ -8,7 +8,7 @@ import {
     BsBell,
 } from "react-icons/bs";
 import { FaUserCircle, FaCheck } from "react-icons/fa";
-import { IoIosArrowForward, IoIosArrowRoundBack } from "react-icons/io";
+import { IoIosArrowForward, IoIosArrowRoundBack, IoMdAddCircleOutline, IoMdRemoveCircleOutline } from "react-icons/io";
 import { TfiMenu } from "react-icons/tfi";
 import { RiArrowDropDownLine } from "react-icons/ri";
 import { GrFormNextLink, GrFormPreviousLink } from "react-icons/gr";
@@ -74,7 +74,9 @@ const icons = {
     MdModeEdit,
     RiDeleteBin5Line,
     IoMdRefresh,
-    SiBrandfolder
+    SiBrandfolder,
+    IoMdAddCircleOutline,
+    IoMdRemoveCircleOutline
 };
 
 export default icons;
