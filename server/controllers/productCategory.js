@@ -1,5 +1,6 @@
 const ProductCategory = require("../models/productCategory");
 const asyncHandler = require("express-async-handler");
+const cloudinary = require("cloudinary").v2;
 
 const createCategory = asyncHandler(async (req, res) => {
     console.log(req.body);
@@ -41,7 +42,7 @@ const getCategories = asyncHandler(async (req, res) => {
             },
             {
                 $lookup: {
-                    from: "products", 
+                    from: "products",
                     localField: "_id",
                     foreignField: "category",
                     as: "productCount",
@@ -61,7 +62,6 @@ const getCategories = asyncHandler(async (req, res) => {
                 $sort: { createdAt: -1 },
             },
         ]);
-
 
         return res.status(200).json({
             success: response ? true : false,
@@ -84,7 +84,7 @@ const getCategories = asyncHandler(async (req, res) => {
             },
             {
                 $lookup: {
-                    from: "products", 
+                    from: "products",
                     localField: "_id",
                     foreignField: "category",
                     as: "productCount",
@@ -115,7 +115,7 @@ const getCategories = asyncHandler(async (req, res) => {
 const uploadImageCategory = asyncHandler(async (req, res) => {
     const { pcid } = req.params;
     if (!req.file) throw new Error("Missing input(s)");
-    console.log(pcid);
+    console.log(req.file.filename);
     const response = await ProductCategory.findByIdAndUpdate(
         pcid,
         {
@@ -148,6 +148,15 @@ const updateCategory = asyncHandler(async (req, res) => {
 const deleteCategory = asyncHandler(async (req, res) => {
     const { pcid } = req.params;
     const response = await ProductCategory.findByIdAndDelete(pcid);
+
+    console.log(response.image);
+    if (response) {
+        //https://res.cloudinary.com/djlyk1zqk/image/upload/v1685062871/storage/yx3g7hy76yzsoegstfsr.jpg
+        await cloudinary.uploader.destroy(
+            response.image.split("/").slice(-2).join("/").split(".")[0]
+        );
+    }
+
     return res.status(200).json({
         success: response ? true : false,
         deletedProdCategory: response
@@ -160,13 +169,26 @@ const deleteCategory = asyncHandler(async (req, res) => {
 
 const deleteManyCategories = asyncHandler(async (req, res) => {
     const { _ids } = req.body;
-    const deleteCategory = await ProductCategory.deleteMany({
-        _id: { $in: _ids },
+    const deletedCategories = [];
+    const promiseList = _ids.map(async (cid) => {
+        const deletedCategory = await ProductCategory.findByIdAndDelete(cid);
+        if (deletedCategory) {
+            deletedCategories.push(deletedCategory);
+            return cloudinary.uploader.destroy(
+                deletedCategory.image
+                    .split("/")
+                    .slice(-2)
+                    .join("/")
+                    .split(".")[0]
+            );
+        }
     });
+    const isSuccess = await Promise.all(promiseList);
+
     return res.status(200).json({
-        success: deleteCategory ? true : false,
-        deleteCategory: deleteCategory
-            ? deleteCategory
+        success: isSuccess ? true : false,
+        deletedCategories: deletedCategories
+            ? deletedCategories
             : "Can not delete categories",
     });
 });

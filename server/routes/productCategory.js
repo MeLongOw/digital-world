@@ -1,7 +1,8 @@
 const router = require("express").Router();
 const ctrls = require("../controllers/productCategory");
 const { verifyAccessToken, isAdmin } = require("../middlewares/verifyToken");
-const uploader = require('../configs/cloudinary.config')
+const uploader = require('../middlewares/cloudinary.category')
+
 
 
 router.get('/',ctrls.getCategories)

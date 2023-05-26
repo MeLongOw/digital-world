@@ -59,10 +59,11 @@ const serviceBox = [
 const DetailProduct = () => {
     const { slug } = useParams();
     const [product, setProduct] = useState(null);
+    console.log(product);
     const [quantity, setQuantity] = useState(1);
     const [imageActive, setImageActive] = useState("");
-    const dispatch = useDispatch()
-    const token = useSelector(state => state.user.token)
+    const dispatch = useDispatch();
+    const token = useSelector((state) => state.user.token);
 
     const fetchProduct = async () => {
         const response = await apiGetProduct(slug);
@@ -72,17 +73,17 @@ const DetailProduct = () => {
         }
     };
 
-    const handleAddToCart = async (pid)=>{
+    const handleAddToCart = async (pid) => {
         const response = await apiAddToCart(token, {
             pid,
             quantity: quantity,
             // color: productData?.color,
         });
-        if(response?.success){
-            dispatch(getCurrent(token))
+        if (response?.success) {
+            dispatch(getCurrent(token));
         }
-        return response?.success
-    }
+        return response?.success;
+    };
 
     useEffect(() => {
         fetchProduct();
@@ -122,7 +123,7 @@ const DetailProduct = () => {
                             </div>
                         </div>
                         <div className="flex flex-3">
-                            <div className="flex-2 pl-[45px]">
+                            <div className="flex-2 pl-[45px] pr-2">
                                 <span className="text-[30px] font-semibold">
                                     {formatMoney(product?.price)} VNĐ
                                 </span>
@@ -149,18 +150,28 @@ const DetailProduct = () => {
                                         )
                                     )}
                                 </ul>
-                                <div className="flex items-center mb-3">
-                                    <span className="w-[90px]">Internal</span>
-                                    <div className="border text-center px-4 py-3">
-                                        12GB
+                                {product?.variants?.map((variant) => (
+                                    <div
+                                        className="flex items-center mb-3"
+                                        key={variant.label}
+                                    >
+                                        <span className="w-[90px] flex-shrink-0">
+                                            {variant?.label}
+                                        </span>
+                                        <div className="flex gap-2 flex-wrap">
+                                            {variant?.variants?.map(
+                                                (variant) => (
+                                                    <div
+                                                        className="border text-center px-4 py-3 flex items-center text-sm uppercase"
+                                                        key={variant}
+                                                    >
+                                                        {variant}
+                                                    </div>
+                                                )
+                                            )}
+                                        </div>
                                     </div>
-                                </div>
-                                <div className="flex items-center mb-3">
-                                    <span className="w-[90px]">Color</span>
-                                    <div className="border text-center px-4 py-3">
-                                        Black
-                                    </div>
-                                </div>
+                                ))}
                                 <div className="flex items-center mb-3">
                                     <span className="w-[90px]">Quantity</span>
                                     <InputNumberProduct
@@ -169,14 +180,23 @@ const DetailProduct = () => {
                                     />
                                 </div>
                                 <div className="mt-4">
-                                    <Button name="ADD TO CART" handleClick={()=>{handleAddToCart(product._id)}}/>
-                                    
+                                    <Button
+                                        name="ADD TO CART"
+                                        handleClick={async () => {
+                                            handleAddToCart(product._id);
+                                            return true;
+                                        }}
+                                        hasIconSuccess={true}
+                                    />
                                 </div>
                             </div>
-                            
+
                             <div className=" flex-1">
                                 {serviceBox.map((box) => (
-                                    <div key={box.title} className="flex border items-center p-[10px] mb-[10px]">
+                                    <div
+                                        key={box.title}
+                                        className="flex border items-center p-[10px] mb-[10px]"
+                                    >
                                         <span className="mr-3 text-gray-700">
                                             {box.icon}
                                         </span>
@@ -198,7 +218,7 @@ const DetailProduct = () => {
                         className="flex justify-center items-center text-sm text-gray-700 uppercase hover:text-main mb-[50px]"
                     >
                         <IoIosArrowRoundBack size={20} />
-                        {`back to ${product?.category}`}
+                        {`back to ${product?.category?.title}`}
                     </Link>
                     <DetailDescription description={product?.description} />
                 </>

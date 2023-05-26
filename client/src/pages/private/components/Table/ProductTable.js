@@ -29,8 +29,8 @@ const defautPayload = {
     price: "",
     brand: "",
     thumb: "",
-    description: [''],
-    variants: [{ label: "", variants: [''] }],
+    description: [""],
+    variants: [{ label: "", variants: [""] }],
     category: "",
 };
 
@@ -61,6 +61,12 @@ export default function ProductTable() {
             setIsCheckAll(false);
         }
     }, [isCheck, data]);
+
+    const setDefaultState = () => {
+        setIsModalOpen(false);
+        setIsEdit(false);
+        setPayload(defautPayload);
+    };
 
     const handleSelectAll = (e) => {
         setIsCheckAll(!isCheckAll);
@@ -200,9 +206,7 @@ export default function ProductTable() {
     };
 
     const handleCancelModal = () => {
-        setIsModalOpen(false);
-        setIsEdit(false);
-        setPayload(defautPayload);
+        setDefaultState();
     };
 
     const handleSubmitModal = async () => {
@@ -226,9 +230,10 @@ export default function ProductTable() {
                 Swal.fire("error!", response.mes, "error");
             }
         }
-        setIsModalOpen(false);
-        setIsEdit(false);
-        setPayload(defautPayload);
+        setDefaultState();
+
+        //trigger stop loading
+        return true;
     };
 
     useEffect(() => {

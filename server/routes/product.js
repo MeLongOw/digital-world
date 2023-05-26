@@ -1,7 +1,7 @@
 const router = require("express").Router();
 const ctrls = require("../controllers/product");
 const { verifyAccessToken, isAdmin } = require("../middlewares/verifyToken");
-const uploader = require('../configs/cloudinary.config')
+const uploader = require('../middlewares/cloudinary.product')
 
 router.get('/', ctrls.getProducts)
 router.get('/get/:slug',ctrls.getProduct)

@@ -1,23 +1,21 @@
-import React, { useState } from "react";
-import { useSelector } from "react-redux";
-import { apiAddCategory } from "../../../apis";
+import React from "react";
 import Button from "../../../components/Button";
-import InputField from "../../../components/InputField";
 import icons from "../../../utils/icons";
 
 const { AiOutlineClose } = icons;
 
 const Modal = ({
     isModalOpen = true,
-    handleSubmit = () => {},
+    handleSubmit =  () => {},
     handleCancel = () => {},
     isEdit = false,
-    children
+    children,
 }) => {
-  
+
     const handleCloseModal = () => {
         handleCancel(false);
     };
+
     return (
         isModalOpen && (
             <div
@@ -45,13 +43,13 @@ const Modal = ({
                         </span>
                     </div>
                     {children}
-                   
+
                     <div className="flex justify-end mt-4">
-                        <div>
+                        <div className="flex">
                             <Button
-                                name={"OK"}
+                                name='OK'
                                 rounded
-                                handleClick={handleSubmit}
+                                handleClick={handleSubmit}  
                             />
                         </div>
                         <button

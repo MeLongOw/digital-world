@@ -44,7 +44,7 @@ const DealDaily = () => {
                                 className="w-full object-contain"
                             />
                         </Link>
-                        <Link to={`${path.DETAIL_PRODUCT}/${dailydeal?._id}/${dailydeal?.title}`} className="line-clamp-1 text-center hover:text-main">
+                        <Link to={`${path.DETAIL_PRODUCT}/${dailydeal?._id}`} className="line-clamp-1 text-center hover:text-main">
                             {dailydeal?.title}
                         </Link>
                         <span className="flex h-4">
@@ -56,13 +56,13 @@ const DealDaily = () => {
                         <div className="mb-4">
                             <CountDown action={fetchDailydeal} />
                         </div>
-                        <button
-                            type="button"
+                        <Link
+                            to={`${path.DETAIL_PRODUCT}/${dailydeal?._id}`}
                             className="flex gap-2 items-center justify-center w-full bg-main hover:bg-gray-800 transition-colors text-white font-medium p-2 cursor-pointer"
                         >
                             <AiOutlineMenu />
                             <span>Options</span>
-                        </button>
+                        </Link>
                     </div>
                 </>
             ) : (

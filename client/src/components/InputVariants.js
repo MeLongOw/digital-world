@@ -61,7 +61,6 @@ const InputVariants = ({
                 valueCopy[indexField]?.variants?.map((el, indexVariants) => (
                     <div
                         className="flex items-center mt-2"
-                        // key={`${valueCopy[indexField]?.label} ${valueCopy[indexField]?.variants[indexVariants]}`}
                         key={`${indexField}-${indexVariants}`}
                     >
                         <input

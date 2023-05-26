@@ -324,7 +324,7 @@ const updateCart = asyncHandler(async (req, res) => {
     }
 });
 
-const RemoveFormCart = asyncHandler(async (req, res) => {
+const removeFormCart = asyncHandler(async (req, res) => {
     const { _id } = req.user;
     const user = await User.findById(_id);
 
@@ -404,7 +404,7 @@ module.exports = {
     updateUserByAdmin,
     updateUserAddress,
     updateCart,
-    RemoveFormCart,
+    removeFormCart,
     authRegister,
     updateWishList,
     removeWishList,

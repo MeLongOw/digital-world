@@ -38,8 +38,14 @@ export default function CategoryTable() {
 
     const token = useSelector((state) => state.user.token);
 
+    const setDefaultState = () => {
+        setIsModalOpen(false);
+        setIsEdit(false);
+        setPayload(defautPayload);
+    };
+
     const handleSelectAll = (e) => {
-        setIsCheckAll(!isCheckAll); 
+        setIsCheckAll(!isCheckAll);
         setIsCheck(data?.map((item) => item._id));
         if (isCheckAll) {
             setIsCheck([]);
@@ -123,15 +129,11 @@ export default function CategoryTable() {
     };
 
     const handleCancelModal = () => {
-        setIsModalOpen(false);
-        setIsEdit(false);
-        setPayload(defautPayload);
+        setDefaultState()
     };
 
     const handleSubmitModal = async () => {
         const { _id, selectedFiles, ...data } = payload;
-        console.log({data})
-
         const handleUpdateImageCategory = async (_id) => {
             const uploaders = selectedFiles?.map((file) => {
                 const formData = new FormData();
@@ -169,9 +171,10 @@ export default function CategoryTable() {
             }
         }
 
-        setIsModalOpen(false);
-        setIsEdit(false);
-        setPayload(defautPayload);
+        setDefaultState()
+
+        //trigger stop loading
+        return true;
     };
 
     const handleDeleteSelected = async () => {

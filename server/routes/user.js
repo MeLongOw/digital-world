@@ -14,7 +14,7 @@ router.put("/resetpassword", ctrls.resetPassword);
 router.put("/current", verifyAccessToken, ctrls.updateUser);
 router.put("/address", verifyAccessToken, ctrls.updateUserAddress);
 router.put("/updatecart", verifyAccessToken, ctrls.updateCart);
-router.put("/removeformcart", verifyAccessToken, ctrls.RemoveFormCart);
+router.put("/removeformcart", verifyAccessToken, ctrls.removeFormCart);
 router.put("/addwishlist", verifyAccessToken, ctrls.updateWishList);
 router.put("/removewishlist", verifyAccessToken, ctrls.removeWishList);
 

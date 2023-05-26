@@ -26,10 +26,10 @@ export default function BrandTable() {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isEdit, setIsEdit] = useState(false);
     const [payload, setPayload] = useState(defautPayload);
-    const token = useSelector((state) => state.user.token);
-
     const [isCheckAll, setIsCheckAll] = useState(false);
     const [isCheck, setIsCheck] = useState([]);
+
+    const token = useSelector((state) => state.user.token);
 
     useEffect(() => {
         if (data?.length === isCheck?.length) {
@@ -38,6 +38,13 @@ export default function BrandTable() {
             setIsCheckAll(false);
         }
     }, [isCheck, data]);
+
+    const setDefaultState = () => {
+        setIsModalOpen(false);
+        setIsEdit(false);
+        setPayload(defautPayload);
+    };
+
     const handleSelectAll = (e) => {
         setIsCheckAll(!isCheckAll);
         setIsCheck(data.map((item) => item._id));
@@ -103,9 +110,7 @@ export default function BrandTable() {
     };
 
     const handleCancelModal = () => {
-        setIsModalOpen(false);
-        setIsEdit(false);
-        setPayload(defautPayload);
+        setDefaultState();
     };
 
     const handleDeleteSelected = async () => {
@@ -139,6 +144,7 @@ export default function BrandTable() {
         });
         return isSuccess;
     };
+
     const handleSubmitModal = async () => {
         const { _id, ...data } = payload;
         if (isEdit) {
@@ -160,9 +166,10 @@ export default function BrandTable() {
                 Swal.fire("error!", response.mes, "error");
             }
         }
-        setIsModalOpen(false);
-        setIsEdit(false);
-        setPayload(defautPayload);
+        setDefaultState();
+
+        //trigger stop loading
+        return true;
     };
 
     useEffect(() => {

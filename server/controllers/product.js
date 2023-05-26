@@ -14,7 +14,9 @@ const createProduct = asyncHandler(async (req, res) => {
 
 const getProduct = asyncHandler(async (req, res) => {
     const { slug } = req.params;
-    const product = await Product.findOne({ slug });
+    const product = await Product.findOne({ slug })
+        .populate("brand")
+        .populate("category");
     return res.status(200).json({
         success: product ? true : false,
         product: product ? product : "Not found product.",
@@ -66,7 +68,9 @@ const getProducts = asyncHandler(async (req, res) => {
     queryCommand.skip(skip).limit(limit);
 
     //Execute query
-    queryCommand.populate('category').populate('brand')
+    queryCommand
+        .populate("category")
+        .populate("brand")
         .exec()
         .then(async (response) => {
             const counts = await Product.find(
@@ -99,6 +103,7 @@ const updateProduct = asyncHandler(async (req, res) => {
 const deleteProduct = asyncHandler(async (req, res) => {
     const { pid } = req.params;
     const deleteProduct = await Product.findByIdAndDelete(pid);
+
     return res.status(200).json({
         success: deleteProduct ? true : false,
         deleteProduct: deleteProduct ? deleteProduct : "Can not delete product",
@@ -169,7 +174,7 @@ const ratings = asyncHandler(async (req, res) => {
 const uploadImagesProduct = asyncHandler(async (req, res) => {
     const { pid } = req.params;
     if (!req.files) throw new Error("Missing input(s)");
-    console.log(req.files)
+    console.log(req.files);
     const response = await Product.findByIdAndUpdate(
         pid,
         {
