@@ -37,8 +37,8 @@ const Cart = () => {
         }
     };
 
-    const handleUpdateCart = async (pid, quantity) => {
-        const response = await apiUpdateCart(token, { pid, quantity });
+    const handleUpdateCart = async (pid, quantity, variant) => {
+        const response = await apiUpdateCart(token, { pid, quantity, variant });
         if (response?.success) {
             fetchCurrent();
         }
@@ -75,8 +75,16 @@ const Cart = () => {
                                     capitalize(item.product?.title)}
                             </Link>
                             <span className="text-xs">
-                                {item.product.color &&
-                                    capitalize(item.product.color)}
+                                {item?.variant?.map((el, index) => {
+                                    return (
+                                        <span key={index}>
+                                            {index !== 0 && (
+                                                <span className="p-1">/</span>
+                                            )}
+                                            <span>{el?.variant}</span>
+                                        </span>
+                                    );
+                                })}
                             </span>
                             <span
                                 className="text-main hover:cursor-pointer mt-2 text-sm"
@@ -95,7 +103,8 @@ const Cart = () => {
                                 handleUpdateCart={(quantity) => {
                                     handleUpdateCart(
                                         item.product._id,
-                                        quantity
+                                        quantity,
+                                        item.variant
                                     );
                                 }}
                             />

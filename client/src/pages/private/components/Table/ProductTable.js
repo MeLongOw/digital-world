@@ -17,7 +17,7 @@ import RefreshButton from "../RefreshButton";
 import EditButton from "../EditButton";
 import Modal from "../Modal";
 import InputField from "../../../../components/InputField";
-import { formatMoney } from "../../../../utils/helpers";
+import { formatMoney, reducedArray } from "../../../../utils/helpers";
 
 import InputSelect from "../../../../components/InputSelect";
 import InputDynamic from "../../../../components/InputDynamic";
@@ -210,6 +210,8 @@ export default function ProductTable() {
     };
 
     const handleSubmitModal = async () => {
+        payload.variants = reducedArray(payload.variants);
+        console.log('variants after', payload.variants)
         const { _id, ...data } = payload;
         if (isEdit) {
             const response = await apiEditProduct(token, _id, data);

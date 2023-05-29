@@ -4,7 +4,15 @@ const cloudinary = require("cloudinary").v2;
 
 const createCategory = asyncHandler(async (req, res) => {
     console.log(req.body);
-    const response = await ProductCategory.create(req.body);
+    const { brand, title } = req.body;
+    if (!title) throw new Error("Missing field title");
+    if (!brand) throw new Error("Missing field brand");
+
+    const response = await ProductCategory.create({
+        ...req.body,
+        image: req.file.path,
+    });
+
     return res.status(200).json({
         success: response ? true : false,
         createdProdCategory: response ? response : "Can not create category",
@@ -115,17 +123,22 @@ const getCategories = asyncHandler(async (req, res) => {
 const uploadImageCategory = asyncHandler(async (req, res) => {
     const { pcid } = req.params;
     if (!req.file) throw new Error("Missing input(s)");
-    console.log(req.file.filename);
-    const response = await ProductCategory.findByIdAndUpdate(
-        pcid,
-        {
-            image: req.file.path,
-        },
-        { new: true }
-    ).populate("brand");
+
+    const response = await ProductCategory.findByIdAndUpdate(pcid, {
+        image: req.file.path,
+    }).populate("brand");
+
+    await cloudinary.uploader.destroy(
+        response.image.split("/").slice(-2).join("/").split(".")[0]
+    );
+
+    if (response) updatedProdCategory = await ProductCategory.findById(pcid);
+    
     return res.status(200).json({
         status: response ? true : false,
-        updatedProduct: response ? response : "Can not upload image",
+        updatedProdCategory: updatedProdCategory
+            ? updatedProdCategory
+            : "Can not upload image",
     });
 });
 

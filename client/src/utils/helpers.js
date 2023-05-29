@@ -86,3 +86,29 @@ export const validate = (payload = {}, setInvalidFields) => {
     }
     return invalidCount;
 };
+
+// input
+// [
+//     { label: "1", variants: [234234] },
+//     { label: "2", variants: [234234123123] },
+//     { label: "1", varian ts: [23423424234] },
+//     { label: "2", variants: [23423412312323424] }
+// ];
+//output
+// [
+//     { label: "1", variants: [234234, 23423424234] },
+//     { label: "2", variants: [234234123123, 23423412312323424] },
+// ];
+export const reducedArray = (arr) => {
+    const reducedArray = [
+        ...arr.reduce((map, obj) => {
+            if (map.has(obj.label)) {
+                map.get(obj.label).push(...obj.variants);
+            } else {
+                map.set(obj.label, obj.variants);
+            }
+            return map;
+        }, new Map()),
+    ].map(([label, variants]) => ({ label, variants }));
+    return reducedArray;
+};

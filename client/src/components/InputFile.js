@@ -7,9 +7,10 @@ const InputFile = ({
     value,
     setValue,
     invalidFields,
+    multiple = false,
     setInvalidFields = () => {},
 }) => {
-    const changeHandler = async (e) => {
+    const changeHandler = (e) => {
         const selectedFile = Array.from(e.target.files);
         setValue((prev) => ({ ...prev, [nameKey]: selectedFile }));
     };
@@ -23,6 +24,7 @@ const InputFile = ({
                 onChange={changeHandler}
                 onFocus={() => setInvalidFields([])}
                 value={value}
+                multiple={multiple}
             />
             {invalidFields?.some((field) => field.name === nameKey) && (
                 <small className="text-main italic">

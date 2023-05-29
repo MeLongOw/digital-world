@@ -40,8 +40,8 @@ const Cart = () => {
         }
     };
 
-    const handleUpdateCart = async (pid, quantity) => {
-        const response = await apiUpdateCart(token, { pid, quantity });
+    const handleUpdateCart = async (pid, quantity, variant) => {
+        const response = await apiUpdateCart(token, { pid, quantity, variant });
         if (response.success) {
             fetchCurrent();
         }
@@ -80,14 +80,23 @@ const Cart = () => {
                         <div className="pl-5 flex-1 flex flex-col justify-between">
                             <div className="flex justify-between mb-[10px]">
                                 <div className="flex flex-col">
-                                    <Link className="hover:text-main">
+                                    <Link className="hover:text-main mb-1">
                                         {item.product?.title &&
                                             capitalize(item.product?.title)}
                                     </Link>
-                                    <span>
-                                        32GB
-                                        {item.color &&
-                                            ` / ${capitalize(item.color)}`}
+                                    <span className="flex">
+                                        {item?.variant?.map((el, index) => {
+                                            return (
+                                                <span key={index}>
+                                                    {index !== 0 && (
+                                                        <span className="p-1">
+                                                            /
+                                                        </span>
+                                                    )}
+                                                    <span>{el?.variant}</span>
+                                                </span>
+                                            );
+                                        })}
                                     </span>
                                 </div>
                                 <div>
@@ -107,7 +116,8 @@ const Cart = () => {
                                         handleUpdateCart={(quantity) => {
                                             handleUpdateCart(
                                                 item.product._id,
-                                                quantity
+                                                quantity,
+                                                item.variant
                                             );
                                         }}
                                     />

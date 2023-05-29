@@ -15,7 +15,6 @@ const Products = () => {
     const [totalItem, setTotalItem] = useState(1);
     const [limitItem, setLimitItem] = useState(12);
 
-
     const FetchProducts = async (page, limit) => {
         const response = await apiGetProducts({
             sort: "-createdAt",
@@ -35,13 +34,13 @@ const Products = () => {
             if (param === "page") setCurrentPage(+value || 1);
             if (param === "limit") setLimitItem(+value || 12);
         }
-        window.scrollTo(0,0)
+        window.scrollTo(0, 0);
     }, [currentPage, limitItem, searchParams]);
 
-    useEffect(()=>{
-        window.scrollTo(0,0)
-    },[])
-    
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, []);
+
     return (
         <div>
             <div className="my-[15px] p-[10px] h-[108px] border flex items-center font-semibold text-sm text-gray-600">
@@ -56,18 +55,18 @@ const Products = () => {
                 </div>
                 <div className="flex-1 ">
                     <p className="mb-[10px]">Sort by</p>
-                    <SortBy/>
+                    <SortBy />
                 </div>
             </div>
             <div className="flex flex-wrap mx-[-10px] ">
                 {products?.map((data) => (
-                    <div className="w-1/4 mb-5">
+                    <div className="w-1/4 mb-5" key={data._id}>
                         <Product productData={data} />
                     </div>
                 ))}
             </div>
             <div className="my-10 flex justify-center">
-                <Pagination 
+                <Pagination
                     totalItem={totalItem}
                     currentPage={currentPage}
                     limitItem={limitItem}

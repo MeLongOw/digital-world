@@ -4,13 +4,18 @@
 
 @import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap");
 
-button.slick-arrow {
+.custom-slider button.slick-arrow {
     width: 80px;
     height: 80px;
     z-index: 10;
+    background: rgb(255, 0, 0, 0.06);
+}
+.custom-slider button.slick-arrow:hover {
+    
+    background: rgb(255, 0, 0, 0.09);
 }
 
-button.slick-arrow::before {
+.custom-slider button.slick-arrow::before {
     color: gray;
     display: flex;
     align-items: center;
@@ -20,21 +25,21 @@ button.slick-arrow::before {
     font-size: 30px;
 }
 
-.slick-arrow:hover:before {
+.custom-slider .slick-arrow:hover:before {
     color: red;
 }
 
-button.slick-prev {
-    left: 0;
+.custom-slider button.slick-prev {
+    left: 10px;
 }
-button.slick-next {
-    right: 0;
+.custom-slider button.slick-next {
+    right: 10px;
 }
-button.slick-next::before {
+.custom-slider button.slick-next::before {
     content: "\276F";
     /* https://www.toptal.com/designers/htmlarrows/symbols/ */
 }
-button.slick-prev::before {
+.custom-slider button.slick-prev::before {
     content: "\276E";
     /* https://www.toptal.com/designers/htmlarrows/symbols/ */
 }
@@ -58,11 +63,11 @@ html *::-webkit-scrollbar-track {
 /* How TO - Hide Arrows From Input Number */
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
+    -webkit-appearance: none;
+    margin: 0;
 }
 
 /* Firefox */
-input[type=number] {
-  -moz-appearance: textfield;
+input[type="number"] {
+    -moz-appearance: textfield;
 }

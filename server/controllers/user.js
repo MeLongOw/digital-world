@@ -1,4 +1,5 @@
 const User = require("../models/user");
+const Product = require("../models/product");
 
 const asyncHandler = require("express-async-handler");
 const {
@@ -9,8 +10,7 @@ const {
 const jwt = require("jsonwebtoken");
 const sendMail = require("../utils/sendMail");
 const crypto = require("crypto");
-const createToken = require("uniqid");
-const user = require("../models/user");
+const { arraysEqual } = require("../utils/helper");
 
 const register = asyncHandler(async (req, res) => {
     const { email, password, firstName, lastName, phone } = req.body;
@@ -277,43 +277,57 @@ const updateUserAddress = asyncHandler(async (req, res) => {
 
 const updateCart = asyncHandler(async (req, res) => {
     const { _id } = req.user;
-    const { pid, quantity, color } = req.body;
+    const { pid, quantity, variant } = req.body;
     if (!pid || !quantity) throw new Error("Missing input(s)");
+
+    let variantNoId;
+    if (!variant?.length) {
+        const product = await Product.findById(pid).select("variants");
+        const defautVariant = product.variants?.map(({ label, variants }) => ({
+            label,
+            variant: variants[0],
+        }));
+        variantNoId = defautVariant;
+    } else {
+        variantNoId = variant.map(({ label, variant }) => ({
+            label,
+            variant,
+        }));
+    }
+    console.log(variantNoId);
+
     const user = await User.findById(_id).select("cart").populate("cart");
-    const alreadyProductInCart = user?.cart?.find(
-        (item) => item.product.toString() === pid
-    );
-    if (alreadyProductInCart) {
-        if (alreadyProductInCart.color === color) {
-            const response = await User.updateOne(
-                { cart: { $elemMatch: alreadyProductInCart } },
-                { $set: { "cart.$.quantity": quantity } },
-                {
-                    new: true,
-                }
-            );
-            return res.status(200).json({
-                success: response ? true : false,
-                updatedUser: response ? response : "Something went wrong",
-            });
-        } else {
-            const response = await User.findByIdAndUpdate(
-                _id,
-                {
-                    $push: { cart: { product: pid, quantity, color } },
-                },
-                { new: true }
-            );
-            return res.status(200).json({
-                success: response ? true : false,
-                updatedUser: response ? response : "Something went wrong",
-            });
-        }
+
+    const alreadyProductVariantInCart = user?.cart?.find((item) => {
+        return (
+            item.product.toString() === pid &&
+            arraysEqual(
+                variantNoId,
+                item.variant.map(({ label, variant }) => ({
+                    label,
+                    variant,
+                }))
+            )
+        );
+    });
+
+    if (alreadyProductVariantInCart) {
+        const response = await User.updateOne(
+            { cart: { $elemMatch: alreadyProductVariantInCart } },
+            { $set: { "cart.$.quantity": quantity } },
+            {
+                new: true,
+            }
+        );
+        return res.status(200).json({
+            success: response ? true : false,
+            updatedUser: response ? response : "Something went wrong",
+        });
     } else {
         const response = await User.findByIdAndUpdate(
             _id,
             {
-                $push: { cart: { product: pid, quantity, color } },
+                $push: { cart: { product: pid, quantity, variant: variantNoId } },
             },
             { new: true }
         );

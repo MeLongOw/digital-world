@@ -3,6 +3,8 @@ import icons from "../utils/icons";
 
 const { IoMdAddCircleOutline, IoMdRemoveCircleOutline } = icons;
 
+const defaultValue = [{ label: "", variants: [""] }];
+
 const InputVariants = ({
     value = [],
     setValue,
@@ -13,13 +15,16 @@ const InputVariants = ({
     setInvalidFields = () => {},
 }) => {
     const [valueCopy, setValueCopy] = useState(
-        JSON.parse(JSON.stringify(value))
+        JSON.parse(JSON.stringify(value)).length > 0
+            ? JSON.parse(JSON.stringify(value))
+            : defaultValue
     );
-    console.log({ valueCopy });
     const [fieldCount, setFieldCount] = useState(
         valueCopy.length > 0 ? valueCopy.length : 1
     );
+
     const [field, setField] = useState([]);
+
 
     const handleAddField = (index) => {
         valueCopy.splice(index + 1, 0, { label: "", variants: [""] });
@@ -66,7 +71,7 @@ const InputVariants = ({
                         <input
                             className="px-4 py-2 flex-1 rounded-md border w-full text-sm placeholder:text-gray-300 mr-4"
                             placeholder={`Label`}
-                            value={valueCopy[indexField]?.label ?? ''}
+                            value={valueCopy[indexField]?.label ?? ""}
                             onChange={(e) => {
                                 setValue((prev) => {
                                     valueCopy[indexField].label =

@@ -17,7 +17,7 @@ const Product = ({ productData, isNew }) => {
     const dispatch = useDispatch()
     const token = useSelector((state) => state.user.token);
     const currentUser = useSelector((state) => state.user.current);
-    // quantityInCart = currentUser?.cart.find((item)=>item._id===productData.)
+   
 
     const handleAddWishList = async (wid) => {
         const response = await apiAddWishList(token, { wid });
@@ -31,7 +31,6 @@ const Product = ({ productData, isNew }) => {
         const response = await apiAddToCart(token, {
             pid,
             quantity: 1,
-            color: productData?.color,
         });
         if(response?.success){
             dispatch(getCurrent(token))

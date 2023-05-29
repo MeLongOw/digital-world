@@ -6,6 +6,7 @@ import { apiAddToCart, apiGetProduct } from "../../apis";
 import { Button } from "../../components";
 import DetailDescription from "../../components/DetailDescription";
 import InputNumberProduct from "../../components/InputNumberProduct";
+import SelectVariant from "../../components/SelectVariant";
 import { getCurrent } from "../../store/user/asyncThunk";
 import { formatMoney, renderStarFromNumber } from "../../utils/helpers";
 import icons from "../../utils/icons";
@@ -24,7 +25,7 @@ const settings = {
     dots: false,
     infinite: false,
     speed: 300,
-    slidesToShow: 2,
+    slidesToShow: 3,
     slidesToScroll: 1,
 };
 
@@ -59,9 +60,10 @@ const serviceBox = [
 const DetailProduct = () => {
     const { slug } = useParams();
     const [product, setProduct] = useState(null);
-    console.log(product);
     const [quantity, setQuantity] = useState(1);
+    const [payload, setPayload] = useState([{ label: "", variant: "" }]);
     const [imageActive, setImageActive] = useState("");
+
     const dispatch = useDispatch();
     const token = useSelector((state) => state.user.token);
 
@@ -77,12 +79,16 @@ const DetailProduct = () => {
         const response = await apiAddToCart(token, {
             pid,
             quantity: quantity,
-            // color: productData?.color,
+            variant: payload,
         });
         if (response?.success) {
             dispatch(getCurrent(token));
         }
         return response?.success;
+    };
+
+    const handleChangeImage = (link) => {
+        setImageActive(link);
     };
 
     useEffect(() => {
@@ -94,7 +100,7 @@ const DetailProduct = () => {
             {product && (
                 <>
                     <div className="flex mb-[50px]">
-                        <div className=" flex-2">
+                        <div className="w-2/5">
                             <div className=" border mb-5">
                                 <img
                                     className="w-[458px] h-[458px] object-contain "
@@ -103,26 +109,30 @@ const DetailProduct = () => {
                                 />
                             </div>
 
-                            <div className="w-full flex">
-                                <div className="w-full flex-grow-0">
-                                    {/* <Slider {...settings}>
+                            <div className="w-full flex flex-col">
+                                <div className="flex-1 mx-[-10px]">
+                                    <Slider
+                                        className="custom-slider"
+                                        {...settings}
+                                    >
                                         {product?.images.map((link, index) => (
-                                            <div
-                                                key={index}
-                                                className="w-[143px] h-[143px]"
-                                            >
+                                            <div className="px-[10px]" key={index}>
                                                 <img
-                                                    className="w-[143px] h-[143px] object-contain border"
+                                                    className="w-full aspect-square object-contain border hover:cursor-pointer outline-none"
                                                     src={link}
                                                     alt=""
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        handleChangeImage(link);
+                                                    }}
                                                 />
                                             </div>
                                         ))}
-                                    </Slider> */}
+                                    </Slider>
                                 </div>
                             </div>
                         </div>
-                        <div className="flex flex-3">
+                        <div className="flex w-3/5">
                             <div className="flex-2 pl-[45px] pr-2">
                                 <span className="text-[30px] font-semibold">
                                     {formatMoney(product?.price)} VNĐ
@@ -150,28 +160,13 @@ const DetailProduct = () => {
                                         )
                                     )}
                                 </ul>
-                                {product?.variants?.map((variant) => (
-                                    <div
-                                        className="flex items-center mb-3"
-                                        key={variant.label}
-                                    >
-                                        <span className="w-[90px] flex-shrink-0">
-                                            {variant?.label}
-                                        </span>
-                                        <div className="flex gap-2 flex-wrap">
-                                            {variant?.variants?.map(
-                                                (variant) => (
-                                                    <div
-                                                        className="border text-center px-4 py-3 flex items-center text-sm uppercase"
-                                                        key={variant}
-                                                    >
-                                                        {variant}
-                                                    </div>
-                                                )
-                                            )}
-                                        </div>
-                                    </div>
-                                ))}
+
+                                <SelectVariant
+                                    variants={product?.variants}
+                                    payload={payload}
+                                    setPayload={setPayload}
+                                />
+
                                 <div className="flex items-center mb-3">
                                     <span className="w-[90px]">Quantity</span>
                                     <InputNumberProduct

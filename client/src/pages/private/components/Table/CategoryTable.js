@@ -25,6 +25,7 @@ const defautPayload = {
     title: "",
     brand: [],
     selectedFiles: [],
+    variants: [{ label: "", variants: [""] }],
 };
 
 export default function CategoryTable() {
@@ -129,7 +130,7 @@ export default function CategoryTable() {
     };
 
     const handleCancelModal = () => {
-        setDefaultState()
+        setDefaultState();
     };
 
     const handleSubmitModal = async () => {
@@ -171,7 +172,7 @@ export default function CategoryTable() {
             }
         }
 
-        setDefaultState()
+        setDefaultState();
 
         //trigger stop loading
         return true;
