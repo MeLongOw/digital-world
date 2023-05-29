@@ -96,8 +96,6 @@ const createBrand = async (brand) => {
 
 const insertBrand = asyncHandler(async (req, res) => {
     const promises = [];
-
-    console.log(brandData);
     for (let brand of brandData) promises.push(createBrand(brand));
     await Promise.all(promises);
 

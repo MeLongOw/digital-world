@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { apiRemoveFromCart, apiUpdateCart } from "../../apis";
 import { Button } from "../../components";
 import { capitalize, formatMoney } from "../../utils/helpers";
+import emptyCart from "../../assets/empty-cart.png";
 import path from "../../utils/path";
 import icons from "../../utils/icons";
 import InputNumberCart from "../../components/InputNumberCart";
@@ -58,63 +59,71 @@ const Cart = () => {
                     <div className="flex-3 text-end">TOTAL</div>
                 </div>
             </div>
-            {currentUser?.cart?.map((item) => (
-                <div className="border p-5 mt-[-1px] flex" key={item._id}>
-                    <div className="flex flex-6 items-center">
-                        <img
-                            src={item.product.thumb}
-                            alt=""
-                            className="h-[214px] w-[214px] object-contain pr-5"
-                        />
-                        <div className="p-5 flex flex-col ">
-                            <Link
-                                to={`/${path.DETAIL_PRODUCT}/${item.product.slug}`}
-                                className="font-base capitalize hover:text-main"
-                            >
-                                {item.product?.title &&
-                                    capitalize(item.product?.title)}
-                            </Link>
-                            <span className="text-xs">
-                                {item?.variant?.map((el, index) => {
-                                    return (
-                                        <span key={index}>
-                                            {index !== 0 && (
-                                                <span className="p-1">/</span>
-                                            )}
-                                            <span>{el?.variant}</span>
-                                        </span>
-                                    );
-                                })}
-                            </span>
-                            <span
-                                className="text-main hover:cursor-pointer mt-2 text-sm"
-                                onClick={() => {
-                                    handleRemoveFromCart(item._id);
-                                }}
-                            >
-                                remove
-                            </span>
-                        </div>
-                    </div>
-                    <div className="flex flex-4 items-center">
-                        <div className="flex-1 flex justify-center">
-                            <InputNumberCart
-                                number={item.quantity}
-                                handleUpdateCart={(quantity) => {
-                                    handleUpdateCart(
-                                        item.product._id,
-                                        quantity,
-                                        item.variant
-                                    );
-                                }}
+            {currentUser?.cart?.length ? (
+                currentUser?.cart?.map((item) => (
+                    <div className="border p-5 mt-[-1px] flex" key={item._id}>
+                        <div className="flex flex-6 items-center">
+                            <img
+                                src={item.product.thumb}
+                                alt=""
+                                className="h-[214px] w-[214px] object-contain pr-5"
                             />
+                            <div className="p-5 flex flex-col ">
+                                <Link
+                                    to={`/${path.DETAIL_PRODUCT}/${item.product.slug}`}
+                                    className="font-base capitalize hover:text-main"
+                                >
+                                    {item.product?.title &&
+                                        capitalize(item.product?.title)}
+                                </Link>
+                                <span className="text-xs">
+                                    {item?.variant?.map((el, index) => {
+                                        return (
+                                            <span key={index}>
+                                                {index !== 0 && (
+                                                    <span className="p-1">
+                                                        /
+                                                    </span>
+                                                )}
+                                                <span>{el?.variant}</span>
+                                            </span>
+                                        );
+                                    })}
+                                </span>
+                                <span
+                                    className="text-main hover:cursor-pointer mt-2 text-sm"
+                                    onClick={() => {
+                                        handleRemoveFromCart(item._id);
+                                    }}
+                                >
+                                    remove
+                                </span>
+                            </div>
                         </div>
-                        <div className="flex-3 flex justify-end text-lg text-gray-800 font-semibold">
-                            {formatMoney(item.product?.price)} VND
+                        <div className="flex flex-4 items-center">
+                            <div className="flex-1 flex justify-center">
+                                <InputNumberCart
+                                    number={item.quantity}
+                                    handleUpdateCart={(quantity) => {
+                                        handleUpdateCart(
+                                            item.product._id,
+                                            quantity,
+                                            item.variant
+                                        );
+                                    }}
+                                />
+                            </div>
+                            <div className="flex-3 flex justify-end text-lg text-gray-800 font-semibold">
+                                {formatMoney(item.product?.price)} VND
+                            </div>
                         </div>
                     </div>
+                ))
+            ) : (
+                <div className="border p-5 mt-[-1px] flex justify-center items-center">
+                    <img className="w-[300px] object-contain"  alt="emptycart" src={emptyCart}/>
                 </div>
-            ))}
+            )}
 
             <div className="border p-5 mb-10 mt-[-1px] flex flex-col items-end">
                 <div className="flex items-center w-[40%] mb-[10px]">

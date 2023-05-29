@@ -3,7 +3,7 @@ const asyncHandler = require("express-async-handler");
 const cloudinary = require("cloudinary").v2;
 
 const createCategory = asyncHandler(async (req, res) => {
-    console.log(req.body);
+  
     const { brand, title } = req.body;
     if (!title) throw new Error("Missing field title");
     if (!brand) throw new Error("Missing field brand");
@@ -162,7 +162,6 @@ const deleteCategory = asyncHandler(async (req, res) => {
     const { pcid } = req.params;
     const response = await ProductCategory.findByIdAndDelete(pcid);
 
-    console.log(response.image);
     if (response) {
         //https://res.cloudinary.com/djlyk1zqk/image/upload/v1685062871/storage/yx3g7hy76yzsoegstfsr.jpg
         await cloudinary.uploader.destroy(

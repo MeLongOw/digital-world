@@ -294,7 +294,7 @@ const updateCart = asyncHandler(async (req, res) => {
             variant,
         }));
     }
-    console.log(variantNoId);
+
 
     const user = await User.findById(_id).select("cart").populate("cart");
 

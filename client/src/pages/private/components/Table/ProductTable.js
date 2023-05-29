@@ -48,7 +48,7 @@ export default function ProductTable() {
     const [payload, setPayload] = useState(defautPayload);
     const [brands, setBrands] = useState([]);
     const [categories, setCategories] = useState([]);
-    console.log({ variants: payload.variants });
+
     const token = useSelector((state) => state.user.token);
 
     const [isCheckAll, setIsCheckAll] = useState(false);
@@ -211,7 +211,6 @@ export default function ProductTable() {
 
     const handleSubmitModal = async () => {
         payload.variants = reducedArray(payload.variants);
-        console.log('variants after', payload.variants)
         const { _id, ...data } = payload;
         if (isEdit) {
             const response = await apiEditProduct(token, _id, data);

@@ -1,5 +1,5 @@
 import React, { memo, useEffect, useLayoutEffect, useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useLocation, useSearchParams } from "react-router-dom";
 import { apiGetProducts } from "../../apis";
 import { Product } from "../../components";
 import Pagination from "../../components/Pagination";
@@ -9,17 +9,25 @@ import icons from "../../utils/icons";
 const { RiArrowDropDownLine } = icons;
 
 const Products = () => {
+    const { pathname } = useLocation();
     const [searchParams] = useSearchParams();
-    const [products, setProducts] = useState();
+    const [products, setProducts] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
-    const [totalItem, setTotalItem] = useState(1);
+    const [totalItem, setTotalItem] = useState(0);
     const [limitItem, setLimitItem] = useState(12);
 
-    const FetchProducts = async (page, limit) => {
+    const fetchProducts = async (page, limit) => {
+        const arrLocation = pathname.split("/");
+        let category;
+        if (arrLocation[1] === "products") {
+            category = arrLocation[2];
+        }
+
         const response = await apiGetProducts({
             sort: "-createdAt",
             limit,
             page,
+            category,
         });
         if (response.success) {
             setProducts(response.products);
@@ -27,19 +35,22 @@ const Products = () => {
         }
     };
 
-    useLayoutEffect(() => {
-        FetchProducts(currentPage, limitItem);
+    useEffect(() => {
+        window.scrollTo(0, 0);
         for (const entry of searchParams.entries()) {
             const [param, value] = entry;
             if (param === "page") setCurrentPage(+value || 1);
             if (param === "limit") setLimitItem(+value || 12);
         }
-        window.scrollTo(0, 0);
-    }, [currentPage, limitItem, searchParams]);
+    }, [searchParams]);
 
     useEffect(() => {
-        window.scrollTo(0, 0);
-    }, []);
+        fetchProducts(currentPage, limitItem);
+    }, [currentPage, limitItem]);
+
+    useEffect(() => {
+        if (!totalItem) setCurrentPage(1);
+    }, [totalItem]);
 
     return (
         <div>
@@ -70,7 +81,6 @@ const Products = () => {
                     totalItem={totalItem}
                     currentPage={currentPage}
                     limitItem={limitItem}
-                    limitPage={5}
                     onChange={setCurrentPage}
                 />
             </div>

@@ -24,7 +24,7 @@ const getProduct = asyncHandler(async (req, res) => {
 });
 
 const getProducts = asyncHandler(async (req, res) => {
-    const queries = { ...req.query };
+    const { brand, category, ...queries } = { ...req.query };
 
     const excludeFields = ["limit", "sort", "page", "fields"];
     excludeFields.forEach((el) => delete queries[el]);
@@ -40,12 +40,6 @@ const getProducts = asyncHandler(async (req, res) => {
     //Filtering
     if (queries?.title)
         formattedQueries.title = { $regex: queries.title, $options: "i" };
-    if (queries?.brand)
-        formattedQueries.brand = { $regex: queries.brand, $options: "i" };
-    if (queries?.color)
-        formattedQueries.color = { $regex: queries.color, $options: "i" };
-    if (queries?.category)
-        formattedQueries.category = { $regex: queries.category, $options: "i" };
 
     let queryCommand = Product.find(formattedQueries);
 
@@ -68,6 +62,29 @@ const getProducts = asyncHandler(async (req, res) => {
     queryCommand.skip(skip).limit(limit);
 
     //Execute query
+    if (category) {
+        const regex = new RegExp(category, "i");
+        queryCommand = await Product.find(formattedQueries).populate({
+            path: "category",
+            match: { title: regex },
+        });
+        let counts = 0;
+        const filteredProducts = queryCommand.filter((product) => {
+            if (product.category !== null) {
+                counts++;
+                return true;
+            }
+        });
+        // const counts = filteredProducts.countDocuments();
+        return res.status(200).json({
+            success: filteredProducts ? true : false,
+            counts,
+            products: filteredProducts
+                ? filteredProducts
+                : "Can not get products.",
+        });
+    }
+
     queryCommand
         .populate("category")
         .populate("brand")
@@ -174,7 +191,6 @@ const ratings = asyncHandler(async (req, res) => {
 const uploadImagesProduct = asyncHandler(async (req, res) => {
     const { pid } = req.params;
     if (!req.files) throw new Error("Missing input(s)");
-    console.log(req.files);
     const response = await Product.findByIdAndUpdate(
         pid,
         {

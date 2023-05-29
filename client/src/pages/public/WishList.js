@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { apiGetCurrent, apiRemoveWishList } from "../../apis";
+import noDataImage from "../../assets/no-wishlist.png";
+import { apiRemoveWishList } from "../../apis";
 import { formatMoney } from "../../utils/helpers";
 import icons from "../../utils/icons";
 import path from "../../utils/path";
@@ -76,8 +77,8 @@ const WishList = () => {
                     </div>
                 ))
             ) : (
-                <div className="flex gap-5 border border-t-0 p-5 font-sm items-center text-gray-700">
-                    <span></span>
+                <div className="flex justify-center items-center gap-5 border border-t-0 p-5 font-sm items-center text-gray-700">
+                    <img className="w-[200px] object-contain" alt="no-data" src={noDataImage} />
                 </div>
             )}
         </div>

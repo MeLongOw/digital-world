@@ -40,6 +40,7 @@ function App() {
     return (
         <div className="min-h-screen font-main">
             <Routes>
+                {/* CLIENT */}
                 <Route path={path.PUBLIC} element={<Public />}>
                     <Route path={path.HOME} element={<Home />} />
                     <Route path={path.FAQs} element={<FAQs />} />
@@ -64,6 +65,8 @@ function App() {
                 <Route path={path.RESET_PASSWORD} element={<ResetPassword />} />
                 <Route path={path.AUTH_REGISTER} element={<AuthRegister />} />
                 {!isLoggedIn && <Route path={path.LOGIN} element={<Login />} />}
+
+                {/* ADMIN */}
                 <Route path={path.ADMIN} element={<Admin />} end>
                     <Route path={path.DASHBOARD} element={<Dashboard />} />
                     <Route
