@@ -75,7 +75,27 @@ const getProducts = asyncHandler(async (req, res) => {
                 return true;
             }
         });
-        // const counts = filteredProducts.countDocuments();
+        return res.status(200).json({
+            success: filteredProducts ? true : false,
+            counts,
+            products: filteredProducts
+                ? filteredProducts
+                : "Can not get products.",
+        });
+    }
+    if (brand) {
+        const regex = new RegExp(brand, "i");
+        queryCommand = await Product.find(formattedQueries).populate({
+            path: "brand",
+            match: { title: regex },
+        });
+        let counts = 0;
+        const filteredProducts = queryCommand.filter((product) => {
+            if (product.brand !== null) {
+                counts++;
+                return true;
+            }
+        });
         return res.status(200).json({
             success: filteredProducts ? true : false,
             counts,

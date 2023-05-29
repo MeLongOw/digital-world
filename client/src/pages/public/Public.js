@@ -4,9 +4,12 @@ import { Outlet, useLocation } from "react-router-dom";
 import { Header, Navigation, TopHeader, Footer } from "../../components";
 import BreadCrumb from "../../components/BreadCrumb";
 import Cart from "../../components/Cart";
+import MoveTopButton from "../../components/MoveTopButton";
 import { app } from "../../firebase/config";
 import { appSlice } from "../../store/app/appSlice";
 import { getCurrent } from "../../store/user/asyncThunk";
+
+
 const Public = () => {
     const { pathname } = useLocation();
     const { isShowCart, isIconCardClick } = useSelector((state) => state.app);
@@ -17,7 +20,7 @@ const Public = () => {
         dispatch(appSlice.actions.toggleCart());
     };
     useEffect(() => {
-        dispatch(getCurrent(token))
+        dispatch(getCurrent(token));
         return () => {
             dispatch(appSlice.actions.setisIconCartClickFalse());
         };
@@ -44,6 +47,7 @@ const Public = () => {
                     </div>
                 </div>
                 <Footer />
+                <MoveTopButton/>
             </div>
             {isShowCart && (
                 <>
