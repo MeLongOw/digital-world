@@ -1,5 +1,5 @@
 import React from "react";
-import Select from "react-select";
+import CustomSelect from "./CustomSelect";
 
 const InputSelect = ({
     isMulti = true,
@@ -15,7 +15,7 @@ const InputSelect = ({
     return (
         <div className="w-full text-sm text-gray-700 mb-2">
             {title && <label className='flex mb-[10px]'>{title}</label>}
-            <Select
+            <CustomSelect
                 defaultValue={defaultValue}
                 isMulti={isMulti}
                 name="colors"

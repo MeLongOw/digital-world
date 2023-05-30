@@ -2,11 +2,10 @@ import React, { memo, useEffect, useLayoutEffect, useState } from "react";
 import { useLocation, useSearchParams } from "react-router-dom";
 import { apiGetProducts } from "../../apis";
 import { Product } from "../../components";
+import Filter from "../../components/Filter";
 import Pagination from "../../components/Pagination";
 import SortBy from "../../components/SortBy";
-import icons from "../../utils/icons";
 
-const { RiArrowDropDownLine } = icons;
 
 const Products = () => {
     const { pathname } = useLocation();
@@ -15,8 +14,10 @@ const Products = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [totalItem, setTotalItem] = useState(0);
     const [limitItem, setLimitItem] = useState(12);
+    const [sort, setSort] = useState("-createdAt");
+    console.log(sort);
 
-    const fetchProducts = async (page, limit) => {
+    const fetchProducts = async (page, limit, pathname, sort) => {
         const arrLocation = pathname.split("/");
         let category;
         if (arrLocation[1] === "products") {
@@ -24,7 +25,7 @@ const Products = () => {
         }
 
         const response = await apiGetProducts({
-            sort: "-createdAt",
+            sort,
             limit,
             page,
             category,
@@ -36,7 +37,7 @@ const Products = () => {
     };
 
     useEffect(() => {
-        window.scrollTo(0, 0);
+        window.scrollTo({top: 0, left: 0, behavior: 'smooth'});
         for (const entry of searchParams.entries()) {
             const [param, value] = entry;
             if (param === "page") setCurrentPage(+value || 1);
@@ -45,8 +46,8 @@ const Products = () => {
     }, [searchParams]);
 
     useEffect(() => {
-        fetchProducts(currentPage, limitItem);
-    }, [currentPage, limitItem]);
+        fetchProducts(currentPage, limitItem, pathname, sort);
+    }, [currentPage, limitItem, pathname, sort]);
 
     useEffect(() => {
         if (!totalItem) setCurrentPage(1);
@@ -55,20 +56,16 @@ const Products = () => {
     return (
         <div>
             <div className="my-[15px] p-[10px] h-[108px] border flex items-center font-semibold text-sm text-gray-600">
-                <div className="flex-4 flex flex-col ">
+                <div className="flex-4 flex flex-col">
                     <p className="mb-[10px]">Fillter by</p>
-                    <div className="pl-5 pr-3 flex border h-[45px] flex-grow-0 mr-[5px] items-center justify-between">
-                        <span>Price</span>
-                        <span>
-                            <RiArrowDropDownLine />
-                        </span>
-                    </div>
+                    <Filter/>
                 </div>
                 <div className="flex-1 ">
                     <p className="mb-[10px]">Sort by</p>
-                    <SortBy />
+                    <SortBy setValue={setSort} />
                 </div>
             </div>
+
             <div className="flex flex-wrap mx-[-10px] ">
                 {products?.map((data) => (
                     <div className="w-1/4 mb-5" key={data._id}>
@@ -76,6 +73,7 @@ const Products = () => {
                     </div>
                 ))}
             </div>
+
             <div className="my-10 flex justify-center">
                 <Pagination
                     totalItem={totalItem}

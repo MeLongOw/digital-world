@@ -298,6 +298,8 @@ export default function BrandTable() {
                 </div>
             </div>
 
+
+
             {/* modal */}
             <Modal
                 isModalOpen={isModalOpen}

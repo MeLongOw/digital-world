@@ -22,6 +22,8 @@ import { formatMoney, reducedArray } from "../../../../utils/helpers";
 import InputSelect from "../../../../components/InputSelect";
 import InputDynamic from "../../../../components/InputDynamic";
 import InputFieldValue from "../../../../components/InputVariants";
+import { useSearchParams } from "react-router-dom";
+import Pagination from "../Pagination";
 
 const defautPayload = {
     _id: "",
@@ -37,7 +39,6 @@ const defautPayload = {
 const selectSearchOptions = [
     { value: "title", label: "Title" },
     { value: "brand", label: "Brand" },
-    { value: "color", label: "Color" },
     { value: "category", label: "Category" },
 ];
 
@@ -50,6 +51,19 @@ export default function ProductTable() {
     const [categories, setCategories] = useState([]);
 
     const token = useSelector((state) => state.user.token);
+
+    //PAGINATION
+    const [searchParams] = useSearchParams();
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalItem, setTotalItem] = useState(0);
+    const [limitItem, setLimitItem] = useState(20);
+    useEffect(() => {
+        for (const entry of searchParams.entries()) {
+            const [param, value] = entry;
+            if (param === "page") setCurrentPage(+value || 1);
+            if (param === "limit") setLimitItem(+value || 20);
+        }
+    }, [searchParams]);
 
     const [isCheckAll, setIsCheckAll] = useState(false);
     const [isCheck, setIsCheck] = useState([]);
@@ -88,11 +102,14 @@ export default function ProductTable() {
         const response = await apiGetProducts({
             sort: "-createdAt",
             limit: 10,
+            page: currentPage,
             ...query,
         });
         if (response?.success) {
             setData(response.products);
+            setTotalItem(response.counts);
         }
+
         return response?.success;
     };
 
@@ -115,7 +132,7 @@ export default function ProductTable() {
                 value: item._id,
                 label: item.title,
             }));
-            setCategories(arrProdCategories);
+            setCategories(arrProdCategories);        
         }
         return response?.success;
     };
@@ -238,10 +255,13 @@ export default function ProductTable() {
     };
 
     useEffect(() => {
-        fetchProducts();
         fetchBrands();
         fetchCategories();
     }, []);
+
+    useEffect(() => {
+        fetchProducts();
+    }, [currentPage, limitItem]);
 
     return (
         <div className="relative">
@@ -468,6 +488,16 @@ export default function ProductTable() {
                         </tbody>
                     </table>
                 </div>
+            </div>
+
+            {/* PAGINATION */}
+            <div className="my-10 flex justify-center">
+                <Pagination
+                    totalItem={totalItem}
+                    currentPage={currentPage}
+                    limitItem={limitItem}
+                    onChange={setCurrentPage}
+                />
             </div>
 
             {/* modal */}

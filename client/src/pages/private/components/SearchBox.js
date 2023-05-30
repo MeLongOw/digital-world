@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import icons from "../../../utils/icons";
 import Select from "react-select";
+import CustomSelect from "../../../components/CustomSelect";
 
 const { AiOutlineSearch, AiOutlineLoading } = icons;
 
@@ -24,7 +25,7 @@ const SearchBox = ({ fetch = () => {}, isOption = true, options = [] }) => {
     }, [value]);
     return (
         <div className="flex">
-            <div className="border flex bg-white items-center rounded-md px-3">
+            <div className="border flex bg-white items-center rounded-md px-3 mr-3">
                 <input
                     placeholder="Search by title..."
                     className="outline-none"
@@ -43,8 +44,8 @@ const SearchBox = ({ fetch = () => {}, isOption = true, options = [] }) => {
                 </div>
             </div>
             {isOption && (
-                <Select
-                    className="border-none"
+                <CustomSelect
+                    className="border-none mr-4"
                     options={options}
                     onChange={setField}
                     value={field}

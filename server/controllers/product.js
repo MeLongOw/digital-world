@@ -1,4 +1,6 @@
 const Product = require("../models/product");
+const ProductCategory = require("../models/productCategory");
+const Brand = require("../models/brand");
 const asyncHandler = require("express-async-handler");
 const slugify = require("slugify");
 
@@ -54,75 +56,82 @@ const getProducts = asyncHandler(async (req, res) => {
         const fields = req.query.fields.split(",").join(" ");
         queryCommand.select(fields);
     }
-
     //Pagination
     const page = +req.query.page || 1;
     const limit = +req.query.limit || process.env.LIMIT_PRODUCTS;
     const skip = (page - 1) * limit;
-    queryCommand.skip(skip).limit(limit);
 
     //Execute query
     if (category) {
-        const regex = new RegExp(category, "i");
-        queryCommand = await Product.find(formattedQueries).populate({
-            path: "category",
-            match: { title: regex },
-        });
-        let counts = 0;
-        const filteredProducts = queryCommand.filter((product) => {
-            if (product.category !== null) {
-                counts++;
-                return true;
-            }
-        });
-        return res.status(200).json({
-            success: filteredProducts ? true : false,
-            counts,
-            products: filteredProducts
-                ? filteredProducts
-                : "Can not get products.",
-        });
-    }
-    if (brand) {
-        const regex = new RegExp(brand, "i");
-        queryCommand = await Product.find(formattedQueries).populate({
-            path: "brand",
-            match: { title: regex },
-        });
-        let counts = 0;
-        const filteredProducts = queryCommand.filter((product) => {
-            if (product.brand !== null) {
-                counts++;
-                return true;
-            }
-        });
-        return res.status(200).json({
-            success: filteredProducts ? true : false,
-            counts,
-            products: filteredProducts
-                ? filteredProducts
-                : "Can not get products.",
-        });
-    }
-
-    queryCommand
-        .populate("category")
-        .populate("brand")
-        .exec()
-        .then(async (response) => {
-            const counts = await Product.find(
-                formattedQueries
-            ).countDocuments();
-
-            return res.status(200).json({
-                success: response ? true : false,
-                counts,
-                products: response ? response : "Can not get products.",
+        ProductCategory.findOne({ title: { $regex: category, $options: "i" } })
+            .exec()
+            .then((category) => {
+                queryCommand.find({ category: category?._id })
+                    .skip(skip)
+                    .limit(limit)
+                    .populate("brand")
+                    .populate("category")
+                    .exec()
+                    .then(async (products) => { 
+                        const counts = await Product.find({
+                            category: category?._id,
+                        }).countDocuments();
+                        return res.status(200).json({
+                            success: products ? true : false,
+                            counts,
+                            products: products
+                                ? products
+                                : "Can not get products.",
+                        });
+                    });
             });
-        })
-        .catch((err) => {
-            return res.status(500).json({ success: false, err: err.message });
-        });
+    } else if (brand) {
+        Brand.findOne({ title: { $regex: brand, $options: "i" } })
+            .exec()
+            .then((brand) => {
+                queryCommand.find({ brand: brand?._id })
+                    .skip(skip)
+                    .limit(limit)
+                    .populate("brand")
+                    .populate("category")
+                    .exec()
+                    .then(async (products) => {
+                        const counts = await Product.find({
+                            brand: brand?._id,
+                        }).countDocuments();
+                        return res.status(200).json({
+                            success: products ? true : false,
+                            counts,
+                            products: products
+                                ? products
+                                : "Can not get products.",
+                        });
+                    });
+            });
+    } else {
+        queryCommand.skip(skip).limit(limit);
+
+        queryCommand
+            .populate("category")
+            .populate("brand")
+            .exec()
+            .then(async (response) => {
+                const counts = await Product.find(
+                    formattedQueries
+                ).countDocuments();
+
+                return res.status(200).json({
+                    success: response ? true : false,
+                    counts,
+                    products: response ? response : "Can not get products.",
+                });
+            })
+            .catch((err) => {
+                return res
+                    .status(500)
+                    .json({ success: false, err: err.message });
+            });
+    }
 });
 
 const updateProduct = asyncHandler(async (req, res) => {

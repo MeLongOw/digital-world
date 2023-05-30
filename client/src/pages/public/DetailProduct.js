@@ -116,7 +116,10 @@ const DetailProduct = () => {
                                         {...settings}
                                     >
                                         {product?.images.map((link, index) => (
-                                            <div className="px-[10px]" key={index}>
+                                            <div
+                                                className="px-[10px]"
+                                                key={index}
+                                            >
                                                 <img
                                                     className="w-full aspect-square object-contain border hover:cursor-pointer outline-none"
                                                     src={link}
@@ -209,7 +212,7 @@ const DetailProduct = () => {
                         </div>
                     </div>
                     <Link
-                        to={`/${path.HOME}`}
+                        to={`/${path.PRODUCTS}/${product?.category?.title}`}
                         className="flex justify-center items-center text-sm text-gray-700 uppercase hover:text-main mb-[50px]"
                     >
                         <IoIosArrowRoundBack size={20} />

@@ -61,7 +61,7 @@ const Home = () => {
                     New arrivals
                 </h3>
                 <div className="mt-4 mx-[-10px]">
-                    <CustomSlider products={newProducts} />
+                    <CustomSlider  products={newProducts} />
                 </div>
             </div>
 
@@ -107,7 +107,7 @@ const Home = () => {
             <div className="w-full flex flex-col items-center">
                 <div className="w-main h-[90px] flex justify-between items-center mb-8">
                     <div className="w-full">
-                        <Slider {...settings}>
+                        <Slider className="custom-slider" {...settings}>
                             {logo.map((item, index) => (
                                 <img
                                     src={item}

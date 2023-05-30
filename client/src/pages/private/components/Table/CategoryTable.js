@@ -19,6 +19,8 @@ import Modal from "../Modal";
 import InputField from "../../../../components/InputField";
 import InputSelect from "../../../../components/InputSelect";
 import InputFile from "../../../../components/InputFile";
+import Pagination from "../Pagination";
+import { useSearchParams } from "react-router-dom";
 
 const defautPayload = {
     _id: "",
@@ -38,6 +40,7 @@ export default function CategoryTable() {
     const [brands, setBrands] = useState([]);
 
     const token = useSelector((state) => state.user.token);
+
 
     const setDefaultState = () => {
         setIsModalOpen(false);
@@ -374,6 +377,8 @@ export default function CategoryTable() {
                     </table>
                 </div>
             </div>
+
+         
 
             {/* modal */}
             <Modal

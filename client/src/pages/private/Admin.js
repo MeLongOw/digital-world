@@ -1,15 +1,20 @@
 import React, { useEffect, useState } from "react";
-import { Outlet, useLocation, useNavigate } from "react-router-dom";
+import {
+    Outlet,
+    useLocation,
+    useNavigate,
+    useSearchParams,
+} from "react-router-dom";
 import BreadCrumb from "../../components/BreadCrumb";
 import path from "../../utils/path";
 import { Header, Sidebar } from "./components";
+import Pagination from "./components/Pagination";
 
 const Admin = () => {
     const { pathname } = useLocation();
-    const navigate = useNavigate();
     const [isHideSideBar, setIsHideSideBar] = useState(true);
 
-    // useEffect(() => {
+     // useEffect(() => {
     //     navigate(`${path.DASHBOARD}`);
     // }, []);
     return (
@@ -22,7 +27,7 @@ const Admin = () => {
                 />
                 <div className="flex-grow-0 bg-[#F1F5F9] h-[calc(100vh-76px)] w-[calc(100vw -300px)] overflow-x-hidden p-7 overflow-y-scroll">
                     <BreadCrumb pathname={pathname} />
-                    <Outlet />
+                    <Outlet />      
                 </div>
             </div>
         </div>

@@ -50,7 +50,7 @@ const MoveTopButton = () => {
             >
                 <AiOutlineShoppingCart size={32} />
                 <div className="w-[30px] aspect-square border rounded-full border-main bg-white absolute top-[-8px] right-[-8px] text-main text-center font-semibold text-lg">
-                    {currentUser?.cart?.length}
+                    {currentUser?.cart?.length || "0"}
                 </div>
             </Link>
         </div>

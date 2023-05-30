@@ -57,7 +57,7 @@ const DealDaily = () => {
                             <CountDown action={fetchDailydeal} />
                         </div>
                         <Link
-                            to={`${path.DETAIL_PRODUCT}/${dailydeal?._id}`}
+                            to={`${path.DETAIL_PRODUCT}/${dailydeal?.slug}`}
                             className="flex gap-2 items-center justify-center w-full bg-main hover:bg-gray-800 transition-colors text-white font-medium p-2 cursor-pointer"
                         >
                             <AiOutlineMenu />

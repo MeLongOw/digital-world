@@ -9,7 +9,6 @@ import { app } from "../../firebase/config";
 import { appSlice } from "../../store/app/appSlice";
 import { getCurrent } from "../../store/user/asyncThunk";
 
-
 const Public = () => {
     const { pathname } = useLocation();
     const { isShowCart, isIconCardClick } = useSelector((state) => state.app);
@@ -47,15 +46,13 @@ const Public = () => {
                     </div>
                 </div>
                 <Footer />
-                <MoveTopButton/>
             </div>
+            <MoveTopButton />
             {isShowCart && (
-                <>
-                    <div
-                        className="fixed top-0 left-0 right-0 bottom-0 bg-modal"
-                        onClick={handleToggleCart}
-                    ></div>
-                </>
+                <div
+                    className="fixed top-0 left-0 right-0 bottom-0 bg-modal"
+                    onClick={handleToggleCart}
+                ></div>
             )}
             <div
                 className={`w-[400px] flex-shirnk-0 h-screen fixed bg-gray-950 ${
