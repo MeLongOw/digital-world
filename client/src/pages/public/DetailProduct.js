@@ -101,7 +101,7 @@ const DetailProduct = () => {
                 <>
                     <div className="flex mb-[50px]">
                         <div className="w-2/5">
-                            <div className=" border mb-5">
+                            <div className=" border mb-5 flex justify-center items-center">
                                 <img
                                     className="w-[458px] h-[458px] object-contain "
                                     src={imageActive}

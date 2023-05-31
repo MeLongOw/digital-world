@@ -4,10 +4,12 @@ import {Product} from "./";
 
 const settings = {
     dots: false,
-    infinite: false,
+    infinite: true,
     speed: 300,
     slidesToShow: 3,
     slidesToScroll: 1,
+    autoplay: true,
+    autoplaySpeed: 2000
 };
 
 const CustomSlider = ({ products, activeTab = 2 }) => {

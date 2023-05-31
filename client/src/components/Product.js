@@ -13,16 +13,13 @@ import { getCurrent } from "../store/user/asyncThunk";
 
 const { BsFillCartFill, AiOutlineMenu, BsFillSuitHeartFill } = icons;
 
-const Product = ({ productData, isNew }) => {
-    const dispatch = useDispatch()
+const Product = ({ productData, isNew, isHasLabel = true }) => {
+    const dispatch = useDispatch();
     const token = useSelector((state) => state.user.token);
-    const currentUser = useSelector((state) => state.user.current);
-   
-
     const handleAddWishList = async (wid) => {
         const response = await apiAddWishList(token, { wid });
-        if(response?.success){
-            dispatch(getCurrent(token))
+        if (response?.success) {
+            dispatch(getCurrent(token));
         }
         return response?.success;
     };
@@ -32,10 +29,10 @@ const Product = ({ productData, isNew }) => {
             pid,
             quantity: 1,
         });
-        if(response?.success){
-            dispatch(getCurrent(token))
+        if (response?.success) {
+            dispatch(getCurrent(token));
         }
-        return response?.success
+        return response?.success;
     };
 
     return (
@@ -66,21 +63,23 @@ const Product = ({ productData, isNew }) => {
                     </div>
                     <Link
                         to={`/${path.DETAIL_PRODUCT}/${productData?.slug}`}
-                        className="flex"
+                        className="flex justify-center"
                     >
                         <img
                             src={
                                 productData?.thumb ||
-                                "https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/1200px-No-Image-Placeholder.svg.png"
+                                "https://comm.uir.ac.id/wp-content/uploads/2022/09/no-image-found.b1edc35f0fa6.png"
                             }
                             alt=""
-                            className="w-[274px] h-[274px] object-cover"
+                            className="w-[274px] h-[274px] object-contain"
                         />
-                        <img
-                            src={isNew ? labelNew : labelTrending}
-                            alt="label"
-                            className="absolute top-0 right-[0px] w-[70px] h-[25px] object-contain"
-                        />
+                        {isHasLabel && (
+                            <img
+                                src={isNew ? labelNew : labelTrending}
+                                alt="label"
+                                className="absolute top-0 right-[0px] w-[70px] h-[25px] object-contain"
+                            />
+                        )}
                     </Link>
                 </div>
                 <div className="flex  flex-col gap-1 mt-[15px] items-start w-full">

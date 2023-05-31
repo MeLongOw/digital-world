@@ -35,9 +35,9 @@ const Home = () => {
     const { newProducts } = useSelector((state) => state.products);
     const { categories } = useSelector((state) => state.app);
     const { isLoggedIn, current, token } = useSelector((state) => state.user);
-    useEffect(()=>{
-        window.scrollTo(0,0)
-    },[])
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, []);
 
     return (
         <>
@@ -61,7 +61,7 @@ const Home = () => {
                     New arrivals
                 </h3>
                 <div className="mt-4 mx-[-10px]">
-                    <CustomSlider  products={newProducts} />
+                    <CustomSlider products={newProducts} />
                 </div>
             </div>
 
@@ -69,13 +69,13 @@ const Home = () => {
                 <h3 className="text-[20px] font-semibold border-b-2 uppercase border-main mb-5">
                     Hot collections
                 </h3>
-                <div className="mt-4 flex flex-wrap [&>*:nth-child(4n)]:pr-0">
+                <div className="w-full mt-4 flex flex-wrap [&>*:nth-child(4n)]:pr-0">
                     {categories?.map((item) => (
                         <div
-                            className="w-1/4 flex-initial pr-5 pb-5 "
+                            className="w-1/4 max-w-[25%] flex flex-initial pr-5 pb-5"
                             key={item._id}
                         >
-                            <div className=" border flex min-h-[200px] p-4">
+                            <div className=" border flex w-full min-h-[200px] p-4">
                                 <div className="flex flex-1 justify-center">
                                     <img
                                         src={item.image}
@@ -88,15 +88,20 @@ const Home = () => {
                                         {item.title}
                                     </h4>
                                     <ul className="text-sm">
-                                        {item.brand?.map((item) => (
-                                            <li
-                                                key={item?._id}
-                                                className="flex items-center text-gray-500"
-                                            >
-                                                <IoIosArrowForward size={14} />
-                                                <p>{item?.title}</p>
-                                            </li>
-                                        ))}
+                                        {item.brand?.map((item, index) => {
+                                            if (index < 7)
+                                                return (
+                                                    <li
+                                                        key={item?._id}
+                                                        className="flex items-center text-gray-500"
+                                                    >
+                                                        <IoIosArrowForward
+                                                            size={14}
+                                                        />
+                                                        <p>{item?.title}</p>
+                                                    </li>
+                                                );
+                                        })}
                                     </ul>
                                 </div>
                             </div>

@@ -13,6 +13,7 @@ import {
     IoIosArrowRoundBack,
     IoMdAddCircleOutline,
     IoMdRemoveCircleOutline,
+    IoMdRemoveCircle
 } from "react-icons/io";
 import { TfiMenu } from "react-icons/tfi";
 import { RiArrowDropDownLine } from "react-icons/ri";
@@ -84,6 +85,7 @@ const icons = {
     IoMdAddCircleOutline,
     IoMdRemoveCircleOutline,
     AiOutlineArrowUp,
+    IoMdRemoveCircle
 };
 
 export default icons;

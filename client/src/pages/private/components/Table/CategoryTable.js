@@ -405,7 +405,6 @@ export default function CategoryTable() {
                     type="file"
                     title="Image"
                     nameKey="selectedFiles"
-                    value={payload.uploader}
                     setValue={setPayload}
                 />
             </Modal>

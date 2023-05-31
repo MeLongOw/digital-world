@@ -15,6 +15,20 @@ function arraysEqual(array1, array2) {
     return true;
 }
 
+const getDifferentElementsFromArrays = (arr1, arr2) => {
+    // Retrieve elements from arr1 that are not present in arr2
+    const diff1 = arr1.filter((item) => !arr2.includes(item));
+
+    // Retrieve elements from arr2 that are not present in arr1
+    const diff2 = arr2.filter((item) => !arr1.includes(item));
+
+    // Combine the results of both diff1 and diff2 arrays
+    const diff = diff1.concat(diff2);
+
+    return diff;
+};
+
 module.exports = {
     arraysEqual,
+    getDifferentElementsFromArrays,
 };

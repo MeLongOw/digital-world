@@ -25,7 +25,6 @@ var productSchema = new mongoose.Schema(
         },
         thumb: {
             type: String,
-            required: true,
         },
         price: {
             type: Number,
@@ -69,6 +68,14 @@ var productSchema = new mongoose.Schema(
         timestamps: true,
     }
 );
+
+productSchema.pre("updateOne", function (next) {
+    const update = this.getUpdate();
+    if (update.images && update.images.length > 0 && !update.thumb) {
+        update.thumb = update.images[0];
+    }
+    next();
+});
 
 //Export the model
 module.exports = mongoose.model("Product", productSchema);

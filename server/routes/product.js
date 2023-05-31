@@ -9,7 +9,7 @@ router.get('/get/:slug',ctrls.getProduct)
 router.put('/ratings', verifyAccessToken, ctrls.ratings)
 
 router.post("/", verifyAccessToken, isAdmin, ctrls.createProduct);
-router.put("/uploadimage/:pid", verifyAccessToken, isAdmin , uploader.array('images'), ctrls.uploadImagesProduct);
+router.put("/uploadimage/:pid", verifyAccessToken, isAdmin , uploader.single('image'), ctrls.uploadImageProduct);
 router.put("/update/:pid", verifyAccessToken, isAdmin, ctrls.updateProduct);
 router.delete("/delete/:pid", verifyAccessToken, isAdmin, ctrls.deleteProduct);
 router.delete("/deletemany", verifyAccessToken, isAdmin, ctrls.deleteManyProducts);

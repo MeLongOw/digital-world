@@ -77,8 +77,12 @@ const WishList = () => {
                     </div>
                 ))
             ) : (
-                <div className="flex justify-center items-center gap-5 border border-t-0 p-5 font-sm items-center text-gray-700">
-                    <img className="w-[200px] object-contain" alt="no-data" src={noDataImage} />
+                <div className="flex justify-center items-center gap-5 border border-t-0 p-5 font-sm items-center text-gray-700 mb-10">
+                    <img
+                        className="w-[200px] object-contain"
+                        alt="no-data"
+                        src={noDataImage}
+                    />
                 </div>
             )}
         </div>

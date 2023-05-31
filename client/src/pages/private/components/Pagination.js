@@ -5,6 +5,7 @@ import icons from "../../../utils/icons";
 const { GrFormNextLink, GrFormPreviousLink } = icons;
 
 const Pagination = ({ totalItem, currentPage, limitItem = 12 }) => {
+    
     const location = useLocation();
     const totalPage =
         useMemo(() => {

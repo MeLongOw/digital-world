@@ -6,7 +6,7 @@ import CustomSelect from "../../../components/CustomSelect";
 const { AiOutlineSearch, AiOutlineLoading } = icons;
 
 const SearchBox = ({ fetch = () => {}, isOption = true, options = [] }) => {
-    const [value, setValue] = useState();
+    const [value, setValue] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [field, setField] = useState({ value: "title", label: "Title" });
 
@@ -20,7 +20,7 @@ const SearchBox = ({ fetch = () => {}, isOption = true, options = [] }) => {
             setIsLoading(false);
         }, 300);
         return () => {
-            clearTimeout(timerId);
+            clearTimeout(timerId);  
         };
     }, [value]);
     return (

@@ -53,7 +53,7 @@ const Cart = () => {
     }, []);
 
     return (
-        <div className="w-full px-[30px] text-white">
+        <div className="w-full h-screen flex flex-col px-[30px] text-white">
             <div className="h-[80px] p-[10px] flex justify-between border-b-2 border-gray-700">
                 <div className="text-lg flex items-center">YOUR CART</div>
                 <div className="flex items-center ">
@@ -66,7 +66,7 @@ const Cart = () => {
                     />
                 </div>
             </div>
-            <div className="h-[640px] overflow-hidden overflow-y-auto pt-[30px] text-sm">
+            <div className="flex-1 h-auto overflow-hidden overflow-y-auto pt-[30px] text-sm">
                 {currentUser?.cart?.map((item) => (
                     <div
                         key={item._id}

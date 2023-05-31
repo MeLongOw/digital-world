@@ -49,7 +49,6 @@ const Filter = ({ setPriceFilter = () => {}, setBrandFilter = () => {} }) => {
 
     const fetchBrands = async () => {
         const response = await apiGetBrands();
-        console.log(response);
         if (response?.success) {
             const brandOptions =
                 response?.brands
@@ -80,7 +79,7 @@ const Filter = ({ setPriceFilter = () => {}, setBrandFilter = () => {} }) => {
             category = arrLocation[2];
         }
         const response = await apiGetCategories({ title: category });
-        console.log(response);
+       
         if (response?.success) {
             const brandOptions =
                 response?.prodCategories[0]?.brand
@@ -113,7 +112,7 @@ const Filter = ({ setPriceFilter = () => {}, setBrandFilter = () => {} }) => {
         if (!category) fetchBrands();
         else {
             fetchBrandsOfCategory();
-            console.log(234234);
+     
         }
     }, []);
 

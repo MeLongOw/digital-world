@@ -41,7 +41,7 @@ const Public = () => {
                 <Navigation />
                 <div className="w-main">
                     <BreadCrumb pathname={pathname} />
-                    <div className="w-full min-h-screen mt-6">
+                    <div className="w-full mt-6">
                         <Outlet />
                     </div>
                 </div>

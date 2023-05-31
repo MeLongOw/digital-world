@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 
 const SelectVariant = ({ variants, payload, setPayload }) => {
-    // const [selectedVariant, setSelectedVariant] = useState([]);
-    // console.log(selectedVariant);
+  
 
     const filterUniqueVariants = (payload) => {
         const uniqueVariants = {};

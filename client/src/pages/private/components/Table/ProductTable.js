@@ -7,6 +7,7 @@ import {
     apiDeleteManyProducts,
     apiGetBrands,
     apiGetCategories,
+    apiUpdateImageProduct,
 } from "../../../../apis";
 import Button from "../../../../components/Button";
 import SearchBox from "../SearchBox";
@@ -18,12 +19,12 @@ import EditButton from "../EditButton";
 import Modal from "../Modal";
 import InputField from "../../../../components/InputField";
 import { formatMoney, reducedArray } from "../../../../utils/helpers";
-
 import InputSelect from "../../../../components/InputSelect";
 import InputDynamic from "../../../../components/InputDynamic";
 import InputFieldValue from "../../../../components/InputVariants";
 import { useSearchParams } from "react-router-dom";
 import Pagination from "../Pagination";
+import InputFile from "../../../../components/InputFile";
 
 const defautPayload = {
     _id: "",
@@ -31,6 +32,7 @@ const defautPayload = {
     price: "",
     brand: "",
     thumb: "",
+    selectedFiles: [],
     description: [""],
     variants: [{ label: "", variants: [""] }],
     category: "",
@@ -47,6 +49,8 @@ export default function ProductTable() {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isEdit, setIsEdit] = useState(false);
     const [payload, setPayload] = useState(defautPayload);
+   
+
     const [brands, setBrands] = useState([]);
     const [categories, setCategories] = useState([]);
 
@@ -101,7 +105,7 @@ export default function ProductTable() {
     const fetchProducts = async (query) => {
         const response = await apiGetProducts({
             sort: "-createdAt",
-            limit: 10,
+            limit: limitItem,
             page: currentPage,
             ...query,
         });
@@ -132,18 +136,19 @@ export default function ProductTable() {
                 value: item._id,
                 label: item.title,
             }));
-            setCategories(arrProdCategories);        
+            setCategories(arrProdCategories);
         }
         return response?.success;
     };
 
     const handleEdit = (product) => {
-        const { brand, category, ...data } = product;
+        const { brand, category, images, ...data } = product;
         setIsModalOpen(true);
         setIsEdit(true);
         setPayload((prev) => ({
             ...prev,
             ...data,
+            images: [...images],
             brand,
             brandSelectDefault: {
                 value: brand._id,
@@ -228,10 +233,22 @@ export default function ProductTable() {
 
     const handleSubmitModal = async () => {
         payload.variants = reducedArray(payload.variants);
-        const { _id, ...data } = payload;
+
+        const { _id, selectedFiles, ...data } = payload;
+
+        const handleUpdateImagesProduct = async (_id) => {
+            const uploaders = selectedFiles?.map((file) => {
+                const formData = new FormData();
+                formData.append("image", file);
+                return apiUpdateImageProduct(token, _id, formData);
+            });
+            await Promise.all(uploaders);
+        };
+
         if (isEdit) {
             const response = await apiEditProduct(token, _id, data);
             if (response?.success) {
+                await handleUpdateImagesProduct(_id);
                 Swal.fire("Success!", response.mes, "success").then(() => {
                     fetchProducts();
                 });
@@ -241,6 +258,8 @@ export default function ProductTable() {
         } else {
             const response = await apiAddProduct(token, data);
             if (response?.success) {
+                await handleUpdateImagesProduct(response?.createdProduct._id);
+
                 Swal.fire("Success!", response.mes, "success").then(() => {
                     fetchProducts();
                 });
@@ -333,7 +352,7 @@ export default function ProductTable() {
                                     scope="col"
                                     className="w-[8%] px-3 py-3 text-xs font-bold text-left text-gray-500 uppercase "
                                 >
-                                    Image
+                                    Images
                                 </th>
                                 <th
                                     scope="col"
@@ -525,7 +544,6 @@ export default function ProductTable() {
                     title="Brand"
                     defaultValue={payload.brandSelectDefault}
                     nameKey="brand"
-                    value={payload.brand}
                     setValue={setPayload}
                     selectOptions={brands}
                 />
@@ -534,14 +552,15 @@ export default function ProductTable() {
                     title="Category"
                     defaultValue={payload?.categorySelectDefault}
                     nameKey="category"
-                    value={payload.category}
                     setValue={setPayload}
                     selectOptions={categories}
                 />
-                <InputField
-                    title="Thumb"
-                    nameKey="thumb"
-                    value={payload.thumb}
+                <InputFile
+                    multiple={true}
+                    type="file"
+                    title="Images"
+                    images={payload?.images}
+                    nameKey="selectedFiles"
                     setValue={setPayload}
                 />
                 <InputDynamic

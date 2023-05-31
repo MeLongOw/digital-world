@@ -18,7 +18,6 @@ const Products = () => {
     const [priceFilter, setPriceFilter] = useState("");
     const [brandFilter, setbrandFilter] = useState("");
 
-    
     const fetchProducts = async (page, limit, pathname, sort) => {
         const arrLocation = pathname.split("/");
         let category;
@@ -81,7 +80,7 @@ const Products = () => {
                 {products?.length ? (
                     products?.map((data) => (
                         <div className="w-1/4 mb-5" key={data._id}>
-                            <Product productData={data} />
+                            <Product productData={data} isHasLabel={false} />
                         </div>
                     ))
                 ) : (

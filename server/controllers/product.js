@@ -3,6 +3,11 @@ const ProductCategory = require("../models/productCategory");
 const Brand = require("../models/brand");
 const asyncHandler = require("express-async-handler");
 const slugify = require("slugify");
+const cloudinary = require("cloudinary").v2;
+const {
+    getDifferentElementsFromArrays,
+    arraysEqual,
+} = require("../utils/helper");
 
 const createProduct = asyncHandler(async (req, res) => {
     if (!Object.keys(req.body).length) throw new Error("Missing input(s)");
@@ -70,7 +75,6 @@ const getProducts = asyncHandler(async (req, res) => {
                 const brandMacthed = await Brand.findOne({
                     title: { $regex: brand, $options: "i" },
                 });
-                console.log("brandid", brandMacthed?._id);
 
                 queryCommand
                     .find({ category: category?._id, brand: brandMacthed?._id })
@@ -169,9 +173,34 @@ const getProducts = asyncHandler(async (req, res) => {
 const updateProduct = asyncHandler(async (req, res) => {
     const { pid } = req.params;
     if (req.body && req.body.title) req.body.slug = slugify(req.body.title);
-    const updatedProduct = await Product.findByIdAndUpdate(pid, req.body, {
+    const beforeUpdated = await Product.findById(pid);
+    let updatedProduct = await Product.findByIdAndUpdate(pid, req.body, {
         new: true,
     });
+    if (updatedProduct) {
+        const pendingRemoveFromCloudImgs = getDifferentElementsFromArrays(
+            beforeUpdated.images,
+            updatedProduct.images
+        );
+        if (pendingRemoveFromCloudImgs.length) {
+            promises = pendingRemoveFromCloudImgs?.map((imageURL) => {
+                return cloudinary.uploader.destroy(
+                    imageURL.split("/").slice(-2).join("/").split(".")[0]
+                );
+            });
+            await Promise.all(promises);
+        } else {
+            if (arraysEqual(beforeUpdated.images, updatedProduct.images)) {
+                updatedProduct = await Product.findByIdAndUpdate(
+                    pid,
+                    { thumb: updatedProduct.images[0] },
+                    {
+                        new: true,
+                    }
+                );
+            }
+        }
+    }
     return res.status(200).json({
         success: updatedProduct ? true : false,
         updateProduct: updatedProduct ? updatedProduct : "Something went wrong",
@@ -249,16 +278,29 @@ const ratings = asyncHandler(async (req, res) => {
     });
 });
 
-const uploadImagesProduct = asyncHandler(async (req, res) => {
+const uploadImageProduct = asyncHandler(async (req, res) => {
     const { pid } = req.params;
-    if (!req.files) throw new Error("Missing input(s)");
-    const response = await Product.findByIdAndUpdate(
+    if (!req.file) throw new Error("Missing input(s)");
+    const product = await Product.findByIdAndUpdate(
         pid,
         {
-            $push: { images: { $each: req.files.map((file) => file.path) } },
+            $push: { images: req.file.path },
         },
         { new: true }
     );
+    let response;
+    if (product && !product.thumb) {
+        response = await Product.findByIdAndUpdate(
+            pid,
+            {
+                thumb: product.images[0],
+            },
+            { new: true }
+        );
+    } else {
+        response = product;
+    }
+
     return res.status(200).json({
         status: response ? true : false,
         updatedProduct: response ? response : "Can not upload images ",
@@ -273,5 +315,5 @@ module.exports = {
     deleteProduct,
     deleteManyProducts,
     ratings,
-    uploadImagesProduct,
+    uploadImageProduct,
 };
