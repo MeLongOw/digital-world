@@ -212,7 +212,9 @@ const DetailProduct = () => {
                         </div>
                     </div>
                     <Link
-                        to={`/${path.PRODUCTS}/${product?.category?.title}`}
+                        to={`/${
+                            path.PRODUCTS
+                        }/${product?.category?.title.toLowerCase()}`}
                         className="flex justify-center items-center text-sm text-gray-700 uppercase hover:text-main mb-[50px]"
                     >
                         <IoIosArrowRoundBack size={20} />

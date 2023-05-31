@@ -1,22 +1,22 @@
 const data = [
     {
         cate: 'Smartphone',
-        brand: ['Apple', 'Samsung', 'LG', 'Asus', 'Nokia', 'BlackBerry'],
+        brand: ['Apple', 'Samsung', 'LG', 'Asus', 'Nokia', 'BlackBerry', 'Xiaomi', 'Vivo', 'Sony', 'Iphone', 'HTC', 'Google'],
         image: 'https://cdn.shopify.com/s/files/1/1903/4853/files/mobile-devices_300x.jpg?v=1613166682'
     },
     {
         cate: 'Tablet',
-        brand: ['iPad', 'Samsung', 'Acer', 'Asus', 'Lenovo', 'Haier'],
+        brand: ['iPad', 'Samsung', 'Acer', 'Asus', 'Lenovo', 'Haier', 'Xiaomi', 'Sony', 'Apple', 'Lg', 'Huawei'],
         image: 'https://cdn.shopify.com/s/files/1/1903/4853/files/pc-1_300x.jpg?v=1613166682'
     },
     {
         cate: 'Laptop',
-        brand: ['Asus', 'Dell', 'Acer', 'Lenovo', 'HP', 'Macbook'],
+        brand: ['Asus', 'Dell', 'Acer', 'Lenovo', 'HP', 'Macbook', 'Apple'],
         image: 'https://cdn.shopify.com/s/files/1/1903/4853/files/laptop_300x.jpg?v=1613166811'
     },
     {
         cate: 'Speaker',
-        brand: ['Asus', 'Dell', 'Acer', 'Lenovo', 'HP', 'Macbook'],
+        brand: ['Asus', 'Dell', 'Acer', 'Lenovo', 'HP', 'Macbook', 'JBL'],
         image: 'https://cdn-amz.woka.io/images/I/51KZcUQIyiS.jpg'
     },
     {

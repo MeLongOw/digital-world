@@ -1,48 +1,120 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { apiGetBrands } from "../apis";
+import { useLocation } from "react-router-dom";
+import { apiGetBrands, apiGetCategories } from "../apis";
 import icons from "../utils/icons";
 import CustomSelect from "./CustomSelect";
 
 const priceOptions = [
     { value: "", label: "Price - All" },
-    { value: "1", label: "0 - 1.000.000 VND" },
-    { value: "2", label: "1.000.000 VND - 2.000.000 VND" },
-    { value: "3", label: "2.000.000 VND - 3.000.000 VND" },
-    { value: "4", label: "3.000.000 VND - 5.000.000 VND" },
-    { value: "5", label: "5.000.000 VND - 7.000.000 VND" },
-    { value: "6", label: "7.000.000 VND - 10.000.000 VND" },
-    { value: "7", label: "10.000.000 VND - 15.000.000 VND" },
-    { value: "8", label: "15.000.000 VND - 20.000.000 VND" },
-    { value: "9", label: "20.000.000 VND - 30.000.000 VND" },
-    { value: "10", label: "30.000.000 VND +" },
+    { value: { gt: 0, lte: 1000000 }, label: "0 - 1.000.000 VND" },
+    {
+        value: { gt: 1000000, lte: 2000000 },
+        label: "1.000.000 VND - 2.000.000 VND",
+    },
+    {
+        value: { gt: 2000000, lte: 3000000 },
+        label: "2.000.000 VND - 3.000.000 VND",
+    },
+    {
+        value: { gt: 3000000, lte: 5000000 },
+        label: "3.000.000 VND - 5.000.000 VND",
+    },
+    {
+        value: { gt: 5000000, lte: 7000000 },
+        label: "5.000.000 VND - 7.000.000 VND",
+    },
+    {
+        value: { gt: 7000000, lte: 10000000 },
+        label: "7.000.000 VND - 10.000.000 VND",
+    },
+    {
+        value: { gt: 10000000, lte: 15000000 },
+        label: "10.000.000 VND - 15.000.000 VND",
+    },
+    {
+        value: { gt: 15000000, lte: 20000000 },
+        label: "15.000.000 VND - 20.000.000 VND",
+    },
+    {
+        value: { gt: 20000000, lte: 30000000 },
+        label: "20.000.000 VND - 30.000.000 VND",
+    },
+    { value: { gt: 30000000 }, label: "30.000.000 VND +" },
 ];
 
-const Filter = () => {
+const Filter = ({ setPriceFilter = () => {}, setBrandFilter = () => {} }) => {
+    const { pathname } = useLocation();
     const [brands, setBrands] = useState([{ value: "", label: "Brand - All" }]);
-    const categories = useSelector((state) => state.app.categories);
-
-    const categoryOptions =
-        categories?.map((category) => ({
-            value: category.title,
-            label: category.title,
-        })) || [];
-    categoryOptions.splice(0, 0, { value: "", label: "Category - All" });
 
     const fetchBrands = async () => {
         const response = await apiGetBrands();
-        if (response.success) {
+        console.log(response);
+        if (response?.success) {
             const brandOptions =
-                response.brands?.map((brands) => ({
-                    value: brands.title,
-                    label: brands.title,
-                })) || [];
+                response?.brands
+                    ?.filter((brand) => brand?.productCount !== 0)
+                    ?.map((brands) => ({
+                        value: brands.title.toLowerCase(),
+                        label: brands.title,
+                    })) || [];
+            brandOptions.sort((a, b) => {
+                const labelA = a.label.toLowerCase();
+                const labelB = b.label.toLowerCase();
+                if (labelA < labelB) {
+                    return -1;
+                }
+                if (labelA > labelB) {
+                    return 1;
+                }
+                return 0;
+            });
+            setBrands((prev) => [...prev, ...brandOptions]);
+        }
+    };
+
+    const fetchBrandsOfCategory = async () => {
+        const arrLocation = pathname.split("/");
+        let category;
+        if (arrLocation[1] === "products") {
+            category = arrLocation[2];
+        }
+        const response = await apiGetCategories({ title: category });
+        console.log(response);
+        if (response?.success) {
+            const brandOptions =
+                response?.prodCategories[0]?.brand
+                    ?.filter((brand) => brand?.productCount !== 0)
+                    ?.map((brands) => ({
+                        value: brands.title.toLowerCase(),
+                        label: brands.title,
+                    })) || [];
+            brandOptions.sort((a, b) => {
+                const labelA = a.label.toLowerCase();
+                const labelB = b.label.toLowerCase();
+                if (labelA < labelB) {
+                    return -1;
+                }
+                if (labelA > labelB) {
+                    return 1;
+                }
+                return 0;
+            });
             setBrands((prev) => [...prev, ...brandOptions]);
         }
     };
 
     useEffect(() => {
-        fetchBrands();
+        const arrLocation = pathname.split("/");
+        let category;
+        if (arrLocation[1] === "products") {
+            category = arrLocation[2];
+        }
+        if (!category) fetchBrands();
+        else {
+            fetchBrandsOfCategory();
+            console.log(234234);
+        }
     }, []);
 
     return (
@@ -53,6 +125,7 @@ const Filter = () => {
                     defaultValue={priceOptions[0]}
                     isSearchable={false}
                     options={priceOptions}
+                    onChange={(e) => setPriceFilter(e.value)}
                 />
             </div>
             <div className="w-1/4">
@@ -61,14 +134,7 @@ const Filter = () => {
                     defaultValue={brands[0]}
                     isSearchable={false}
                     options={brands}
-                />
-            </div>
-            <div className="w-1/4">
-                <CustomSelect
-                    placeholder="Category"
-                    defaultValue={categoryOptions[0]}
-                    isSearchable={false}
-                    options={categoryOptions}
+                    onChange={(e) => setBrandFilter(e.value)}
                 />
             </div>
         </div>

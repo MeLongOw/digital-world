@@ -31,6 +31,7 @@ const getProducts = asyncHandler(async (req, res) => {
     const excludeFields = ["limit", "sort", "page", "fields"];
     excludeFields.forEach((el) => delete queries[el]);
 
+    if (!queries?.price) queries.price = { gt: 0 };
     // Format operator Mongoose
     let queryString = JSON.stringify(queries);
     queryString = queryString.replace(
@@ -62,17 +63,47 @@ const getProducts = asyncHandler(async (req, res) => {
     const skip = (page - 1) * limit;
 
     //Execute query
-    if (category) {
+    if (category && brand) {
         ProductCategory.findOne({ title: { $regex: category, $options: "i" } })
             .exec()
-            .then((category) => {
-                queryCommand.find({ category: category?._id })
+            .then(async (category) => {
+                const brandMacthed = await Brand.findOne({
+                    title: { $regex: brand, $options: "i" },
+                });
+                console.log("brandid", brandMacthed?._id);
+
+                queryCommand
+                    .find({ category: category?._id, brand: brandMacthed?._id })
                     .skip(skip)
                     .limit(limit)
                     .populate("brand")
                     .populate("category")
                     .exec()
-                    .then(async (products) => { 
+                    .then(async (products) => {
+                        const counts = await Product.find({
+                            category: category?._id,
+                        }).countDocuments();
+                        return res.status(200).json({
+                            success: products ? true : false,
+                            counts,
+                            products: products
+                                ? products
+                                : "Can not get products.",
+                        });
+                    });
+            });
+    } else if (category) {
+        ProductCategory.findOne({ title: { $regex: category, $options: "i" } })
+            .exec()
+            .then((category) => {
+                queryCommand
+                    .find({ category: category?._id })
+                    .skip(skip)
+                    .limit(limit)
+                    .populate("brand")
+                    .populate("category")
+                    .exec()
+                    .then(async (products) => {
                         const counts = await Product.find({
                             category: category?._id,
                         }).countDocuments();
@@ -89,7 +120,8 @@ const getProducts = asyncHandler(async (req, res) => {
         Brand.findOne({ title: { $regex: brand, $options: "i" } })
             .exec()
             .then((brand) => {
-                queryCommand.find({ brand: brand?._id })
+                queryCommand
+                    .find({ brand: brand?._id })
                     .skip(skip)
                     .limit(limit)
                     .populate("brand")

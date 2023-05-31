@@ -3,7 +3,6 @@ const asyncHandler = require("express-async-handler");
 const cloudinary = require("cloudinary").v2;
 
 const createCategory = asyncHandler(async (req, res) => {
-  
     const { brand, title } = req.body;
     if (!title) throw new Error("Missing field title");
     if (!brand) throw new Error("Missing field brand");
@@ -19,18 +18,94 @@ const createCategory = asyncHandler(async (req, res) => {
     });
 });
 
+// const getCategories = asyncHandler(async (req, res) => {
+//     if (req.query?.title) {
+//         const response = await ProductCategory.aggregate([
+//             {
+//                 $match: {
+//                     title: {
+//                         $regex: req.query.title,
+//                         $options: "i",
+//                     },
+//                 },
+//             },
+//             {
+//                 $lookup: {
+//                     from: "brands",
+//                     localField: "brand",
+//                     foreignField: "_id",
+//                     as: "brand",
+//                 },
+//             },
+//             {
+//                 $lookup: {
+//                     from: "products",
+//                     localField: "_id",
+//                     foreignField: "category",
+//                     as: "productCount",
+//                 },
+//             },
+//             {
+//                 $project: {
+//                     title: 1,
+//                     brand: 1,
+//                     image: 1,
+//                     productCount: { $size: "$productCount" },
+//                     createdAt: 1,
+//                     updatedAt: 1,
+//                 },
+//             },
+//             {
+//                 $sort: { createdAt: -1 },
+//             },
+//         ]);
+
+//         return res.status(200).json({
+//             success: response ? true : false,
+//             prodCategories: response ? response : "Can not get categories",
+//         });
+//     } else {
+//         const response = await ProductCategory.aggregate([
+//             {
+//                 $lookup: {
+//                     from: "brands",
+//                     localField: "brand",
+//                     foreignField: "_id",
+//                     as: "brand",
+//                 },
+//             },
+//             {
+//                 $lookup: {
+//                     from: "products",
+//                     localField: "_id",
+//                     foreignField: "category",
+//                     as: "productCount",
+//                 },
+//             },
+//             {
+//                 $project: {
+//                     title: 1,
+//                     brand: 1,
+//                     image: 1,
+//                     productCount: { $size: "$productCount" },
+//                     createdAt: 1,
+//                     updatedAt: 1,
+//                 },
+//             },
+//             {
+//                 $sort: { createdAt: -1 },
+//             },
+//         ]);
+
+//         return res.status(200).json({
+//             success: response ? true : false,
+//             prodCategories: response ? response : "Can not get categories",
+//         });
+//     }
+// });
+
 const getCategories = asyncHandler(async (req, res) => {
     if (req.query?.title) {
-        // const response = await ProductCategory.find({
-        //     title: {
-        //         $regex: req.query.title,
-        //         $options: "i",
-        //     },
-        // })
-        //     .sort("-createdAt")
-        //     .populate("brand")
-        //     .populate("productCount");
-
         const response = await ProductCategory.aggregate([
             {
                 $match: {
@@ -53,7 +128,52 @@ const getCategories = asyncHandler(async (req, res) => {
                     from: "products",
                     localField: "_id",
                     foreignField: "category",
-                    as: "productCount",
+                    as: "products",
+                },
+            },
+            {
+                $addFields: {
+                    brand: {
+                        $map: {
+                            input: "$brand",
+                            as: "b",
+                            in: {
+                                $mergeObjects: [
+                                    "$$b",
+                                    {
+                                        productCount: {
+                                            $size: {
+                                                $filter: {
+                                                    input: "$products",
+                                                    cond: {
+                                                        $eq: [
+                                                            "$$this.brand",
+                                                            "$$b._id",
+                                                        ],
+                                                    },
+                                                },
+                                            },
+                                        },
+                                    },
+                                ],
+                            },
+                        },
+                    },
+                },
+            },
+            {
+                $lookup: {
+                    from: "products",
+                    localField: "_id",
+                    foreignField: "category",
+                    as: "categoryProducts",
+                },
+            },
+            {
+                $addFields: {
+                    productCount: {
+                        $size: "$categoryProducts",
+                    },
                 },
             },
             {
@@ -61,9 +181,9 @@ const getCategories = asyncHandler(async (req, res) => {
                     title: 1,
                     brand: 1,
                     image: 1,
-                    productCount: { $size: "$productCount" },
                     createdAt: 1,
                     updatedAt: 1,
+                    productCount: 1,
                 },
             },
             {
@@ -76,11 +196,6 @@ const getCategories = asyncHandler(async (req, res) => {
             prodCategories: response ? response : "Can not get categories",
         });
     } else {
-        // const response = await ProductCategory.find()
-        //     .sort("-createdAt")
-        //     .populate("productCount")
-        //     .populate("brand");
-
         const response = await ProductCategory.aggregate([
             {
                 $lookup: {
@@ -95,7 +210,52 @@ const getCategories = asyncHandler(async (req, res) => {
                     from: "products",
                     localField: "_id",
                     foreignField: "category",
-                    as: "productCount",
+                    as: "products",
+                },
+            },
+            {
+                $addFields: {
+                    brand: {
+                        $map: {
+                            input: "$brand",
+                            as: "b",
+                            in: {
+                                $mergeObjects: [
+                                    "$$b",
+                                    {
+                                        productCount: {
+                                            $size: {
+                                                $filter: {
+                                                    input: "$products",
+                                                    cond: {
+                                                        $eq: [
+                                                            "$$this.brand",
+                                                            "$$b._id",
+                                                        ],
+                                                    },
+                                                },
+                                            },
+                                        },
+                                    },
+                                ],
+                            },
+                        },
+                    },
+                },
+            },
+            {
+                $lookup: {
+                    from: "products",
+                    localField: "_id",
+                    foreignField: "category",
+                    as: "categoryProducts",
+                },
+            },
+            {
+                $addFields: {
+                    productCount: {
+                        $size: "$categoryProducts",
+                    },
                 },
             },
             {
@@ -103,9 +263,9 @@ const getCategories = asyncHandler(async (req, res) => {
                     title: 1,
                     brand: 1,
                     image: 1,
-                    productCount: { $size: "$productCount" },
                     createdAt: 1,
                     updatedAt: 1,
+                    productCount: 1,
                 },
             },
             {
@@ -133,7 +293,7 @@ const uploadImageCategory = asyncHandler(async (req, res) => {
     );
 
     if (response) updatedProdCategory = await ProductCategory.findById(pcid);
-    
+
     return res.status(200).json({
         status: response ? true : false,
         updatedProdCategory: updatedProdCategory

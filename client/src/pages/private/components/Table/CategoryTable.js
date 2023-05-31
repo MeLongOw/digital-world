@@ -342,7 +342,7 @@ export default function CategoryTable() {
                                                     className="border mr-2 my-2 p-2"
                                                     key={brand?.title}
                                                 >
-                                                    {brand?.title}
+                                                    {`${brand?.title} (${brand?.productCount})`}
                                                 </div>
                                             ))}
                                         </div>
