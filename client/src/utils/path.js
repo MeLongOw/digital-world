@@ -12,7 +12,9 @@ const path = {
     AUTH_REGISTER: "authregister/:status",
     RESET_PASSWORD: "resetpassword/:token",
     WISHLIST: "wishlist",
+
     CART: "cart",
+    CHECKOUT: 'cart/checkout',
 
     ACCOUNT: "account",
     ACCOUNT_PROFILE: 'account/profile',

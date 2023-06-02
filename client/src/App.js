@@ -32,6 +32,7 @@ import { Account } from "./pages/public/Account";
 import { Profile } from "./pages/public/Account";
 import { Ratings } from "./pages/public/Account";
 import User from "./pages/private/Users";
+import Checkout from "./pages/public/Checkout";
 
 function App() {
     const dispatch = useDispatch();
@@ -64,7 +65,9 @@ function App() {
                     <Route path={path.BLOGS} element={<Blogs />} />
                     <Route path={path.OUR_SERVICES} element={<Services />} />
                     <Route path={path.WISHLIST} element={<WishList />} />
-                    <Route path={path.CART} element={<Cart />} />
+                    <Route path={path.CART} element={<Cart />}/>
+                    <Route path={`/${path.CHECKOUT}`} element={<Checkout />} />
+
                     <Route path={path.ACCOUNT} element={<Account />}>
                         <Route
                             path={`/${path.ACCOUNT_PROFILE}`}
@@ -86,14 +89,20 @@ function App() {
 
                 {/* ADMIN */}
                 <Route path={`/${path.ADMIN}`} element={<Admin />}>
-                    <Route path={`/${path.DASHBOARD}`} element={<Dashboard />} />
+                    <Route
+                        path={`/${path.DASHBOARD}`}
+                        element={<Dashboard />}
+                    />
                     <Route
                         path={`/${path.PRODUCTS_ADMIN}`}
                         element={<ProductsAdmin />}
                     />
                     <Route path={`/${path.BRANDS}`} element={<Brands />} />
                     <Route path={`/${path.USERS}`} element={<User />} />
-                    <Route path={`/${path.CATEGOGIES}`} element={<Categories />} />
+                    <Route
+                        path={`/${path.CATEGOGIES}`}
+                        element={<Categories />}
+                    />
                     <Route path={`/${path.ORDERS}`} element={<Orders />} />
                     <Route path={`/${path.REVIEWS}`} element={<Reviews />} />
                     <Route path={`/${path.COUPONS}`} element={<Coupons />} />

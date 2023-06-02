@@ -4,6 +4,7 @@ import icons from "../utils/icons";
 const { AiOutlineLoading, FaCheck } = icons;
 
 const Button = ({
+    disabled = false,
     name,
     handleClick = () => {},
     className,
@@ -24,13 +25,16 @@ const Button = ({
 
     return (
         <button
+            disabled={disabled}
             type="button"
             className={
                 className
                     ? className
                     : `px-4 py-2 ${
                           rounded && "rounded-md"
-                      } text-white font-semibold hover:cursor-pointer w-full flex justify-center items-center ${backgroundColor}`
+                      } text-white font-semibold hover:cursor-pointer w-full flex justify-center items-center ${backgroundColor} ${
+                          disabled && "opacity-70 hover:cursor-default"
+                      }`
             }
             onClick={async () => {
                 setIsLoading(true);

@@ -210,13 +210,13 @@ const resetPassword = asyncHandler(async (req, res) => {
 
 const updateUser = asyncHandler(async (req, res) => {
     const { _id } = req.user;
-    const { firstName, lastName, moblie, password } = req.body;
+    const { firstName, lastName, phone, password } = req.body;
     if (!_id || !Object.keys(req.body).length)
         throw new Error("Missing inputs");
 
     const response = await User.findByIdAndUpdate(
         _id,
-        { firstName, lastName, moblie, password },
+        { firstName, lastName, phone, password },
         {
             new: true,
         }

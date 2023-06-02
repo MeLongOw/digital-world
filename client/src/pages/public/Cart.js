@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { apiRemoveFromCart, apiUpdateCart } from "../../apis";
 import { Button } from "../../components";
 import { capitalize, formatMoney } from "../../utils/helpers";
@@ -14,6 +14,7 @@ const { AiOutlineArrowRight } = icons;
 
 const Cart = () => {
     const dispatch = useDispatch();
+    const navigate = useNavigate();
     const token = useSelector((state) => state.user.token);
     const currentUser = useSelector((state) => state.user.current);
     const totalPrice = useMemo(() => {
@@ -121,7 +122,11 @@ const Cart = () => {
                 ))
             ) : (
                 <div className="border p-5 mt-[-1px] flex justify-center items-center">
-                    <img className="w-[300px] object-contain"  alt="emptycart" src={emptyCart}/>
+                    <img
+                        className="w-[300px] object-contain"
+                        alt="emptycart"
+                        src={emptyCart}
+                    />
                 </div>
             )}
 
@@ -142,6 +147,9 @@ const Cart = () => {
                     <Button
                         name="CHECK OUT"
                         iconsAfter={<AiOutlineArrowRight />}
+                        handleClick={() => {
+                            navigate(`/${path.CHECKOUT}`);  
+                        }}
                     />
                 </div>
             </div>

@@ -43,6 +43,7 @@ import {
     AiOutlineShoppingCart,
     AiOutlineSearch,
     AiOutlineArrowUp,
+    AiOutlineEdit
 } from "react-icons/ai";
 
 const icons = {
@@ -88,6 +89,7 @@ const icons = {
     AiOutlineArrowUp,
     IoMdRemoveCircle,
     CgProfile,
+    AiOutlineEdit
 };
 
 export default icons;
