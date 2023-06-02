@@ -14,14 +14,20 @@ const path = {
     WISHLIST: "wishlist",
     CART: "cart",
 
-    ADMIN: "/admin",
-    DASHBOARD: "/admin/dashboard",
-    PRODUCTS_ADMIN: "/admin/products",
-    BRANDS: "/admin/brands",
-    CATEGOGIES: "/admin/categories",
-    ORDERS: "/admin/orders",
-    REVIEWS: "/admin/reviews",
-    COUPONS: "/admin/coupons",
+    ACCOUNT: "account",
+    ACCOUNT_PROFILE: 'account/profile',
+    ACCOUNT_RATINGS: 'account/ratings',
+    ACCOUNT_ORDERS: 'account/orders',
+
+    ADMIN: "admin",
+    DASHBOARD: "admin/dashboard",
+    PRODUCTS_ADMIN: "admin/products",
+    BRANDS: "admin/brands",
+    CATEGOGIES: "admin/categories",
+    ORDERS: "admin/orders",
+    REVIEWS: "admin/reviews",
+    COUPONS: "admin/coupons",
+    USERS: "admin/users",
 };
 
 export default path;

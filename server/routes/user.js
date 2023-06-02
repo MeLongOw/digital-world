@@ -20,7 +20,8 @@ router.put("/removewishlist", verifyAccessToken, ctrls.removeWishList);
 
 //[ADMIN]
 router.get("/", verifyAccessToken, isAdmin, ctrls.getUsers);
-router.delete("/", verifyAccessToken, isAdmin, ctrls.deleteUser);
+router.delete("/delete", verifyAccessToken, isAdmin, ctrls.deleteUser);
+router.delete("/deletemany", verifyAccessToken, isAdmin, ctrls.deleteManyUsers);
 router.put("/update/:uid", verifyAccessToken, isAdmin, ctrls.updateUserByAdmin);
 
 module.exports = router;

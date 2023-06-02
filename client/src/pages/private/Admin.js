@@ -12,11 +12,12 @@ import Pagination from "./components/Pagination";
 
 const Admin = () => {
     const { pathname } = useLocation();
+    const navigate = useNavigate();
     const [isHideSideBar, setIsHideSideBar] = useState(true);
 
-     // useEffect(() => {
-    //     navigate(`${path.DASHBOARD}`);
-    // }, []);
+    useEffect(() => {
+        if (pathname === `/${path.ADMIN}`) navigate(`/${path.DASHBOARD}`);
+    }, []);
     return (
         <div className="flex flex-grow-0 w-screen h-screen overflow-y-hidden">
             {isHideSideBar && <Sidebar />}
@@ -27,7 +28,7 @@ const Admin = () => {
                 />
                 <div className="flex-grow-0 bg-[#F1F5F9] h-[calc(100vh-76px)] w-[calc(100vw -300px)] overflow-x-hidden p-7 overflow-y-scroll">
                     <BreadCrumb pathname={pathname} />
-                    <Outlet />      
+                    <Outlet />
                 </div>
             </div>
         </div>

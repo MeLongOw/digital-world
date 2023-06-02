@@ -231,8 +231,66 @@ const updateUser = asyncHandler(async (req, res) => {
 
 // [ADMIN]
 const getUsers = asyncHandler(async (req, res) => {
-    const users = await User.find().select("-password -refreshToken -role");
-    return res.status(200).json({ success: users ? true : false, users });
+    const queries = { ...req.query };
+    const excludeFields = ["limit", "sort", "page", "fields"];
+    excludeFields.forEach((el) => delete queries[el]);
+    // Format operator Mongoose
+    let queryString = JSON.stringify(queries);
+    queryString = queryString.replace(
+        /\b(gte|gt|lt|lte)\b/g,
+        (matchedEl) => `$${matchedEl}`
+    );
+    const formattedQueries = JSON.parse(queryString);
+    //Filtering
+    if (queries?.firstName)
+        formattedQueries.firstName = {
+            $regex: queries.firstName,
+            $options: "i",
+        };
+    if (queries?.lastName)
+        formattedQueries.lastName = {
+            $regex: queries.lastName,
+            $options: "i",
+        };
+    if (queries?.email)
+        formattedQueries.email = {
+            $regex: queries.email,
+            $options: "i",
+        };
+    if (queries?.phone)
+        formattedQueries.phone = {
+            $regex: queries.phone,
+            $options: "i",
+        };
+    let queryCommand = User.find(formattedQueries);
+    //Sorting
+    if (req.query.sort) {
+        const sortBy = req.query.sort.split(",").join(" ");
+        queryCommand.sort(sortBy);
+    }
+    //Fields limiting
+    if (req.query.fields) {
+        const fields = req.query.fields.split(",").join(" ");
+        queryCommand.select(fields);
+    }
+    //Pagination
+    const page = +req.query.page || 1;
+    const limit = +req.query.limit || process.env.LIMIT_PRODUCTS;
+    const skip = (page - 1) * limit;
+    //Execute query
+    queryCommand
+        .skip(skip)
+        .limit(limit)
+        .select("-password -refreshToken -role")
+        .exec()
+        .then(async (response) => {
+            const counts = await User.find(formattedQueries).countDocuments();
+            return res.status(200).json({
+                success: response ? true : false,
+                counts,
+                users: response ? response : "Can not get products.",
+            });
+        });
 });
 
 const deleteUser = asyncHandler(async (req, res) => {
@@ -244,6 +302,15 @@ const deleteUser = asyncHandler(async (req, res) => {
         deletedUser: deletedUser
             ? `User with email ${deletedUser.email} has already deleted`
             : "No user deteled",
+    });
+});
+
+const deleteManyUsers = asyncHandler(async (req, res) => {
+    const { _ids } = req.body;
+    const deletedUser = await User.deleteMany({ _id: { $in: _ids } });
+    return res.status(200).json({
+        success: deletedUser ? true : false,
+        deletedUser: deletedUser ? deletedUser : "Can not delete users",
     });
 });
 
@@ -264,7 +331,7 @@ const updateUserAddress = asyncHandler(async (req, res) => {
     if (!req.body.address) throw new Error("Missing input(s)");
     const response = await User.findByIdAndUpdate(
         _id,
-        { $push: { address: req.body.address } },
+        { address: req.body.address },
         {
             new: true,
         }
@@ -294,7 +361,6 @@ const updateCart = asyncHandler(async (req, res) => {
             variant,
         }));
     }
-
 
     const user = await User.findById(_id).select("cart").populate("cart");
 
@@ -327,7 +393,9 @@ const updateCart = asyncHandler(async (req, res) => {
         const response = await User.findByIdAndUpdate(
             _id,
             {
-                $push: { cart: { product: pid, quantity, variant: variantNoId } },
+                $push: {
+                    cart: { product: pid, quantity, variant: variantNoId },
+                },
             },
             { new: true }
         );
@@ -422,4 +490,5 @@ module.exports = {
     authRegister,
     updateWishList,
     removeWishList,
+    deleteManyUsers,
 };

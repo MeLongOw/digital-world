@@ -13,7 +13,7 @@ import {
     IoIosArrowRoundBack,
     IoMdAddCircleOutline,
     IoMdRemoveCircleOutline,
-    IoMdRemoveCircle
+    IoMdRemoveCircle,
 } from "react-icons/io";
 import { TfiMenu } from "react-icons/tfi";
 import { RiArrowDropDownLine } from "react-icons/ri";
@@ -27,6 +27,7 @@ import {
 import { HiOutlineClipboardDocumentCheck } from "react-icons/hi2";
 import { IoMdRefresh } from "react-icons/io";
 import { SiBrandfolder } from "react-icons/si";
+import { CgProfile } from "react-icons/cg";
 
 import {
     AiFillHome,
@@ -85,7 +86,8 @@ const icons = {
     IoMdAddCircleOutline,
     IoMdRemoveCircleOutline,
     AiOutlineArrowUp,
-    IoMdRemoveCircle
+    IoMdRemoveCircle,
+    CgProfile,
 };
 
 export default icons;

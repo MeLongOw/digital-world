@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import icons from "../../../utils/icons";
-import Select from "react-select";
 import CustomSelect from "../../../components/CustomSelect";
 
 const { AiOutlineSearch, AiOutlineLoading } = icons;
@@ -8,7 +7,7 @@ const { AiOutlineSearch, AiOutlineLoading } = icons;
 const SearchBox = ({ fetch = () => {}, isOption = true, options = [] }) => {
     const [value, setValue] = useState('');
     const [isLoading, setIsLoading] = useState(false);
-    const [field, setField] = useState({ value: "title", label: "Title" });
+    const [field, setField] = useState(options[0]);
 
     useEffect(() => {
         const timerId = setTimeout(() => {

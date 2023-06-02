@@ -20,7 +20,7 @@ export const capitalizeFirstLetter = (str) => {
 
 export const capitalize = (str) => {
     return str
-        .trim()
+        ?.trim()
         .split(" ")
         .map(
             (word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()

@@ -12,32 +12,38 @@ const {
     AiOutlineStar,
     RiCoupon2Line,
     SiBrandfolder,
+    RxAvatar,
 } = icons;
 const sidebarItem = [
-    { icon: <RxDashboard />, title: "Dasboard", path: path.DASHBOARD },
+    { icon: <RxDashboard />, title: "Dasboard", path: `/${path.DASHBOARD}` },
     {
         icon: <RiProductHuntLine />,
         title: "Products",
-        path: path.PRODUCTS_ADMIN,
+        path: `/${path.PRODUCTS_ADMIN}`,
     },
     {
         icon: <SiBrandfolder />,
         title: "Brands",
-        path: path.BRANDS,
+        path: `/${path.BRANDS}`,
     },
 
     {
         icon: <AiOutlineShoppingCart />,
         title: "Categories",
-        path: path.CATEGOGIES,
+        path: `/${path.CATEGOGIES}`,
+    },
+    {
+        icon: <RxAvatar />,
+        title: "Users",
+        path: `/${path.USERS}`,
     },
     {
         icon: <HiOutlineClipboardDocumentCheck />,
         title: "Orders",
-        path: path.ORDERS,
+        path: `/${path.ORDERS}`,
     },
-    { icon: <AiOutlineStar />, title: "Reviews", path: path.REVIEWS },
-    { icon: <RiCoupon2Line />, title: "Coupons", path: path.COUPONS },
+    { icon: <AiOutlineStar />, title: "Reviews", path: `/${path.REVIEWS}` },
+    { icon: <RiCoupon2Line />, title: "Coupons", path: `/${path.COUPONS}` },
 ];
 const Sidebar = () => {
     return (

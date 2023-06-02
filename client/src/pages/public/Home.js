@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 import Slider from "react-slick";
 import {
     Sidebar,
@@ -10,6 +11,7 @@ import {
     CustomSlider,
 } from "../../components";
 import icons from "../../utils/icons";
+import path from "../../utils/path";
 
 const settings = {
     dots: false,
@@ -34,7 +36,6 @@ const { IoIosArrowForward } = icons;
 const Home = () => {
     const { newProducts } = useSelector((state) => state.products);
     const { categories } = useSelector((state) => state.app);
-    const { isLoggedIn, current, token } = useSelector((state) => state.user);
     useEffect(() => {
         window.scrollTo(0, 0);
     }, []);
@@ -76,32 +77,66 @@ const Home = () => {
                             key={item._id}
                         >
                             <div className=" border flex w-full min-h-[200px] p-4">
-                                <div className="flex flex-1 justify-center">
+                                <Link
+                                    className="flex flex-1 justify-center"
+                                    to={`/${
+                                        path.PRODUCTS
+                                    }/${item?.title?.toLowerCase()}`}
+                                >
                                     <img
                                         src={item.image}
                                         alt=""
                                         className="w-[120px] h-[120px] object-contain "
                                     />
-                                </div>
+                                </Link>
                                 <div className="text-gray-700 flex-1 pl-5">
-                                    <h4 className="font-semibold uppercase">
+                                    <Link
+                                        className="font-semibold uppercase hover:text-main"
+                                        to={`/${
+                                            path.PRODUCTS
+                                        }/${item?.title?.toLowerCase()}`}
+                                    >
                                         {item.title}
-                                    </h4>
+                                    </Link>
                                     <ul className="text-sm">
-                                        {item.brand?.map((item, index) => {
-                                            if (index < 7)
-                                                return (
-                                                    <li
-                                                        key={item?._id}
-                                                        className="flex items-center text-gray-500"
-                                                    >
-                                                        <IoIosArrowForward
-                                                            size={14}
-                                                        />
-                                                        <p>{item?.title}</p>
-                                                    </li>
-                                                );
-                                        })}
+                                        {item.brand
+                                            .map((item) => item)
+                                            ?.sort((a, b) => {
+                                                if (
+                                                    a?.productCount >
+                                                    b?.productCount
+                                                ) {
+                                                    return -1;
+                                                }
+                                                if (
+                                                    a?.productCount <
+                                                    b?.productCount
+                                                ) {
+                                                    return 1;
+                                                }
+                                                return 0;
+                                            })
+                                            ?.map((brand, index) => {
+                                                if (index < 7) {
+                                                    return (
+                                                        <Link
+                                                            state={brand?.title}
+                                                            to={`/${
+                                                                path.PRODUCTS
+                                                            }/${item?.title?.toLowerCase()}`}
+                                                            key={brand?._id}
+                                                            className="flex items-center hover:text-main text-gray-500"
+                                                        >
+                                                            <IoIosArrowForward
+                                                                size={14}
+                                                            />
+                                                            <p>
+                                                                {brand?.title}
+                                                            </p>
+                                                        </Link>
+                                                    );
+                                                } else return null;
+                                            })}
                                     </ul>
                                 </div>
                             </div>

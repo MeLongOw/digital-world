@@ -2,7 +2,7 @@ import React from "react";
 
 const InputNumberCart = ({ number = 1, handleUpdateCart = () => {} }) => {
     const handleDownNum = () => {
-        if (number > 0) {
+        if (number > 1) {
             handleUpdateCart(+number - 1);
         }
     };

@@ -28,6 +28,10 @@ import {
 } from "./pages/private";
 import { getCategories } from "./store/app/asyncThunk";
 import path from "./utils/path";
+import { Account } from "./pages/public/Account";
+import { Profile } from "./pages/public/Account";
+import { Ratings } from "./pages/public/Account";
+import User from "./pages/private/Users";
 
 function App() {
     const dispatch = useDispatch();
@@ -61,23 +65,38 @@ function App() {
                     <Route path={path.OUR_SERVICES} element={<Services />} />
                     <Route path={path.WISHLIST} element={<WishList />} />
                     <Route path={path.CART} element={<Cart />} />
+                    <Route path={path.ACCOUNT} element={<Account />}>
+                        <Route
+                            path={`/${path.ACCOUNT_PROFILE}`}
+                            element={<Profile />}
+                        />
+                        <Route
+                            path={`/${path.ACCOUNT_ORDERS}`}
+                            element={<Orders />}
+                        />
+                        <Route
+                            path={`/${path.ACCOUNT_RATINGS}`}
+                            element={<Ratings />}
+                        />
+                    </Route>
                 </Route>
                 <Route path={path.RESET_PASSWORD} element={<ResetPassword />} />
                 <Route path={path.AUTH_REGISTER} element={<AuthRegister />} />
                 {!isLoggedIn && <Route path={path.LOGIN} element={<Login />} />}
 
                 {/* ADMIN */}
-                <Route path={path.ADMIN} element={<Admin />} end>
-                    <Route path={path.DASHBOARD} element={<Dashboard />} />
+                <Route path={`/${path.ADMIN}`} element={<Admin />}>
+                    <Route path={`/${path.DASHBOARD}`} element={<Dashboard />} />
                     <Route
-                        path={path.PRODUCTS_ADMIN}
+                        path={`/${path.PRODUCTS_ADMIN}`}
                         element={<ProductsAdmin />}
                     />
-                    <Route path={path.BRANDS} element={<Brands />} />
-                    <Route path={path.CATEGOGIES} element={<Categories />} />
-                    <Route path={path.ORDERS} element={<Orders />} />
-                    <Route path={path.REVIEWS} element={<Reviews />} />
-                    <Route path={path.COUPONS} element={<Coupons />} />
+                    <Route path={`/${path.BRANDS}`} element={<Brands />} />
+                    <Route path={`/${path.USERS}`} element={<User />} />
+                    <Route path={`/${path.CATEGOGIES}`} element={<Categories />} />
+                    <Route path={`/${path.ORDERS}`} element={<Orders />} />
+                    <Route path={`/${path.REVIEWS}`} element={<Reviews />} />
+                    <Route path={`/${path.COUPONS}`} element={<Coupons />} />
                 </Route>
             </Routes>
         </div>

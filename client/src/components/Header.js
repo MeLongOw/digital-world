@@ -104,8 +104,10 @@ const Header = () => {
                         <Link
                             className="p-3  border-b border-gray-300 hover:bg-gray-100 flex"
                             onClick={handleToggleMenu}
+                            to={`/${path.ACCOUNT}`}
+                            state={'profile'}
                         >
-                            Your Information
+                            My Account
                         </Link>
                         <Link
                             to={`${path.WISHLIST}`}

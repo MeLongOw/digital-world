@@ -1,9 +1,12 @@
-import React from 'react'
+import React from "react";
+import CouponTable from "./components/Table/CouponTable";
 
 const Coupons = () => {
-  return (
-    <div>Coupons</div>
-  )
-}
+    return (
+        <div>
+            <CouponTable />
+        </div>
+    );
+};
 
-export default Coupons
+export default Coupons;

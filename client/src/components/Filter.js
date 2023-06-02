@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
-import { useLocation } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import { apiGetBrands, apiGetCategories } from "../apis";
-import icons from "../utils/icons";
 import CustomSelect from "./CustomSelect";
 
 const priceOptions = [
@@ -44,8 +42,14 @@ const priceOptions = [
 ];
 
 const Filter = ({ setPriceFilter = () => {}, setBrandFilter = () => {} }) => {
-    const { pathname } = useLocation();
+    const { pathname, state } = useLocation();
+    console.log({ state });
     const [brands, setBrands] = useState([{ value: "", label: "Brand - All" }]);
+    const [defaultBrandSelect, setDefaultBrandSelect] = useState({
+        value: "",
+        label: "Brand - All",
+    });
+    console.log(defaultBrandSelect);
 
     const fetchBrands = async () => {
         const response = await apiGetBrands();
@@ -54,12 +58,12 @@ const Filter = ({ setPriceFilter = () => {}, setBrandFilter = () => {} }) => {
                 response?.brands
                     ?.filter((brand) => brand?.productCount !== 0)
                     ?.map((brands) => ({
-                        value: brands.title.toLowerCase(),
+                        value: brands.title?.toLowerCase(),
                         label: brands.title,
                     })) || [];
             brandOptions.sort((a, b) => {
-                const labelA = a.label.toLowerCase();
-                const labelB = b.label.toLowerCase();
+                const labelA = a.label?.toLowerCase();
+                const labelB = b.label?.toLowerCase();
                 if (labelA < labelB) {
                     return -1;
                 }
@@ -79,7 +83,7 @@ const Filter = ({ setPriceFilter = () => {}, setBrandFilter = () => {} }) => {
             category = arrLocation[2];
         }
         const response = await apiGetCategories({ title: category });
-       
+
         if (response?.success) {
             const brandOptions =
                 response?.prodCategories[0]?.brand
@@ -102,6 +106,14 @@ const Filter = ({ setPriceFilter = () => {}, setBrandFilter = () => {} }) => {
             setBrands((prev) => [...prev, ...brandOptions]);
         }
     };
+    useEffect(() => {
+        if (state)
+            setDefaultBrandSelect({
+                value: state?.toLowerCase(),
+                label: state,
+            });
+        setBrandFilter(state?.toLowerCase());
+    }, [state]);
 
     useEffect(() => {
         const arrLocation = pathname.split("/");
@@ -112,7 +124,6 @@ const Filter = ({ setPriceFilter = () => {}, setBrandFilter = () => {} }) => {
         if (!category) fetchBrands();
         else {
             fetchBrandsOfCategory();
-     
         }
     }, []);
 
@@ -130,7 +141,8 @@ const Filter = ({ setPriceFilter = () => {}, setBrandFilter = () => {} }) => {
             <div className="w-1/4">
                 <CustomSelect
                     placeholder="Brand"
-                    defaultValue={brands[0]}
+                    defaultValue={defaultBrandSelect}
+                    value={defaultBrandSelect}
                     isSearchable={false}
                     options={brands}
                     onChange={(e) => setBrandFilter(e.value)}
