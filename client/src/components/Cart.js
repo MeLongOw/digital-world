@@ -159,6 +159,10 @@ const Cart = () => {
                 <Button
                     iconsAfter={<AiOutlineArrowRight size={16} />}
                     name={"CHECK OUT"}
+                    handleClick={() => {
+                        navigate(`/${path.CHECKOUT}`);
+                        dispatch(appSlice.actions.toggleCart())
+                    }}
                 />
             </div>
         </div>

@@ -28,6 +28,7 @@ import { HiOutlineClipboardDocumentCheck } from "react-icons/hi2";
 import { IoMdRefresh } from "react-icons/io";
 import { SiBrandfolder } from "react-icons/si";
 import { CgProfile } from "react-icons/cg";
+import { CiDiscount1 } from "react-icons/ci";
 
 import {
     AiFillHome,
@@ -43,7 +44,7 @@ import {
     AiOutlineShoppingCart,
     AiOutlineSearch,
     AiOutlineArrowUp,
-    AiOutlineEdit
+    AiOutlineEdit,
 } from "react-icons/ai";
 
 const icons = {
@@ -89,7 +90,8 @@ const icons = {
     AiOutlineArrowUp,
     IoMdRemoveCircle,
     CgProfile,
-    AiOutlineEdit
+    AiOutlineEdit,
+    CiDiscount1,
 };
 
 export default icons;

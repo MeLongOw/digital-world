@@ -19,14 +19,13 @@ const provider = new FacebookAuthProvider();
 const Login = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const isLoggedIn = useSelector(state => state.user.isLoggedIn)
+    const isLoggedIn = useSelector((state) => state.user.isLoggedIn);
 
-    useEffect(()=>{
-        if(isLoggedIn){
-            navigate('/')
+    useEffect(() => {
+        if (isLoggedIn) {
+            navigate("/");
         }
-    },[isLoggedIn])
-  
+    }, [isLoggedIn]);
 
     const [payload, setPayload] = useState({
         firstName: "",
@@ -65,7 +64,7 @@ const Login = () => {
         if (!invalidCount) {
             if (isRegister) {
                 const response = await apiRegister(payload);
-                Swal.fire(
+                await Swal.fire(
                     response.success ? "Congratulation" : "Opps!",
                     response.mes,
                     response.success ? "success" : "error"
@@ -82,7 +81,7 @@ const Login = () => {
                     }
                 });
             } else {
-                const response = await apiLogin(data); 
+                const response = await apiLogin(data);
                 if (response.success) {
                     dispatch(
                         userSlice.actions.login({
@@ -93,10 +92,11 @@ const Login = () => {
                     );
                     navigate(`/${path.HOME}`);
                 } else {
-                    Swal.fire("Opps!", response.mes, "error");
+                    await Swal.fire("Opps!", response.mes, "error");
                 }
             }
         }
+        return true;
     }, [isRegister, payload]);
 
     const handleLoginWithFacebook = () => {

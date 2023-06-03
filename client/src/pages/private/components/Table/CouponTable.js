@@ -102,8 +102,8 @@ export default function CouponTable() {
             if (result.isConfirmed) {
                 const response = await apiDeleteCoupon(token, cid);
                 if (response?.success) {
+                    isSuccess = true;
                     Swal.fire("Success!", response.mes, "success").then(() => {
-                        isSuccess = true;
                         fetchCoupons();
                     });
                 } else {

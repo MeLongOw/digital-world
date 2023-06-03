@@ -405,6 +405,15 @@ const updateCart = asyncHandler(async (req, res) => {
         });
     }
 });
+const clearCart = asyncHandler(async (req, res) => {
+    const { _id } = req.user;
+
+    const user = await User.findByIdAndUpdate(_id, { cart: [] });
+
+    return res.status(200).json({
+        success: user ? true : false,
+    });
+});
 
 const removeFormCart = asyncHandler(async (req, res) => {
     const { _id } = req.user;
@@ -486,6 +495,7 @@ module.exports = {
     updateUserByAdmin,
     updateUserAddress,
     updateCart,
+    clearCart,
     removeFormCart,
     authRegister,
     updateWishList,

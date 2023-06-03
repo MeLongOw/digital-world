@@ -83,6 +83,13 @@ export const apiUpdateCart = (token, data) =>
         data,
     });
 
+export const apiClearCart = (token) =>
+    axios({
+        url: "/user/clearcart",
+        method: "put",
+        headers: { Authorization: `Bearer ${token}` },
+    });
+
 export const apiUpdateUserAddress = (token, data) =>
     axios({
         url: "/user/address",

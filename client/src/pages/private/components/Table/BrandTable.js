@@ -90,7 +90,7 @@ export default function BrandTable() {
             if (result.isConfirmed) {
                 const response = await apiDeleteBrand(token, cid);
                 if (response?.success) {
-                    Swal.fire("Success!", response.mes, "success").then(() => {
+                    await Swal.fire("Success!", response.mes, "success").then(() => {
                         isSuccess = true;
                         fetchBrands();
                     });
@@ -130,7 +130,7 @@ export default function BrandTable() {
                 });
                 if (response?.success) {
                     isSuccess = true;
-                    Swal.fire("Success!", response.mes, "success").then(() => {
+                    await Swal.fire("Success!", response.mes, "success").then(() => {
                         setIsCheck([]);
                         fetchBrands();
                     });

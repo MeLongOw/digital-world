@@ -6,22 +6,26 @@ const asyncHandler = require("express-async-handler");
 const createOrder = asyncHandler(async (req, res) => {
     const { _id } = req.user;
     const { coupon } = req.body;
+    let selectedCoupon;
+
+    if (coupon) {
+        selectedCoupon = await Coupon.findById(coupon);
+
+        if (!selectedCoupon) throw new Error("Coupon does not exist");
+    }
+
     const user = await User.findById(_id)
         .select("cart")
         .populate("cart.product", "title price");
 
-    const products = user?.cart.map((item) => {
-        return {
-            product: item.product._id,
-            count: item.quantity,
-            color: item.color,
-        };
-    });
+    const products = user?.cart;
 
     let total = user?.cart.reduce(
         (sum, item) => +item.product.price * +item.quantity + sum,
         0
     );
+
+    const shippingFee = Math.round(total * 0.02);
 
     const createData = {
         products,
@@ -29,13 +33,15 @@ const createOrder = asyncHandler(async (req, res) => {
         orderBy: _id,
     };
     if (coupon) {
-        const selectedCoupon = await Coupon.findById(coupon);
         total =
-            Math.round((total * (1 - +selectedCoupon?.discount / 100)) / 1000) *
-                1000 || total;
+            total - Math.round((total * +selectedCoupon?.discount) / 100) ||
+            total;
         createData.coupon = coupon;
-        createData.total = total;
     }
+
+    total = total + shippingFee;
+    createData.total = total;
+
     const rs = await Order.create(createData);
 
     return res.status(200).json({
@@ -83,5 +89,5 @@ module.exports = {
     createOrder,
     updateStatus,
     getUserOrders,
-    getOrders
+    getOrders,
 };

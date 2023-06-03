@@ -1,19 +1,32 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { useSelector } from "react-redux";
-import { apiUpdateUserAddress, apiUpdateUserInformation } from "../../apis";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
+import {
+    apiClearCart,
+    apiCreateOrder,
+    apiGetCoupons,
+    apiUpdateUserAddress,
+    apiUpdateUserInformation,
+} from "../../apis";
 import { Button, InputField } from "../../components";
+import { getCurrent } from "../../store/user/asyncThunk";
 import { compareObjects, formatMoney } from "../../utils/helpers";
 import icons from "../../utils/icons";
+import path from "../../utils/path";
+
+const { IoIosArrowRoundBack, CiDiscount1 } = icons;
 
 const defaultAdress = { address: "", ward: "", district: "", city: "" };
 
 const Checkout = () => {
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
     const currentUser = useSelector((state) => state.user.current);
     const token = useSelector((state) => state.user.token);
-
-    console.log(currentUser?.address);
+    const [coupons, setCoupons] = useState([]);
+    const [selectedCoupon, setSelectedCoupon] = useState("");
     const [address, setAddress] = useState(defaultAdress);
-    console.log(address);
     const [phone, setPhone] = useState("");
     const [isDisableButtonSave, setIsDisableButtonSave] = useState(false);
     const [isDisableButtonOrder, setisDisableButtonOrder] = useState(true);
@@ -36,6 +49,47 @@ const Checkout = () => {
         return true;
     };
 
+    const handleSubmitOrder = async () => {
+        let isSuccess = false;
+        await Swal.fire({
+            title: "Confirm your order?",
+            icon: "question",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Confirm",
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                const response = await apiCreateOrder(token, {
+                    coupon: selectedCoupon?._id,
+                });
+                console.log();
+                if (response?.success) {
+                    await Swal.fire("Success!", response.mes, "success").then(
+                        async () => {
+                            const response = await apiClearCart(token);
+                            if (response?.success) {
+                                dispatch(getCurrent(token));
+                                navigate("/");
+                            }
+                            isSuccess = true;
+                        }
+                    );
+                } else {
+                    isSuccess = true;
+                    Swal.fire("error!", response.mes, "error");
+                }
+            } else {
+                isSuccess = true;
+            }
+        });
+        return isSuccess;
+    };
+
+    const fetchCoupon = async () => {
+        const response = await apiGetCoupons();
+        if (response?.success) setCoupons(response?.coupons);
+    };
     const subTotal = useMemo(() => {
         return (
             currentUser?.cart?.reduce(
@@ -44,6 +98,14 @@ const Checkout = () => {
             ) || 0
         );
     }, [currentUser]);
+
+    const handleSelectCoupon = (coupon) => {
+        setSelectedCoupon(coupon);
+    };
+
+    useEffect(() => {
+        setSelectedCoupon(coupons[0]);
+    }, [coupons]);
 
     useEffect(() => {
         if (isDisableButtonSave && !compareObjects(address, defaultAdress)) {
@@ -67,6 +129,10 @@ const Checkout = () => {
         if (currentUser?.phone) setPhone(currentUser?.phone);
         if (currentUser?.address) setAddress(JSON.parse(currentUser?.address));
     }, [currentUser]);
+
+    useEffect(() => {
+        fetchCoupon();
+    }, []);
 
     return (
         <div className="flex mb-10">
@@ -139,6 +205,15 @@ const Checkout = () => {
                             />
                         </div>
                     </div>
+                    <div className="flex justify-center mt-3 ">
+                        <Link
+                            to={`/${path.CART}`}
+                            className="flex items-center text-gray-600 hover:text-main"
+                        >
+                            <IoIosArrowRoundBack size={20} />{" "}
+                            <span>Back to cart</span>
+                        </Link>
+                    </div>
                 </div>
             </div>
             <div className="flex flex-1 border border-l-0 p-[32px] bg-[#fafafa] flex-col justify-between">
@@ -182,6 +257,30 @@ const Checkout = () => {
                 </div>
 
                 <div>
+                    <div className="flex justify-between mb-2 items-end">
+                        <span className="text-lg font-medium mr-4">
+                            Coupon:
+                        </span>
+                        <div className="flex flex-1 gap-3 max-w-[450px] overflow-x-scroll">
+                            {coupons?.map((coupon) => (
+                                <div
+                                    key={coupon?._id}
+                                    className={`text-base font-medium flex flex-col bg-white px-4 py-2 
+                                    border-2 hover:bg-gray-50 hover:cursor-pointer rounded-lg ${
+                                        selectedCoupon?._id === coupon?._id &&
+                                        "border-main"
+                                    }`}
+                                    onClick={() => handleSelectCoupon(coupon)}
+                                >
+                                    <span>{coupon?.title}</span>
+                                    <div className="flex items-center gap-1 justify-end">
+                                        <CiDiscount1 size={20} />
+                                        <span>{`${coupon.discount}%`}</span>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
                     <div className="flex justify-between mb-2">
                         <span className="text-lg font-medium">Subtotal:</span>
                         <span className="text-base font-medium">
@@ -191,19 +290,33 @@ const Checkout = () => {
                     <div className="flex justify-between mb-2">
                         <span className="text-lg font-medium">Shipping:</span>
                         <span className="text-base font-medium">
-                            100.000.000 VND
+                            {formatMoney(Math.round(subTotal * 0.02))} VND
                         </span>
                     </div>
                     <div className="flex justify-between mb-2">
                         <span className="text-lg font-medium">Discounts:</span>
                         <span className="text-base font-medium">
-                            100.000.000 VND
+                            {"-"}
+                            {formatMoney(
+                                Math.round(
+                                    (subTotal * selectedCoupon?.discount) / 100
+                                )
+                            )}{" "}
+                            VND
                         </span>
                     </div>
                     <div className="flex justify-between border-t py-3">
                         <span className="text-lg font-semibold">TOTAL:</span>
                         <span className="text-lg font-medium">
-                            100.000.000 VND
+                            {formatMoney(
+                                subTotal +
+                                    Math.round(subTotal * 0.02) -
+                                    Math.round(
+                                        (subTotal * selectedCoupon?.discount) /
+                                            100
+                                    )
+                            )}{" "}
+                            VND
                         </span>
                     </div>
                     <div className="flex justify-end">
@@ -212,7 +325,7 @@ const Checkout = () => {
                                 name={"Order"}
                                 rounded
                                 disabled={isDisableButtonOrder}
-                                // handleClick={handleSaveChange}
+                                handleClick={handleSubmitOrder}
                             />
                         </div>
                     </div>
