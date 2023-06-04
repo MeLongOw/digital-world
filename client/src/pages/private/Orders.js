@@ -1,9 +1,12 @@
-import React from 'react'
+import React from "react";
+import OrderTable from "./components/Table/OrderTable";
 
 const Orders = () => {
-  return (
-    <div>Orders</div>
-  )
-}
+    return (
+        <div>
+            <OrderTable />
+        </div>
+    );
+};
 
-export default Orders
+export default Orders;

@@ -62,7 +62,7 @@ const updateStatus = asyncHandler(async (req, res) => {
 
     return res.status(200).json({
         success: response ? true : false,
-        response: response ? response : "Can not update status",
+        rs: response ? response : "Can not update status",
     });
 });
 
@@ -72,17 +72,90 @@ const getUserOrders = asyncHandler(async (req, res) => {
 
     return res.status(200).json({
         success: response ? true : false,
-        response: response ? response : "Can not update status",
+        userOrder: response ? response : "Can not update status",
     });
 });
 
 const getOrders = asyncHandler(async (req, res) => {
-    const response = await Order.find();
+    const queries = { ...req.query };
+    const excludeFields = ["limit", "sort", "page", "fields"];
+    excludeFields.forEach((el) => delete queries[el]);
+    // Format operator Mongoose
+    let queryString = JSON.stringify(queries);
+    queryString = queryString.replace(
+        /\b(gte|gt|lt|lte)\b/g,
+        (matchedEl) => `$${matchedEl}`
+    );
+    const formattedQueries = JSON.parse(queryString);
+    //Filtering
+    if (queries?.coupon) {
+        const selectedCoupon = await Coupon.find({
+            title: { $regex: queries.coupon, $options: "i" },
+        }).select("_id");
+        if (selectedCoupon) {
+            formattedQueries.coupon = selectedCoupon;
+        }
+    }
+    if (queries?.email) {
+        const selectedUser = await User.find({
+            email: { $regex: queries.email, $options: "i" },
+        }).select("_id");
+        if (selectedUser) {
+            formattedQueries.orderBy = selectedUser;
+        }
+        formattedQueries.email = undefined;
+    }
 
-    return res.status(200).json({
-        success: response ? true : false,
-        response: response ? response : "Can not update status",
-    });
+    if (queries?.phone) {
+        const selectedUser = await User.find({
+            phone: { $regex: queries.phone, $options: "i" },
+        }).select("_id");
+        if (selectedUser) {
+            formattedQueries.orderBy = selectedUser;
+        }
+        formattedQueries.phone = undefined;
+    }
+
+    if (queries?.status)
+        formattedQueries.status = {
+            $regex: queries.status,
+            $options: "i",
+        };
+    let queryCommand = Order.find(formattedQueries);
+    //Sorting
+    if (req.query.sort) {
+        const sortBy = req.query.sort.split(",").join(" ");
+        queryCommand.sort(sortBy);
+    }
+    //Fields limiting
+    if (req.query.fields) {
+        const fields = req.query.fields.split(",").join(" ");
+        queryCommand.select(fields);
+    }
+    //Pagination
+    const page = +req.query.page || 1;
+    const limit = +req.query.limit || process.env.LIMIT_PRODUCTS;
+    const skip = (page - 1) * limit;
+    //Execute query
+    queryCommand
+        .skip(skip)
+        .limit(limit)
+        .populate("products.product")
+        .populate("coupon")
+        .populate("orderBy")
+        .populate("createdAt")
+        .select(
+            "Orderby.firstName Orderby.lastName Orderby.email products status coupon _id"
+        )
+        .exec()
+        .then(async (response) => {
+            const counts = await Order.find(formattedQueries).countDocuments();
+            return res.status(200).json({
+                success: response ? true : false,
+                counts,
+                orders: response ? response : "Can not get products.",
+            });
+        });
 });
 
 module.exports = {

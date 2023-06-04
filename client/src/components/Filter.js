@@ -43,13 +43,11 @@ const priceOptions = [
 
 const Filter = ({ setPriceFilter = () => {}, setBrandFilter = () => {} }) => {
     const { pathname, state } = useLocation();
-    console.log({ state });
     const [brands, setBrands] = useState([{ value: "", label: "Brand - All" }]);
     const [defaultBrandSelect, setDefaultBrandSelect] = useState({
         value: "",
         label: "Brand - All",
     });
-    console.log(defaultBrandSelect);
 
     const fetchBrands = async () => {
         const response = await apiGetBrands();

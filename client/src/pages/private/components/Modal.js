@@ -23,7 +23,7 @@ const Modal = ({
                 onClick={() => handleCancel(false)}
             >
                 <div
-                    className=" w-[700px] max-h-[800px] overflow-y-auto bg-white justify-center items-center rounded-xl p-5"
+                    className="w-[700px] max-h-[800px] overflow-y-auto bg-white justify-center items-center rounded-xl p-5"
                     onClick={(e) => e.stopPropagation()}
                 >
                     <div className="flex justify-between">

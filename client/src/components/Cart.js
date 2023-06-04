@@ -8,7 +8,7 @@ import { capitalize, formatMoney } from "../utils/helpers";
 import icons from "../utils/icons";
 import Button from "./Button";
 import InputNumberCart from "./InputNumberCart";
-import path from '../utils/path'
+import path from "../utils/path";
 
 const { AiOutlineClose, AiOutlineArrowRight } = icons;
 
@@ -48,12 +48,12 @@ const Cart = () => {
         }
     };
 
-    const handleToDetailProduct = ()=>{
-        dispatch(appSlice.actions.toggleCart())
+    const handleToDetailProduct = () => {
+        dispatch(appSlice.actions.toggleCart());
         window.scrollTo({
             top: 0,
         });
-    }
+    };
 
     useEffect(() => {
         fetchCurrent();
@@ -88,7 +88,11 @@ const Cart = () => {
                         <div className="pl-5 flex-1 flex flex-col justify-between">
                             <div className="flex justify-between mb-[10px]">
                                 <div className="flex flex-col">
-                                    <Link className="hover:text-main mb-1" onClick={handleToDetailProduct} to={`/${path.DETAIL_PRODUCT}/${item?.product?.slug}`}>
+                                    <Link
+                                        className="hover:text-main mb-1"
+                                        onClick={handleToDetailProduct}
+                                        to={`/${path.DETAIL_PRODUCT}/${item?.product?.slug}`}
+                                    >
                                         {item.product?.title &&
                                             capitalize(item.product?.title)}
                                     </Link>
@@ -160,8 +164,10 @@ const Cart = () => {
                     iconsAfter={<AiOutlineArrowRight size={16} />}
                     name={"CHECK OUT"}
                     handleClick={() => {
-                        navigate(`/${path.CHECKOUT}`);
-                        dispatch(appSlice.actions.toggleCart())
+                        if (currentUser?.cart?.length) {
+                            navigate(`/${path.CHECKOUT}`);
+                            dispatch(appSlice.actions.toggleCart());
+                        }
                     }}
                 />
             </div>

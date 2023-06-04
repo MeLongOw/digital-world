@@ -4,7 +4,6 @@ const moment = require("moment");
 
 const createNewCoupon = asyncHandler(async (req, res) => {
     const { title, discount, expiry } = req.body;
-    console.log(expiry);
     if (!title || !discount || !expiry)
         throw new Error("title, discount, expiry is required");
 

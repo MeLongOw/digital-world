@@ -51,38 +51,43 @@ const Checkout = () => {
 
     const handleSubmitOrder = async () => {
         let isSuccess = false;
-        await Swal.fire({
-            title: "Confirm your order?",
-            icon: "question",
-            showCancelButton: true,
-            confirmButtonColor: "#3085d6",
-            cancelButtonColor: "#d33",
-            confirmButtonText: "Confirm",
-        }).then(async (result) => {
-            if (result.isConfirmed) {
-                const response = await apiCreateOrder(token, {
-                    coupon: selectedCoupon?._id,
-                });
-                console.log();
-                if (response?.success) {
-                    await Swal.fire("Success!", response.mes, "success").then(
-                        async () => {
+        if (currentUser?.cart && currentUser?.cart?.length) {
+            await Swal.fire({
+                title: "Confirm your order?",
+                icon: "question",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Confirm",
+            }).then(async (result) => {
+                if (result.isConfirmed) {
+                    const response = await apiCreateOrder(token, {
+                        coupon: selectedCoupon?._id,
+                    });
+                    if (response?.success) {
+                        await Swal.fire(
+                            "Success!",
+                            response.mes,
+                            "success"
+                        ).then(async () => {
                             const response = await apiClearCart(token);
                             if (response?.success) {
                                 dispatch(getCurrent(token));
                                 navigate("/");
                             }
                             isSuccess = true;
-                        }
-                    );
+                        });
+                    } else {
+                        isSuccess = true;
+                        Swal.fire("error!", response.mes, "error");
+                    }
                 } else {
                     isSuccess = true;
-                    Swal.fire("error!", response.mes, "error");
                 }
-            } else {
-                isSuccess = true;
-            }
-        });
+            });
+        } else {
+            isSuccess = true;
+        }
         return isSuccess;
     };
 
@@ -108,12 +113,16 @@ const Checkout = () => {
     }, [coupons]);
 
     useEffect(() => {
-        if (isDisableButtonSave && !compareObjects(address, defaultAdress)) {
+        if (
+            isDisableButtonSave &&
+            !compareObjects(address, defaultAdress) &&
+            currentUser?.cart?.length
+        ) {
             setisDisableButtonOrder(false);
         } else {
             setisDisableButtonOrder(true);
         }
-    }, [isDisableButtonSave]);
+    }, [isDisableButtonSave, address]);
 
     useEffect(() => {
         if (currentUser?.address) {
@@ -123,7 +132,7 @@ const Checkout = () => {
                 setIsDisableButtonSave(false);
             }
         }
-    }, [address]);
+    }, [address, currentUser?.address]);
 
     useEffect(() => {
         if (currentUser?.phone) setPhone(currentUser?.phone);
@@ -218,42 +227,49 @@ const Checkout = () => {
             </div>
             <div className="flex flex-1 border border-l-0 p-[32px] bg-[#fafafa] flex-col justify-between">
                 <div className="mb-5 max-h-[512px] overflow-y-scroll">
-                    {currentUser?.cart?.map((item) => (
-                        <div className="flex mb-3 mt-3" key={`${item._id}`}>
-                            <div className="w-[76px] aspect-square relative">
-                                <img
-                                    alt="product"
-                                    src={item?.product?.thumb}
-                                    className="rounded-xl border border-gray-400"
-                                />
-                                <div className="bg-gray-600 text-white w-[24px] h-[24px] absolute top-[-8px] right-[-8px] rounded-full flex justify-center items-center">
-                                    {item.quantity}
-                                </div>
-                            </div>
-                            <span className="flex flex-col justify-center flex-1 pl-5">
-                                <span className="text-base text-gray-900 mb-2 font-semibold">
-                                    {item.product.title}
-                                </span>
-                                <span className="text-sm text-gray-700">
-                                    {item.variant.map((vari, index) => {
-                                        return (
-                                            <span key={index}>
-                                                {index !== 0 && (
-                                                    <span className="p-1">
-                                                        /
-                                                    </span>
-                                                )}
-                                                <span>{vari?.variant}</span>
-                                            </span>
-                                        );
-                                    })}
-                                </span>
-                            </span>
-                            <span className="pl-5 flex justify-center items-center text-base font-medium text-gray-900">
-                                {formatMoney(item.product.price)} VND
-                            </span>
-                        </div>
-                    ))}
+                    {currentUser?.cart.length
+                        ? currentUser?.cart?.map((item) => (
+                              <div
+                                  className="flex mb-3 mt-3"
+                                  key={`${item._id}`}
+                              >
+                                  <div className="w-[76px] aspect-square relative">
+                                      <img
+                                          alt="product"
+                                          src={item?.product?.thumb}
+                                          className="rounded-xl border border-gray-400"
+                                      />
+                                      <div className="bg-gray-600 text-white w-[24px] h-[24px] absolute top-[-8px] right-[-8px] rounded-full flex justify-center items-center">
+                                          {item.quantity}
+                                      </div>
+                                  </div>
+                                  <span className="flex flex-col justify-center flex-1 pl-5">
+                                      <span className="text-base text-gray-900 mb-2 font-semibold">
+                                          {item.product.title}
+                                      </span>
+                                      <span className="text-sm text-gray-700">
+                                          {item.variant.map((vari, index) => {
+                                              return (
+                                                  <span key={index}>
+                                                      {index !== 0 && (
+                                                          <span className="p-1">
+                                                              /
+                                                          </span>
+                                                      )}
+                                                      <span>
+                                                          {vari?.variant}
+                                                      </span>
+                                                  </span>
+                                              );
+                                          })}
+                                      </span>
+                                  </span>
+                                  <span className="pl-5 flex justify-center items-center text-base font-medium text-gray-900">
+                                      {formatMoney(item.product.price)} VND
+                                  </span>
+                              </div>
+                          ))
+                        : <i>No product is dropped into cart</i>}
                 </div>
 
                 <div>
@@ -261,25 +277,31 @@ const Checkout = () => {
                         <span className="text-lg font-medium mr-4">
                             Coupon:
                         </span>
-                        <div className="flex flex-1 gap-3 max-w-[450px] overflow-x-scroll">
-                            {coupons?.map((coupon) => (
-                                <div
-                                    key={coupon?._id}
-                                    className={`text-base font-medium flex flex-col bg-white px-4 py-2 
+                        {coupons ? (
+                            <div className="flex flex-1 gap-3 max-w-[450px] overflow-x-scroll">
+                                {coupons?.map((coupon) => (
+                                    <div
+                                        key={coupon?._id}
+                                        className={`text-base font-medium flex flex-col bg-white px-4 py-2 
                                     border-2 hover:bg-gray-50 hover:cursor-pointer rounded-lg ${
                                         selectedCoupon?._id === coupon?._id &&
                                         "border-main"
                                     }`}
-                                    onClick={() => handleSelectCoupon(coupon)}
-                                >
-                                    <span>{coupon?.title}</span>
-                                    <div className="flex items-center gap-1 justify-end">
-                                        <CiDiscount1 size={20} />
-                                        <span>{`${coupon.discount}%`}</span>
+                                        onClick={() =>
+                                            handleSelectCoupon(coupon)
+                                        }
+                                    >
+                                        <span>{coupon?.title}</span>
+                                        <div className="flex items-center gap-1 justify-end">
+                                            <CiDiscount1 size={20} />
+                                            <span>{`${coupon.discount}%`}</span>
+                                        </div>
                                     </div>
-                                </div>
-                            ))}
-                        </div>
+                                ))}
+                            </div>
+                        ) : (
+                            <i>No coupon is available</i>
+                        )}
                     </div>
                     <div className="flex justify-between mb-2">
                         <span className="text-lg font-medium">Subtotal:</span>

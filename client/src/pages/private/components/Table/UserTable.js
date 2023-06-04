@@ -38,7 +38,6 @@ export default function UserTable() {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isEdit, setIsEdit] = useState(false);
     const [payload, setPayload] = useState(defautPayload);
-    console.log(payload);
     const token = useSelector((state) => state.user.token);
 
     //PAGINATION

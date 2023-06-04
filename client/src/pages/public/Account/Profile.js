@@ -3,13 +3,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { apiUpdateUserAddress, apiUpdateUserInformation } from "../../../apis";
 import { Button, InputField } from "../../../components";
 import { getCurrent } from "../../../store/user/asyncThunk";
-import { capitalize } from "../../../utils/helpers";
+import { capitalize, compareObjects } from "../../../utils/helpers";
 
 const Profile = () => {
     const dispatch = useDispatch();
     const currentUser = useSelector((state) => state.user.current);
     const token = useSelector((state) => state.user.token);
-    console.log(currentUser);
+    const [isDisableButtonSave, setIsDisableButtonSave] = useState(true);
 
     const [payload, setPayload] = useState({
         firstName: "",
@@ -22,7 +22,6 @@ const Profile = () => {
         district: "",
         city: "",
     });
-    console.log(address);
 
     const handleSaveChange = async () => {
         const updateUser = [];
@@ -45,6 +44,27 @@ const Profile = () => {
         });
         if (currentUser?.address) setAddress(JSON.parse(currentUser?.address));
     }, [currentUser]);
+
+    useEffect(() => {
+        if (currentUser?.address) {
+            if (
+                compareObjects(
+                    {
+                        firstName: currentUser?.firstName,
+                        lastName: currentUser?.lastName,
+                        phone: currentUser?.phone,
+                    },
+                    payload
+                ) &&
+                compareObjects(JSON.parse(currentUser?.address), address) &&
+                currentUser
+            ) {
+                setIsDisableButtonSave(true);
+            } else {
+                setIsDisableButtonSave(false);
+            }
+        }
+    }, [payload, address]);
 
     return (
         <div>
@@ -129,13 +149,13 @@ const Profile = () => {
                             />
                         </div>
                     </div>
-
                     <div className="flex justify-end">
                         <div className="w-[100px]">
                             <Button
                                 name={"Save"}
                                 rounded
                                 handleClick={handleSaveChange}
+                                disabled={isDisableButtonSave}
                             />
                         </div>
                     </div>

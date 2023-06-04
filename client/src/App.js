@@ -28,9 +28,13 @@ import {
 } from "./pages/private";
 import { getCategories } from "./store/app/asyncThunk";
 import path from "./utils/path";
-import { Account } from "./pages/public/Account";
-import { Profile } from "./pages/public/Account";
-import { Ratings } from "./pages/public/Account";
+import {
+    Account,
+    Profile,
+    Ratings,
+    Orders as ProfileOrders,
+} from "./pages/public/Account";
+
 import User from "./pages/private/Users";
 import Checkout from "./pages/public/Checkout";
 
@@ -65,7 +69,7 @@ function App() {
                     <Route path={path.BLOGS} element={<Blogs />} />
                     <Route path={path.OUR_SERVICES} element={<Services />} />
                     <Route path={path.WISHLIST} element={<WishList />} />
-                    <Route path={path.CART} element={<Cart />}/>
+                    <Route path={path.CART} element={<Cart />} />
                     <Route path={`/${path.CHECKOUT}`} element={<Checkout />} />
 
                     <Route path={path.ACCOUNT} element={<Account />}>
@@ -75,7 +79,7 @@ function App() {
                         />
                         <Route
                             path={`/${path.ACCOUNT_ORDERS}`}
-                            element={<Orders />}
+                            element={<ProfileOrders />}
                         />
                         <Route
                             path={`/${path.ACCOUNT_RATINGS}`}

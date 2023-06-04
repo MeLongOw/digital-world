@@ -7,3 +7,19 @@ export const apiCreateOrder = (token, data) =>
         headers: { Authorization: `Bearer ${token}` },
         data,
     });
+
+export const apiGetOrders = (token, params) =>
+    axios({
+        url: `/order/admin`,
+        method: "get",
+        headers: { Authorization: `Bearer ${token}` },
+        params,
+    });
+
+export const apiUpdateStatusOrder = (token, oid, data) =>
+    axios({
+        url: `/order/status/${oid}`,
+        method: "put",
+        headers: { Authorization: `Bearer ${token}` },
+        data,
+    });

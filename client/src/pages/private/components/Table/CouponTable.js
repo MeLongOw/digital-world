@@ -38,8 +38,6 @@ export default function CouponTable() {
     const [payload, setPayload] = useState(defautPayload);
     const [isCheckAll, setIsCheckAll] = useState(false);
     const [isCheck, setIsCheck] = useState([]);
-
-    console.log(payload);
     const token = useSelector((state) => state.user.token);
 
     useEffect(() => {

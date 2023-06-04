@@ -4,7 +4,7 @@ const { verifyAccessToken, isAdmin } = require("../middlewares/verifyToken");
 
 router.post("/", verifyAccessToken, ctrls.createOrder);
 router.get("/", verifyAccessToken, ctrls.getUserOrders);
-router.get("/admin", verifyAccessToken, isAdmin, ctrls.getUserOrders);
-router.put("/status/:oid", verifyAccessToken, isAdmin, ctrls.getOrders);
+router.get("/admin", verifyAccessToken, isAdmin, ctrls.getOrders);
+router.put("/status/:oid", verifyAccessToken, isAdmin, ctrls.updateStatus);
 
 module.exports = router;

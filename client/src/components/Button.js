@@ -23,6 +23,8 @@ const Button = ({
         setTimeout(() => setIsSuccess(false), 1000);
     };
 
+    if (!disabled) disabled = undefined;
+
     return (
         <button
             disabled={disabled}
@@ -32,20 +34,23 @@ const Button = ({
                     ? className
                     : `px-4 py-2 ${
                           rounded && "rounded-md"
-                      } text-white font-semibold hover:cursor-pointer w-full flex justify-center items-center ${backgroundColor} ${
-                          disabled && "opacity-70 hover:cursor-default"
+                      } text-white font-semibold  w-full flex justify-center items-center ${backgroundColor} ${
+                          disabled ? "opacity-70" : "hover:cursor-pointer"
                       }`
             }
-            onClick={async () => {
-                setIsLoading(true);
-                if (handleClick?.constructor?.name === "AsyncFunction") {
-                    const isSuccessHandle = await handleClick();
-                    if (isSuccessHandle) handleSuccess();
-                } else {
-                    handleClick();
-                    handleSuccess();
-                }
-            }}
+            onClick={
+                !disabled &&
+                (async () => {
+                    setIsLoading(true);
+                    if (handleClick?.constructor?.name === "AsyncFunction") {
+                        const isSuccessHandle = await handleClick();
+                        if (isSuccessHandle) handleSuccess();
+                    } else {
+                        handleClick();
+                        handleSuccess();
+                    }
+                })
+            }
         >
             {isLoading ? (
                 <AiOutlineLoading size={24} className="animate-spin" />

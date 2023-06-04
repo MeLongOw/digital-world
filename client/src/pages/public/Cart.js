@@ -148,7 +148,9 @@ const Cart = () => {
                         name="CHECK OUT"
                         iconsAfter={<AiOutlineArrowRight />}
                         handleClick={() => {
-                            navigate(`/${path.CHECKOUT}`);  
+                            if(currentUser?.cart?.length){
+                                navigate(`/${path.CHECKOUT}`);
+                            }
                         }}
                     />
                 </div>

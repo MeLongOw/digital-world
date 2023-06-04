@@ -2,7 +2,9 @@ import React from 'react'
 
 const Orders = () => {
   return (
-    <div>Orders</div>
+    <div>
+      <h3 className='h-[48px] flex items-center font-semibold text-xl'>Orders</h3>
+    </div>
   )
 }
 
