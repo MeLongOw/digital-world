@@ -48,6 +48,8 @@ const Filter = ({ setPriceFilter = () => {}, setBrandFilter = () => {} }) => {
         value: "",
         label: "Brand - All",
     });
+    console.log(brands);
+    console.log(defaultBrandSelect);
 
     const fetchBrands = async () => {
         const response = await apiGetBrands();
@@ -105,6 +107,7 @@ const Filter = ({ setPriceFilter = () => {}, setBrandFilter = () => {} }) => {
         }
     };
     useEffect(() => {
+        console.log({ state });
         if (state)
             setDefaultBrandSelect({
                 value: state?.toLowerCase(),
@@ -139,11 +142,13 @@ const Filter = ({ setPriceFilter = () => {}, setBrandFilter = () => {} }) => {
             <div className="w-1/4">
                 <CustomSelect
                     placeholder="Brand"
-                    defaultValue={defaultBrandSelect}
                     value={defaultBrandSelect}
                     isSearchable={false}
                     options={brands}
-                    onChange={(e) => setBrandFilter(e.value)}
+                    onChange={(e) => {
+                        setBrandFilter(e.value);
+                        setDefaultBrandSelect(e);
+                    }}
                 />
             </div>
         </div>

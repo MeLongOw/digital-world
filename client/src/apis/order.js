@@ -23,3 +23,11 @@ export const apiUpdateStatusOrder = (token, oid, data) =>
         headers: { Authorization: `Bearer ${token}` },
         data,
     });
+
+    export const apiUserOrders = (token, params) =>
+    axios({
+        url: `/order/`,
+        method: "get",
+        headers: { Authorization: `Bearer ${token}` },
+        params,
+    });

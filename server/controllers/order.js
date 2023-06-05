@@ -68,11 +68,18 @@ const updateStatus = asyncHandler(async (req, res) => {
 
 const getUserOrders = asyncHandler(async (req, res) => {
     const { _id } = req.user;
-    const response = await Order.find({ orderBy: _id });
+    let queries = { orderBy: _id };
+    const { status } = req.query;
+    if (status) queries = { status, orderBy: _id };
+    const response = await Order.find(queries)
+        .populate("coupon")
+        .populate('products.product')
+        .select('-orderBy')
+        .sort("-createdAt");
 
     return res.status(200).json({
         success: response ? true : false,
-        userOrder: response ? response : "Can not update status",
+        userOrders: response ? response : "Can not update status",
     });
 });
 

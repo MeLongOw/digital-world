@@ -23,12 +23,12 @@ const sidebar = [
 ];
 
 const Account = () => {
-    const { pathname } = useLocation();
+    const { pathname, state } = useLocation();
     const navigate = useNavigate();
     useEffect(() => {
         if (pathname === `/${path.ACCOUNT}`)
-            navigate(`/${path.ACCOUNT_PROFILE}`);
-    }, []);
+            navigate(`/${path.ACCOUNT}/${state || "profile"}`);
+    }, [state, pathname, navigate]);
     return (
         <div className="flex mb-10">
             <div className="flex-2 border">

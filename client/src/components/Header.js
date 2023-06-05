@@ -8,14 +8,15 @@ import { appSlice } from "../store/app/appSlice";
 import { userSlice } from "../store/user/userSlice";
 import icons from "../utils/icons";
 import path from "../utils/path";
-import Button from './Button'
+import Button from "./Button";
 
 const { AiFillPhone, MdEmail, BsFillBagFill, FaUserCircle } = icons;
 
 const Header = () => {
     const [isClickAvatar, setIsClickAvatar] = useState(false);
     const dispatch = useDispatch();
-    const navigate = useNavigate()
+    const navigate = useNavigate();
+    const menuRef = useRef(null);
     const isIconCardClick = useSelector((state) => state.app.isIconCardClick);
     const currentUser = useSelector((state) => state.user.current);
     const isLoggedIn = useSelector((state) => state.user.isLoggedIn);
@@ -38,6 +39,19 @@ const Header = () => {
             Swal.fire("Success!", response.mes, "success");
         }
     };
+
+    const handleClickOutsideMenu = (event) => {
+        if (menuRef.current && !menuRef.current.contains(event.target)) {
+            setIsClickAvatar(false);
+        }
+    };
+
+    useEffect(() => {
+        document.addEventListener("mousedown", handleClickOutsideMenu);
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutsideMenu);
+        };
+    }, []);
 
     return (
         <div className=" w-main flex justify-between h-[110px] py-[35px]">
@@ -83,20 +97,24 @@ const Header = () => {
                 </div>
 
                 <div className="flex relative items-center  justify-center px-6 text-sm">
-                    {/* <label htmlFor="avatar-on-blur"> */}
                     {isLoggedIn ? (
                         <FaUserCircle
-                        size={30}
-                        className="cursor-pointer"
-                        onClick={handleToggleMenu}
-                    />
+                            size={30}
+                            className="cursor-pointer"
+                            onClick={handleToggleMenu}
+                        />
                     ) : (
-                        <Button name='Log in' rounded handleClick={()=>{
-                            navigate(`/login`)
-                        }}/>
+                        <Button
+                            name="Log in"
+                            rounded
+                            handleClick={() => {
+                                navigate(`/login`);
+                            }}
+                        />
                     )}
 
                     <div
+                        ref={menuRef}
                         className={`absolute top-[48px] right-[8px] bg-white text-gray-700 shadow-xl rounded-md border w-[160px] overflow-hidden ${
                             !isClickAvatar && "hidden"
                         }`}
@@ -104,8 +122,8 @@ const Header = () => {
                         <Link
                             className="p-3  border-b border-gray-300 hover:bg-gray-100 flex"
                             onClick={handleToggleMenu}
-                            to={`/${path.ACCOUNT}`}
-                            state={'profile'}
+                            to={`/${path.ACCOUNT_PROFILE}`}
+                            state={"profile"}
                         >
                             My Account
                         </Link>
@@ -123,8 +141,6 @@ const Header = () => {
                             Log Out
                         </div>
                     </div>
-                    {/* </label>
-                    <input id='avatar-on-blur' onBlur={()=>{setIsClickAvatar(false)}}/> */}
                 </div>
             </div>
         </div>
