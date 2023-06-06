@@ -1,9 +1,9 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 const InputNumberProduct = ({
     number = 1,
     setNumber = () => {},
-   
+    available,
 }) => {
     const handleDownNum = () => {
         if (number > 1) {
@@ -11,8 +11,11 @@ const InputNumberProduct = ({
         }
     };
     const handleUpNum = () => {
-        setNumber((prev) => prev + 1);
+        if (number < available) setNumber((prev) => prev + 1);
     };
+    useEffect(() => {
+        setNumber(1);
+    }, [available, setNumber]);
 
     return (
         <div className={`flex bg-gray-200 h-[40px] w-[112px] justify-center`}>

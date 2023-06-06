@@ -1,8 +1,10 @@
 import React, { useEffect } from "react";
 
-const SelectVariant = ({ variants, payload, setPayload }) => {
-  
-
+const SelectVariant = ({
+    variants,
+    payload,
+    setPayload = () => {},
+}) => {
     const filterUniqueVariants = (payload) => {
         const uniqueVariants = {};
 
@@ -24,7 +26,7 @@ const SelectVariant = ({ variants, payload, setPayload }) => {
         setPayload(
             variants.map((variant) => ({
                 label: variant?.label,
-                variant: variant?.variants[0],
+                variant: variant?.variants.find((el) => el.quantity > 0),
             }))
         );
     }, [variants, setPayload]);
@@ -36,15 +38,16 @@ const SelectVariant = ({ variants, payload, setPayload }) => {
                         {variant?.label}
                     </span>
                     <div className="flex gap-2 flex-wrap">
-                        {variant?.variants?.map((vari) => (
+                        {variant?.variants?.map((el) => (
                             <button
-                                key={vari}
+                                key={el.variant}
                                 className={`border text-center px-4 py-3 flex items-center text-sm uppercase
                                  ${
-                                    payload.some((item) => {
+                                     payload.some((item) => {
                                          return (
-                                             item.variant === vari &&
-                                             item.label === variant.label
+                                             item.variant.variant === el.variant &&
+                                             item.label === variant.label &&
+                                             el.quantity > 0
                                          );
                                      })
                                          ? "border-main text-main"
@@ -56,13 +59,13 @@ const SelectVariant = ({ variants, payload, setPayload }) => {
                                             ...prev,
                                             {
                                                 label: variant?.label,
-                                                variant: vari,
+                                                variant: el,
                                             },
                                         ])
                                     );
                                 }}
                             >
-                                {vari}
+                                {el.variant}
                             </button>
                         ))}
                     </div>

@@ -15,6 +15,7 @@ import { useSearchParams } from "react-router-dom";
 import Pagination from "../Pagination";
 import InputSelect from "../../../../components/InputSelect";
 import moment from "moment";
+import { formatAddress } from "../../../../utils/helpers";
 
 const defautPayload = { _id: "", status: "" };
 
@@ -211,46 +212,27 @@ export default function OrderTable() {
                                                 className="flex gap-2"
                                                 key={el?._id}
                                             >
-                                                <span>{el.product?.title}</span>
                                                 <span className="font-semibold">
                                                     [{el.quantity}]
                                                 </span>
-                                                <span>
-                                                    {el.variant.map(
-                                                        (el, index) => {
-                                                            return (
-                                                                <span
-                                                                    key={index}
-                                                                >
-                                                                    {index !==
-                                                                        0 && (
-                                                                        <span className="p-1">
-                                                                            /
-                                                                        </span>
-                                                                    )}
-                                                                    <span>
-                                                                        {
-                                                                            el?.variant
-                                                                        }
-                                                                    </span>
-                                                                </span>
-                                                            );
-                                                        }
-                                                    )}
-                                                </span>
+                                                <span>{`${
+                                                    el.product?.title
+                                                } -- ${el?.variant
+                                                    .map(
+                                                        ({ variant }) => variant
+                                                    )
+                                                    .join(" / ")}`}</span>
                                             </div>
                                         ))}
                                     </td>
-
                                     <td className="pl-3 py-4 text-sm text-gray-800 break-words ">
-                                        {item?.address}
+                                        {formatAddress(item?.address)}
                                     </td>
                                     <td className="pl-3 py-4 text-sm text-gray-800 break-words ">
                                         {moment(item?.createdAt).format(
                                             "HH:mm:ss DD/MM/YYYY"
                                         )}
                                     </td>
-
                                     <td className="px-3 py-4 text-sm font-medium text-right whitespace-nowrap ">
                                         <div className="flex justify-end gap-2 items-center">
                                             <EditButton

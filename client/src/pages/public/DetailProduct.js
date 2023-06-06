@@ -61,9 +61,10 @@ const DetailProduct = () => {
     const { slug } = useParams();
     const [product, setProduct] = useState(null);
     const [quantity, setQuantity] = useState(1);
+    const [available, setAvailable] = useState(0);
     const [payload, setPayload] = useState([{ label: "", variant: "" }]);
+    console.log(payload);
     const [imageActive, setImageActive] = useState("");
-
     const dispatch = useDispatch();
     const token = useSelector((state) => state.user.token);
 
@@ -76,10 +77,21 @@ const DetailProduct = () => {
     };
 
     const handleAddToCart = async (pid) => {
+        console.log({
+            pid,
+            quantity: quantity,
+            variant: payload?.map(({ label, variant }) => ({
+                label,
+                variant: variant.variant,
+            })),
+        });
         const response = await apiAddToCart(token, {
             pid,
             quantity: quantity,
-            variant: payload,
+            variant: payload?.map(({ label, variant }) => ({
+                label,
+                variant: variant.variant,
+            })),
         });
         if (response?.success) {
             dispatch(getCurrent(token));
@@ -90,6 +102,13 @@ const DetailProduct = () => {
     const handleChangeImage = (link) => {
         setImageActive(link);
     };
+
+    useEffect(() => {
+        const availableProductCount = Math.min(
+            ...payload.map((el) => el.variant.quantity)
+        );
+        setAvailable(availableProductCount);
+    }, [payload]);
 
     useEffect(() => {
         fetchProduct();
@@ -140,7 +159,7 @@ const DetailProduct = () => {
                                 <span className="text-[30px] font-semibold">
                                     {formatMoney(product?.price)} VNĐ
                                 </span>
-                                <span className="flex mt-3 mb-5">
+                                <span className="flex mt-3 mb-3">
                                     {renderStarFromNumber(
                                         product?.totalRatings,
                                         18
@@ -151,6 +170,11 @@ const DetailProduct = () => {
                                             : "0 review"}
                                     </span>
                                 </span>
+                                <i className="flex text-gray-700 font-normal mb-2">
+                                    {available
+                                        ? `Available: ${available}`
+                                        : "This product is not available"}
+                                </i>
                                 <ul className="text-sm text-gray-600 mb-5">
                                     {product?.description.map(
                                         (script, index) => (
@@ -175,6 +199,7 @@ const DetailProduct = () => {
                                     <InputNumberProduct
                                         number={quantity}
                                         setNumber={setQuantity}
+                                        available={available}
                                     />
                                 </div>
                                 <div className="mt-4">

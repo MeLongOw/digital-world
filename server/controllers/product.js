@@ -12,6 +12,17 @@ const {
 const createProduct = asyncHandler(async (req, res) => {
     if (!Object.keys(req.body).length) throw new Error("Missing input(s)");
     if (req.body && req.body.title) req.body.slug = slugify(req.body.title);
+    const { variants } = req.body;
+
+    //Check total of variant wether on not equal
+    const quantitiesEachVariant = variants.map((el) =>
+        el.variants.reduce((total, el) => (total += el.quantity), 0)
+    );
+    if (!quantitiesEachVariant?.every((el) => el === quantitiesEachVariant[0]))
+        throw new Error("Total of variants have to be equal");
+    const quantity = Math.max(...quantitiesEachVariant);
+    if (quantity) req.body.quantity = +quantity;
+
     const newProduct = await Product.create(req.body);
     return res.status(200).json({
         success: newProduct ? true : false,
@@ -172,7 +183,20 @@ const getProducts = asyncHandler(async (req, res) => {
 
 const updateProduct = asyncHandler(async (req, res) => {
     const { pid } = req.params;
-    if (req.body && req.body.title) req.body.slug = slugify(req.body.title);
+    if (req.body && req.body.title) {
+        if (!req.body?.slug) req.body.slug = slugify(req.body.title);
+    }
+
+    //Check total of variant wether on not equal
+    const { variants } = req.body;
+    const quantitiesEachVariant = variants.map((el) =>
+        el.variants.reduce((total, el) => (total += el.quantity), 0)
+    );
+    if (!quantitiesEachVariant?.every((el) => el === quantitiesEachVariant[0]))
+        throw new Error("Total of variants have to be equal");
+    const quantity = Math.max(...quantitiesEachVariant);
+    if (quantity) req.body.quantity = +quantity;
+
     const beforeUpdated = await Product.findById(pid);
     let updatedProduct = await Product.findByIdAndUpdate(pid, req.body, {
         new: true,

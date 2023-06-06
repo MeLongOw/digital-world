@@ -34,7 +34,7 @@ const defautPayload = {
     thumb: "",
     selectedFiles: [],
     description: [""],
-    variants: [{ label: "", variants: [""] }],
+    variants: [{ label: "", variants: [{ variant: "", quantity: "" }] }],
     category: "",
 };
 
@@ -49,7 +49,7 @@ export default function ProductTable() {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isEdit, setIsEdit] = useState(false);
     const [payload, setPayload] = useState(defautPayload);
-   
+    console.log({ payload });
 
     const [brands, setBrands] = useState([]);
     const [categories, setCategories] = useState([]);
@@ -233,7 +233,6 @@ export default function ProductTable() {
 
     const handleSubmitModal = async () => {
         payload.variants = reducedArray(payload.variants);
-
         const { _id, selectedFiles, ...data } = payload;
 
         const handleUpdateImagesProduct = async (_id) => {
@@ -467,9 +466,13 @@ export default function ProductTable() {
                                                             {`${variant.label}`}
                                                         </span>
                                                         <span>
-                                                            {`: ${variant.variants.join(
-                                                                " / "
-                                                            )}`}
+                                                            {`: ${variant.variants
+                                                                .map(
+                                                                    (el) =>
+                                                                        el.variant +
+                                                                        `(${el.quantity})`
+                                                                )
+                                                                .join(" / ")}`}
                                                         </span>
                                                     </li>
                                                 )

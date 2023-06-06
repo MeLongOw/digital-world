@@ -21,7 +21,6 @@ const Orders = () => {
         const response = await apiUserOrders(token, { status: statusSelected });
         if (response?.success) {
             setData(response.userOrders);
-            console.log(response.userOrders);
         }
     };
 
@@ -64,7 +63,6 @@ const Orders = () => {
         return isSuccess;
     };
     const handleEditOrder = async (cart) => {
-        console.log(cart);
         const updateCartPromises = cart.map((el) =>
             apiUpdateCart(token, {
                 pid: el?.product._id,

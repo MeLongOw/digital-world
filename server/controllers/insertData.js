@@ -15,8 +15,12 @@ const createProduct = async (product) => {
         brand: product?.brand,
         thumb: product?.thumb,
         price: Math.round(Number(product?.price?.match(/\d/g).join("")) / 100),
+        quantity: Math.max(
+            ...product.variants.map((el) =>
+                el.variants.reduce((total, el) => (total += el.quantity), 0)
+            )
+        ),
         category: product?.category,
-        quantity: Math.round(Math.random() * 1000),
         sold: Math.round(Math.random() * 100),
         images: product?.images,
         variants: product?.variants,
@@ -34,15 +38,22 @@ const insertProduct = asyncHandler(async (req, res) => {
             (brand) =>
                 brand?.title.toLowerCase() === product.brand.toLowerCase()
         );
-        const ProducCategoryMatch = productCategories?.find(
+        const ProductCategoryMatch = productCategories?.find(
             (cate) =>
                 cate?.title.toLowerCase() ===
                 product?.category[1]?.toLowerCase()
         );
         return {
             ...product,
+            variants: product.variants.map((el) => ({
+                label: el.label,
+                variants: el.variants.map((el) => ({
+                    variant: el,
+                    quantity: 10,
+                })),
+            })),
             brand: BrandMatch?._id,
-            category: ProducCategoryMatch?._id,
+            category: ProductCategoryMatch?._id,
         };
     });
 

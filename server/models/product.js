@@ -49,7 +49,7 @@ var productSchema = new mongoose.Schema(
         variants: [
             {
                 label: { type: String },
-                variants: { type: Array },
+                variants: [{ variant: String, quantity: { type: Number } }],
             },
         ],
         ratings: [

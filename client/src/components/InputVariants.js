@@ -3,13 +3,12 @@ import icons from "../utils/icons";
 
 const { IoMdAddCircleOutline, IoMdRemoveCircleOutline } = icons;
 
-const defaultValue = [{ label: "", variants: [""] }];
+const defaultValue = [{ label: "", variants: [{ variant: "", quantity: "" }] }];
 
 const InputVariants = ({
     value = [],
     setValue,
     nameKey,
-    type,
     title,
     invalidFields,
     setInvalidFields = () => {},
@@ -25,9 +24,11 @@ const InputVariants = ({
 
     const [field, setField] = useState([]);
 
-
     const handleAddField = (index) => {
-        valueCopy.splice(index + 1, 0, { label: "", variants: [""] });
+        valueCopy.splice(index + 1, 0, {
+            label: "",
+            variants: [{ variant: "", quantity: "" }],
+        });
         setValueCopy(valueCopy);
         setValue((prev) => ({
             ...prev,
@@ -84,15 +85,15 @@ const InputVariants = ({
                             }}
                         />
                         <input
-                            type={type || "text"}
-                            className="px-4 py-2 flex-4 rounded-md border w-full text-sm placeholder:text-gray-300"
-                            placeholder={`${title}`}
-                            value={el}
+                            type={"text"}
+                            className="px-4 py-2 flex-2 rounded-md border w-full text-sm placeholder:text-gray-300 mr-4"
+                            placeholder={`Variant`}
+                            value={el.variant}
                             onChange={(e) =>
                                 setValue((prev) => {
                                     valueCopy[indexField].variants[
                                         indexVariants
-                                    ] = e.target.value;
+                                    ].variant = e.target.value;
                                     return {
                                         ...prev,
                                         [nameKey]: [...valueCopy],
@@ -101,6 +102,27 @@ const InputVariants = ({
                             }
                             onFocus={() => setInvalidFields([])}
                         />
+
+                        <input
+                            min={0}
+                            type={"number"}
+                            className="px-4 py-2 flex-1 rounded-md border w-full text-sm placeholder:text-gray-300"
+                            placeholder={`Quantity`}
+                            value={el.quantity}
+                            onChange={(e) =>
+                                setValue((prev) => {
+                                    valueCopy[indexField].variants[
+                                        indexVariants
+                                    ].quantity = +e.target.value;
+                                    return {
+                                        ...prev,
+                                        [nameKey]: [...valueCopy],
+                                    };
+                                })
+                            }
+                            onFocus={() => setInvalidFields([])}
+                        />
+
                         <button className="ml-2">
                             <IoMdAddCircleOutline
                                 size={20}

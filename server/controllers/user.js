@@ -121,7 +121,6 @@ const getCurrent = asyncHandler(async (req, res) => {
     const user = await User.findById({ _id })
         .select("-password -refreshToken -role")
         .populate("wishlist cart.product");
-    console.log(user);
     return res.status(200).json({
         success: user ? true : false,
         result: user ? user : "User is not found",
@@ -352,7 +351,7 @@ const updateCart = asyncHandler(async (req, res) => {
         const product = await Product.findById(pid).select("variants");
         const defautVariant = product.variants?.map(({ label, variants }) => ({
             label,
-            variant: variants[0],
+            variant: variants[0].variant,
         }));
         variantNoId = defautVariant;
     } else {

@@ -15,6 +15,7 @@ import Modal from "../Modal";
 import InputField from "../../../../components/InputField";
 import { useSearchParams } from "react-router-dom";
 import Pagination from "../Pagination";
+import { formatAddress } from "../../../../utils/helpers";
 
 const defautPayload = {
     _id: "",
@@ -333,7 +334,7 @@ export default function UserTable() {
                                         {item?.phone}
                                     </td>
                                     <td className="pl-3 py-4 text-sm text-gray-800 break-words">
-                                        {item?.address}
+                                        {formatAddress(item?.address)}
                                     </td>
                                     <td className="pl-3 py-4 text-sm text-gray-800 break-words ">
                                         {Number(item?.isBlocked)}

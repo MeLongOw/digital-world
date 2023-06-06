@@ -55,7 +55,6 @@ const Cart = () => {
         });
     };
 
-    
     useEffect(() => {
         fetchCurrent();
         window.scrollTo(0, 0);
@@ -103,18 +102,9 @@ const Cart = () => {
                                             capitalize(item.product?.title)}
                                     </Link>
                                     <span className="flex">
-                                        {item?.variant?.map((el, index) => {
-                                            return (
-                                                <span key={index}>
-                                                    {index !== 0 && (
-                                                        <span className="p-1">
-                                                            /
-                                                        </span>
-                                                    )}
-                                                    <span>{el?.variant}</span>
-                                                </span>
-                                            );
-                                        })}
+                                        {item?.variant
+                                            .map(({ variant }) => variant)
+                                            .join(" / ")}
                                     </span>
                                 </div>
                                 <div>
