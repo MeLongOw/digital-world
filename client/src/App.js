@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Route, Routes } from "react-router-dom";
+import { useJwt } from "react-jwt";
 import {
     Login,
     Home,
@@ -42,6 +43,10 @@ function App() {
     const dispatch = useDispatch();
     const categories = useSelector((state) => state.app.categories);
     const isLoggedIn = useSelector((state) => state.user.isLoggedIn);
+    const token = useSelector((state) => state.user.token);
+    const { decodedToken, isExpired } = useJwt(token);
+    console.log(decodedToken);
+    console.log();
     useEffect(() => {
         dispatch(getCategories());
     }, []);
@@ -92,25 +97,33 @@ function App() {
                 {!isLoggedIn && <Route path={path.LOGIN} element={<Login />} />}
 
                 {/* ADMIN */}
-                <Route path={`/${path.ADMIN}`} element={<Admin />}>
-                    <Route
-                        path={`/${path.DASHBOARD}`}
-                        element={<Dashboard />}
-                    />
-                    <Route
-                        path={`/${path.PRODUCTS_ADMIN}`}
-                        element={<ProductsAdmin />}
-                    />
-                    <Route path={`/${path.BRANDS}`} element={<Brands />} />
-                    <Route path={`/${path.USERS}`} element={<User />} />
-                    <Route
-                        path={`/${path.CATEGOGIES}`}
-                        element={<Categories />}
-                    />
-                    <Route path={`/${path.ORDERS}`} element={<Orders />} />
-                    <Route path={`/${path.REVIEWS}`} element={<Reviews />} />
-                    <Route path={`/${path.COUPONS}`} element={<Coupons />} />
-                </Route>
+                {isLoggedIn && decodedToken?.role === "admin" && !isExpired && (
+                    <Route path={`/${path.ADMIN}`} element={<Admin />}>
+                        <Route
+                            path={`/${path.DASHBOARD}`}
+                            element={<Dashboard />}
+                        />
+                        <Route
+                            path={`/${path.PRODUCTS_ADMIN}`}
+                            element={<ProductsAdmin />}
+                        />
+                        <Route path={`/${path.BRANDS}`} element={<Brands />} />
+                        <Route path={`/${path.USERS}`} element={<User />} />
+                        <Route
+                            path={`/${path.CATEGOGIES}`}
+                            element={<Categories />}
+                        />
+                        <Route path={`/${path.ORDERS}`} element={<Orders />} />
+                        <Route
+                            path={`/${path.REVIEWS}`}
+                            element={<Reviews />}
+                        />
+                        <Route
+                            path={`/${path.COUPONS}`}
+                            element={<Coupons />}
+                        />
+                    </Route>
+                )}
             </Routes>
         </div>
     );

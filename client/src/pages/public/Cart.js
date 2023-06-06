@@ -1,6 +1,6 @@
-import React, { useEffect, useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { apiRemoveFromCart, apiUpdateCart } from "../../apis";
 import { Button } from "../../components";
 import { capitalize, formatMoney } from "../../utils/helpers";
@@ -9,6 +9,7 @@ import path from "../../utils/path";
 import icons from "../../utils/icons";
 import InputNumberCart from "../../components/InputNumberCart";
 import { getCurrent } from "../../store/user/asyncThunk";
+import { userSlice } from "../../store/user/userSlice";
 
 const { AiOutlineArrowRight } = icons;
 
@@ -17,8 +18,11 @@ const Cart = () => {
     const navigate = useNavigate();
     const token = useSelector((state) => state.user.token);
     const currentUser = useSelector((state) => state.user.current);
+    const [isCheckAll, setIsCheckAll] = useState(false);
+    const [isCheck, setIsCheck] = useState([]);
+
     const totalPrice = useMemo(() => {
-        const arrPrice = currentUser?.cart?.map(
+        const arrPrice = isCheck?.map(
             (item) => item.product?.price * item.quantity
         );
         const totalPrice = arrPrice?.reduce(
@@ -26,7 +30,7 @@ const Cart = () => {
             0
         );
         return totalPrice;
-    }, [currentUser]);
+    }, [isCheck]);
 
     const fetchCurrent = () => {
         dispatch(getCurrent(token));
@@ -46,6 +50,30 @@ const Cart = () => {
         }
     };
 
+    const handleClickCheckBox = (item) => {
+        if (isCheck.includes(item)) {
+            setIsCheck(isCheck.filter((el) => el !== item));
+        } else {
+            setIsCheck([...isCheck, item]);
+        }
+    };
+
+    const handleSelectAll = (e) => {
+        setIsCheckAll(!isCheckAll);
+        setIsCheck(currentUser.cart?.map((item) => item));
+        if (isCheckAll) {
+            setIsCheck([]);
+        }
+    };
+
+    useEffect(() => {
+        if (currentUser?.cart?.length === isCheck?.length) {
+            setIsCheckAll(true);
+        } else {
+            setIsCheckAll(false);
+        }
+    }, [isCheck, currentUser]);
+
     useEffect(() => {
         fetchCurrent();
         window.scrollTo(0, 0);
@@ -54,7 +82,20 @@ const Cart = () => {
     return (
         <div>
             <div className="flex border p-5 text-lg text-gray-800 font-semibold">
-                <div className="flex-6"></div>
+                <div className="flex flex-6 items-center">
+                    <div className="flex items-center">
+                        <input
+                            id="checkbox-all"
+                            type="checkbox"
+                            className="text-blue-600 border-gray-200 rounded focus:ring-blue-500"
+                            onChange={handleSelectAll}
+                            checked={isCheckAll}
+                        />
+                        <label htmlFor="checkbox" className="sr-only">
+                            Checkbox
+                        </label>
+                    </div>
+                </div>
                 <div className="flex flex-4">
                     <div className="flex-1 text-center">QUANTITY</div>
                     <div className="flex-3 text-end">TOTAL</div>
@@ -64,14 +105,26 @@ const Cart = () => {
                 currentUser?.cart?.map((item) => (
                     <div className="border p-5 mt-[-1px] flex" key={item._id}>
                         <div className="flex flex-6 items-center">
+                            <div className="flex items-center">
+                                <input
+                                    id="checkbox-all"
+                                    type="checkbox"
+                                    className="text-blue-600 border-gray-200 rounded focus:ring-blue-500"
+                                    checked={isCheck.includes(item)}
+                                    onChange={() => handleClickCheckBox(item)}
+                                />
+                                <label htmlFor="checkbox" className="sr-only">
+                                    Checkbox
+                                </label>
+                            </div>
                             <img
-                                src={item.product.thumb}
+                                src={item.product?.thumb}
                                 alt=""
                                 className="h-[214px] w-[214px] object-contain pr-5"
                             />
                             <div className="p-5 flex flex-col ">
                                 <Link
-                                    to={`/${path.DETAIL_PRODUCT}/${item.product.slug}`}
+                                    to={`/${path.DETAIL_PRODUCT}/${item.product?.slug}`}
                                     className="font-base capitalize hover:text-main"
                                 >
                                     {item.product?.title &&
@@ -141,18 +194,22 @@ const Cart = () => {
                     <div></div>
                 </div>
                 <i className="text-sm text-gray-600 mb-[10px]">
-                    Shipping, taxes, and discounts calculated at checkout.
+                    Shipping, and discounts calculated at checkout.
                 </i>
-                <div className="w-[180px]">
-                    <Button
-                        name="CHECK OUT"
-                        iconsAfter={<AiOutlineArrowRight />}
-                        handleClick={() => {
-                            if(currentUser?.cart?.length){
-                                navigate(`/${path.CHECKOUT}`);
-                            }
-                        }}
-                    />
+                <div className="flex gap-3">
+                    <div className="w-[180px]">
+                        <Button
+                            name="CHECK OUT"
+                            iconsAfter={<AiOutlineArrowRight />}
+                            handleClick={() => {
+                                if (isCheck?.length) {
+                                    navigate(`/${path.CHECKOUT}`, {
+                                        state: { selectedProducts: isCheck },
+                                    });
+                                }
+                            }}
+                        />
+                    </div>
                 </div>
             </div>
         </div>

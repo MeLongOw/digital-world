@@ -27,7 +27,9 @@ const selectSearchOptions = [
 
 const statusSelect = [
     { value: "Processing", label: "Processing" },
+    { value: "Shipping", label: "Shipping" },
     { value: "Success", label: "Success" },
+    { value: "Returning", label: "Returning" },
     { value: "Cancelled", label: "Cancelled" },
 ];
 
@@ -148,7 +150,7 @@ export default function OrderTable() {
                                 </th>
                                 <th
                                     scope="col"
-                                    className="w-[7%] px-3 py-3 text-xs font-bold text-left text-gray-500 uppercase "
+                                    className="w-[5%] px-3 py-3 text-xs font-bold text-left text-gray-500 uppercase "
                                 >
                                     Status
                                 </th>
@@ -160,7 +162,13 @@ export default function OrderTable() {
                                 </th>
                                 <th
                                     scope="col"
-                                    className="w-[7%] px-3 py-3 text-xs font-bold text-left text-gray-500 uppercase "
+                                    className="w-[12%] px-3 py-3 text-xs font-bold text-left text-gray-500 uppercase "
+                                >
+                                    address
+                                </th>
+                                <th
+                                    scope="col"
+                                    className="w-[8%] px-3 py-3 text-xs font-bold text-left text-gray-500 uppercase "
                                 >
                                     Created at
                                 </th>
@@ -233,11 +241,16 @@ export default function OrderTable() {
                                             </div>
                                         ))}
                                     </td>
+
+                                    <td className="pl-3 py-4 text-sm text-gray-800 break-words ">
+                                        {item?.address}
+                                    </td>
                                     <td className="pl-3 py-4 text-sm text-gray-800 break-words ">
                                         {moment(item?.createdAt).format(
                                             "HH:mm:ss DD/MM/YYYY"
                                         )}
                                     </td>
+
                                     <td className="px-3 py-4 text-sm font-medium text-right whitespace-nowrap ">
                                         <div className="flex justify-end gap-2 items-center">
                                             <EditButton

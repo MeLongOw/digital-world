@@ -21,6 +21,9 @@ export const userSlice = createSlice({
             state.current = null;
             state.token = null;
         },
+        editOrder: (state, action) => {
+            state.current = { ...state.current, cart: action.payload };
+        },
     },
     extraReducers: (builder) => {
         builder.addCase(getCurrent.pending, (state) => {

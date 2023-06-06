@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import {
     apiClearCart,
@@ -20,6 +20,7 @@ const { IoIosArrowRoundBack, CiDiscount1 } = icons;
 const defaultAdress = { address: "", ward: "", district: "", city: "" };
 
 const Checkout = () => {
+    const { state } = useLocation();
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const currentUser = useSelector((state) => state.user.current);
@@ -44,6 +45,7 @@ const Checkout = () => {
             const response = await apiUpdateUserAddress(token, {
                 address: JSON.stringify(address),
             });
+            dispatch(getCurrent(token));
             if (response?.success) setIsDisableButtonSave(true);
         }
         return true;
@@ -51,7 +53,7 @@ const Checkout = () => {
 
     const handleSubmitOrder = async () => {
         let isSuccess = false;
-        if (currentUser?.cart && currentUser?.cart?.length) {
+        if (state?.selectedProducts && state?.selectedProducts?.length) {
             await Swal.fire({
                 title: "Confirm your order?",
                 icon: "question",
@@ -62,7 +64,10 @@ const Checkout = () => {
             }).then(async (result) => {
                 if (result.isConfirmed) {
                     const response = await apiCreateOrder(token, {
+                        products: state?.selectedProducts,
                         coupon: selectedCoupon?._id,
+                        address: JSON.stringify(address),
+                        phone,
                     });
                     if (response?.success) {
                         await Swal.fire(
@@ -70,7 +75,11 @@ const Checkout = () => {
                             response.mes,
                             "success"
                         ).then(async () => {
-                            const response = await apiClearCart(token);
+                            const response = await apiClearCart(token, {
+                                cids: state?.selectedProducts.map(
+                                    (el) => el._id
+                                ),
+                            });
                             if (response?.success) {
                                 dispatch(getCurrent(token));
                                 navigate("/");
@@ -97,12 +106,12 @@ const Checkout = () => {
     };
     const subTotal = useMemo(() => {
         return (
-            currentUser?.cart?.reduce(
+            state?.selectedProducts?.reduce(
                 (total, item) => (total += +item?.product.price),
                 0
             ) || 0
         );
-    }, [currentUser]);
+    }, [state]);
 
     const handleSelectCoupon = (coupon) => {
         setSelectedCoupon(coupon);
@@ -116,13 +125,13 @@ const Checkout = () => {
         if (
             isDisableButtonSave &&
             !compareObjects(address, defaultAdress) &&
-            currentUser?.cart?.length
+            state?.selectedProducts?.length
         ) {
             setisDisableButtonOrder(false);
         } else {
             setisDisableButtonOrder(true);
         }
-    }, [isDisableButtonSave, address]);
+    }, [isDisableButtonSave, address, state]);
 
     useEffect(() => {
         if (currentUser?.address) {
@@ -227,49 +236,46 @@ const Checkout = () => {
             </div>
             <div className="flex flex-1 border border-l-0 p-[32px] bg-[#fafafa] flex-col justify-between">
                 <div className="mb-5 max-h-[512px] overflow-y-scroll">
-                    {currentUser?.cart.length
-                        ? currentUser?.cart?.map((item) => (
-                              <div
-                                  className="flex mb-3 mt-3"
-                                  key={`${item._id}`}
-                              >
-                                  <div className="w-[76px] aspect-square relative">
-                                      <img
-                                          alt="product"
-                                          src={item?.product?.thumb}
-                                          className="rounded-xl border border-gray-400"
-                                      />
-                                      <div className="bg-gray-600 text-white w-[24px] h-[24px] absolute top-[-8px] right-[-8px] rounded-full flex justify-center items-center">
-                                          {item.quantity}
-                                      </div>
-                                  </div>
-                                  <span className="flex flex-col justify-center flex-1 pl-5">
-                                      <span className="text-base text-gray-900 mb-2 font-semibold">
-                                          {item.product.title}
-                                      </span>
-                                      <span className="text-sm text-gray-700">
-                                          {item.variant.map((vari, index) => {
-                                              return (
-                                                  <span key={index}>
-                                                      {index !== 0 && (
-                                                          <span className="p-1">
-                                                              /
-                                                          </span>
-                                                      )}
-                                                      <span>
-                                                          {vari?.variant}
-                                                      </span>
-                                                  </span>
-                                              );
-                                          })}
-                                      </span>
-                                  </span>
-                                  <span className="pl-5 flex justify-center items-center text-base font-medium text-gray-900">
-                                      {formatMoney(item.product.price)} VND
-                                  </span>
-                              </div>
-                          ))
-                        : <i>No product is dropped into cart</i>}
+                    {state?.selectedProducts.length ? (
+                        state?.selectedProducts?.map((item) => (
+                            <div className="flex mb-3 mt-3" key={`${item._id}`}>
+                                <div className="w-[76px] aspect-square relative">
+                                    <img
+                                        alt="product"
+                                        src={item?.product?.thumb}
+                                        className="rounded-xl border border-gray-400"
+                                    />
+                                    <div className="bg-gray-600 text-white w-[24px] h-[24px] absolute top-[-8px] right-[-8px] rounded-full flex justify-center items-center">
+                                        {item.quantity}
+                                    </div>
+                                </div>
+                                <span className="flex flex-col justify-center flex-1 pl-5">
+                                    <span className="text-base text-gray-900 mb-2 font-semibold">
+                                        {item.product.title}
+                                    </span>
+                                    <span className="text-sm text-gray-700">
+                                        {item.variant.map((vari, index) => {
+                                            return (
+                                                <span key={index}>
+                                                    {index !== 0 && (
+                                                        <span className="p-1">
+                                                            /
+                                                        </span>
+                                                    )}
+                                                    <span>{vari?.variant}</span>
+                                                </span>
+                                            );
+                                        })}
+                                    </span>
+                                </span>
+                                <span className="pl-5 flex justify-center items-center text-base font-medium text-gray-900">
+                                    {formatMoney(item.product.price)} VND
+                                </span>
+                            </div>
+                        ))
+                    ) : (
+                        <i>No product is dropped into cart</i>
+                    )}
                 </div>
 
                 <div>

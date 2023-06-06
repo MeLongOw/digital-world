@@ -24,7 +24,14 @@ export const apiUpdateStatusOrder = (token, oid, data) =>
         data,
     });
 
-    export const apiUserOrders = (token, params) =>
+export const apiCancelOrder = (token, oid) =>
+    axios({
+        url: `/order/${oid}`,
+        method: "put",
+        headers: { Authorization: `Bearer ${token}` },
+    });
+
+export const apiUserOrders = (token, params) =>
     axios({
         url: `/order/`,
         method: "get",

@@ -1,11 +1,14 @@
 const Order = require("../models/order");
 const User = require("../models/user");
+const Product = require("../models/product");
 const Coupon = require("../models/coupon");
 const asyncHandler = require("express-async-handler");
 
 const createOrder = asyncHandler(async (req, res) => {
     const { _id } = req.user;
-    const { coupon } = req.body;
+    const { coupon, phone, address, products } = req.body;
+    if (!phone || !address || !products || !products.length)
+        throw new Error("Missing input(s)");
     let selectedCoupon;
 
     if (coupon) {
@@ -14,13 +17,7 @@ const createOrder = asyncHandler(async (req, res) => {
         if (!selectedCoupon) throw new Error("Coupon does not exist");
     }
 
-    const user = await User.findById(_id)
-        .select("cart")
-        .populate("cart.product", "title price");
-
-    const products = user?.cart;
-
-    let total = user?.cart.reduce(
+    let total = products.reduce(
         (sum, item) => +item.product.price * +item.quantity + sum,
         0
     );
@@ -30,6 +27,8 @@ const createOrder = asyncHandler(async (req, res) => {
     const createData = {
         products,
         total,
+        phone,
+        address,
         orderBy: _id,
     };
     if (coupon) {
@@ -73,9 +72,32 @@ const getUserOrders = asyncHandler(async (req, res) => {
     if (status) queries = { status, orderBy: _id };
     const response = await Order.find(queries)
         .populate("coupon")
-        .populate('products.product')
-        .select('-orderBy')
-        .sort("-createdAt");
+        .populate("products.product")
+        .select("-orderBy")
+        .sort("-updatedAt");
+
+    return res.status(200).json({
+        success: response ? true : false,
+        userOrders: response ? response : "Can not get user orders",
+    });
+});
+
+const userCancelOrders = asyncHandler(async (req, res) => {
+    const { _id } = req.user;
+    const { oid } = req.params;
+    if (!oid) throw new Error("Missing order id");
+    const cancelOrder = await Order.findById(oid);
+    if (!cancelOrder || cancelOrder?.status !== "Processing")
+        throw new Error("Can not cancel order");
+    queries = { _id: oid, orderBy: _id };
+    const response = await Order.findOneAndUpdate(
+        queries,
+        { status: "Cancelled" },
+        { new: true }
+    )
+        .populate("coupon")
+        .populate("products.product")
+        .select("-orderBy");
 
     return res.status(200).json({
         success: response ? true : false,
@@ -150,9 +172,9 @@ const getOrders = asyncHandler(async (req, res) => {
         .populate("products.product")
         .populate("coupon")
         .populate("orderBy")
-        .populate("createdAt")
+        .sort("-updatedAt")
         .select(
-            "Orderby.firstName Orderby.lastName Orderby.email products status coupon _id"
+            "Orderby.firstName Orderby.lastName Orderby.email products phone address status coupon _id"
         )
         .exec()
         .then(async (response) => {
@@ -169,5 +191,6 @@ module.exports = {
     createOrder,
     updateStatus,
     getUserOrders,
+    userCancelOrders,
     getOrders,
 };

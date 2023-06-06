@@ -9,6 +9,7 @@ const Button = ({
     handleClick = () => {},
     className,
     hasIconSuccess = false,
+    textColor = "text-white",
     backgroundColor = "bg-main",
     iconsBefore,
     iconsAfter,
@@ -23,7 +24,11 @@ const Button = ({
         setTimeout(() => setIsSuccess(false), 1000);
     };
 
-    if (!disabled) disabled = undefined;
+    let isNotPreventOnClick = true;
+    if (disabled) {
+        isNotPreventOnClick = undefined;
+        console.log(name, isNotPreventOnClick)
+    }
 
     return (
         <button
@@ -34,12 +39,12 @@ const Button = ({
                     ? className
                     : `px-4 py-2 ${
                           rounded && "rounded-md"
-                      } text-white font-semibold  w-full flex justify-center items-center ${backgroundColor} ${
+                      } ${textColor} font-semibold  w-full flex justify-center items-center ${backgroundColor} ${
                           disabled ? "opacity-70" : "hover:cursor-pointer"
                       }`
             }
             onClick={
-                !disabled &&
+                isNotPreventOnClick &&
                 (async () => {
                     setIsLoading(true);
                     if (handleClick?.constructor?.name === "AsyncFunction") {

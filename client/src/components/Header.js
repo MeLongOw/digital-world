@@ -135,7 +135,7 @@ const Header = () => {
                             Wish List
                         </Link>
                         <div
-                            className="text-main  p-3 hover:bg-gray-100 flex"
+                            className="text-main  p-3 hover:bg-gray-100 flex hover:cursor-pointer"
                             onClick={handleLogout}
                         >
                             Log Out

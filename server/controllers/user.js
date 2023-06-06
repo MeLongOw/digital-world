@@ -121,6 +121,7 @@ const getCurrent = asyncHandler(async (req, res) => {
     const user = await User.findById({ _id })
         .select("-password -refreshToken -role")
         .populate("wishlist cart.product");
+    console.log(user);
     return res.status(200).json({
         success: user ? true : false,
         result: user ? user : "User is not found",
@@ -346,7 +347,6 @@ const updateCart = asyncHandler(async (req, res) => {
     const { _id } = req.user;
     const { pid, quantity, variant } = req.body;
     if (!pid || !quantity) throw new Error("Missing input(s)");
-
     let variantNoId;
     if (!variant?.length) {
         const product = await Product.findById(pid).select("variants");
@@ -407,8 +407,10 @@ const updateCart = asyncHandler(async (req, res) => {
 });
 const clearCart = asyncHandler(async (req, res) => {
     const { _id } = req.user;
-
-    const user = await User.findByIdAndUpdate(_id, { cart: [] });
+    const { cids } = req.body;
+    const user = await User.findByIdAndUpdate(_id, {
+        $pull: { cart: { _id: { $in: cids } } },
+    });
 
     return res.status(200).json({
         success: user ? true : false,

@@ -1,17 +1,22 @@
 import React, { useEffect, useState } from "react";
-import { apiUserOrders } from "../../../apis/order";
-import { useSelector } from "react-redux";
+import { apiCancelOrder, apiUserOrders } from "../../../apis/order";
+import { useDispatch, useSelector } from "react-redux";
 import { formatMoney } from "../../../utils/helpers";
 import moment from "moment";
+import { Link, useNavigate } from "react-router-dom";
+import path from "../../../utils/path";
+import Swal from "sweetalert2";
+import { userSlice } from "../../../store/user/userSlice";
+import { apiUpdateCart } from "../../../apis";
 
-const status = ["Processing", "Success", "Cancelled"];
+const status = ["Processing", "Shipping", "Success", "Cancelled"];
 
 const Orders = () => {
     const token = useSelector((state) => state.user.token);
     const [data, setData] = useState([]);
     const [statusSelected, setStatusSelected] = useState("Processing");
     const [viewDetail, setViewDetail] = useState([]);
-    console.log({ viewDetail });
+    const navigate = useNavigate();
     const fetchUserOrders = async (statusSelected) => {
         const response = await apiUserOrders(token, { status: statusSelected });
         if (response?.success) {
@@ -28,8 +33,52 @@ const Orders = () => {
         }
     };
 
+    const handleCancelOrder = async (oid) => {
+        let isSuccess = false;
+        await Swal.fire({
+            title: "Are you sure?",
+            text: "You won't be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, cancel this order!",
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                const response = await apiCancelOrder(token, oid);
+                if (response?.success) {
+                    isSuccess = true;
+                    await Swal.fire("Success!", response.mes, "success").then(
+                        () => {
+                            fetchUserOrders(statusSelected);
+                        }
+                    );
+                } else {
+                    isSuccess = true;
+                    Swal.fire("error!", response.mes, "error");
+                }
+            } else {
+                isSuccess = true;
+            }
+        });
+        return isSuccess;
+    };
+    const handleEditOrder = async (cart) => {
+        console.log(cart);
+        const updateCartPromises = cart.map((el) =>
+            apiUpdateCart(token, {
+                pid: el?.product._id,
+                quantity: el.quantity,
+                variant: el?.variant,
+            })
+        );
+        await Promise.all(updateCartPromises);
+        navigate(`/${path.CART}`);
+    };
+
     useEffect(() => {
         fetchUserOrders(statusSelected);
+        setViewDetail([]);
     }, [statusSelected]);
     return (
         <div>
@@ -61,6 +110,22 @@ const Orders = () => {
                                     <div>
                                         <span className="font-semibold">{`OrderID: `}</span>
                                         <span>{order?._id}</span>
+                                    </div>
+                                    <div>
+                                        <span className="font-semibold">{`Address: `}</span>
+                                        <span>{`${
+                                            JSON.parse(order?.address)?.address
+                                        }, ward ${
+                                            JSON.parse(order?.address)?.ward
+                                        }, district ${
+                                            JSON.parse(order?.address)?.district
+                                        }, ${
+                                            JSON.parse(order?.address)?.city
+                                        }`}</span>
+                                    </div>
+                                    <div>
+                                        <span className="font-semibold">{`Phone: `}</span>
+                                        <span>{order?.phone}</span>
                                     </div>
                                     <div>
                                         <span className="font-semibold">{`Order Date: `}</span>
@@ -103,6 +168,37 @@ const Orders = () => {
                                     >
                                         View detail
                                     </span>
+
+                                    {statusSelected === "Processing" && (
+                                        <span
+                                            className="hover:text-main hover:cursor-pointer font-semibold border-l pl-3 ml-3 border-gray-500"
+                                            onClick={() =>
+                                                handleCancelOrder(order?._id)
+                                            }
+                                        >
+                                            Cancel order
+                                        </span>
+                                    )}
+                                    {statusSelected === "Success" && (
+                                        <span
+                                            className="hover:text-main hover:cursor-pointer font-semibold border-l pl-3 ml-3 border-gray-500"
+                                            onClick={() =>
+                                                handleCancelOrder(order?._id)
+                                            }
+                                        >
+                                            Rating products
+                                        </span>
+                                    )}
+                                    {statusSelected === "Cancelled" && (
+                                        <Link
+                                            className="hover:text-main hover:cursor-pointer font-semibold border-l pl-3 ml-3 border-gray-500"
+                                            onClick={() =>
+                                                handleEditOrder(order?.products)
+                                            }
+                                        >
+                                            Edit order
+                                        </Link>
+                                    )}
                                 </div>
                             </div>
                             {viewDetail.some((el) => el === order?._id) &&
@@ -122,9 +218,12 @@ const Orders = () => {
                                             </div>
                                         </div>
                                         <span className="flex flex-col justify-center flex-1 pl-5">
-                                            <span className="text-base text-gray-900 mb-2 font-semibold">
+                                            <Link
+                                                className="text-base text-gray-900 mb-2 font-semibold hover:text-main"
+                                                to={`/${path.PRODUCTS}/${item.product.slug}`}
+                                            >
                                                 {item.product.title}
-                                            </span>
+                                            </Link>
                                             <span className="text-sm text-gray-700">
                                                 {item.variant.map(
                                                     (vari, index) => {

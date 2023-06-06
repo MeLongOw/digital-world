@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import icons from "../utils/icons";
 import path from "../utils/path";
 
-const { AiOutlineShoppingCart, AiOutlineArrowUp } = icons;
+const { BsFillSuitHeartFill, AiOutlineShoppingCart, AiOutlineArrowUp } = icons;
 
 const MoveTopButton = () => {
     const [isVisible, setIsVisible] = useState(false);
@@ -42,6 +42,17 @@ const MoveTopButton = () => {
             >
                 <AiOutlineArrowUp size={32} />
             </button>
+
+            <Link
+                className="w-[60px] h-[60px] bg-main rounded-full shadow-xl text-white flex items-center justify-center relative"
+                onClick={scrollToTop}
+                to={`/${path.WISHLIST}`}
+            >
+                <BsFillSuitHeartFill size={32} />
+                <div className="w-[30px] aspect-square border rounded-full border-main bg-white absolute top-[-8px] right-[-8px] text-main text-center font-semibold text-lg">
+                    {currentUser?.wishlist?.length || "0"}
+                </div>
+            </Link>
 
             <Link
                 className="w-[60px] h-[60px] bg-main rounded-full shadow-xl text-white flex items-center justify-center relative"

@@ -55,6 +55,12 @@ const Cart = () => {
         });
     };
 
+    
+    useEffect(() => {
+        fetchCurrent();
+        window.scrollTo(0, 0);
+    }, []);
+
     useEffect(() => {
         fetchCurrent();
         window.scrollTo(0, 0);
