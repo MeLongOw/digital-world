@@ -21,7 +21,7 @@ var productSchema = new mongoose.Schema(
         brand: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "Brand",
-            require: true,
+            required: true,
         },
         thumb: {
             type: String,
@@ -76,6 +76,21 @@ productSchema.pre("updateOne", function (next) {
     }
     next();
 });
+
+productSchema.pre("save", function (next) {
+    let totalQuantity = 0;
+    for (const variant of this.variants) {
+      if (variant.variants && variant.variants.length > 0) {
+        for (const variantItem of variant.variants) {
+          if (variantItem.quantity) {
+            totalQuantity += variantItem.quantity;
+          }
+        }
+      }
+    }
+    this.quantity = totalQuantity;
+    next();
+  });
 
 //Export the model
 module.exports = mongoose.model("Product", productSchema);

@@ -9,7 +9,6 @@ import path from "../../utils/path";
 import icons from "../../utils/icons";
 import InputNumberCart from "../../components/InputNumberCart";
 import { getCurrent } from "../../store/user/asyncThunk";
-import { userSlice } from "../../store/user/userSlice";
 
 const { AiOutlineArrowRight } = icons;
 
@@ -51,8 +50,8 @@ const Cart = () => {
     };
 
     const handleClickCheckBox = (item) => {
-        if (isCheck.includes(item)) {
-            setIsCheck(isCheck.filter((el) => el !== item));
+        if (isCheck.some((el) => el._id === item._id)) {
+            setIsCheck(isCheck.filter((el) => el._id !== item._id));
         } else {
             setIsCheck([...isCheck, item]);
         }
@@ -109,8 +108,10 @@ const Cart = () => {
                                 <input
                                     id="checkbox-all"
                                     type="checkbox"
-                                    className="text-blue-600 border-gray-200 rounded focus:ring-blue-500"
-                                    checked={isCheck.includes(item)}
+                                    className="text-blue-600 border-gray-200 rounded focus:ring-blue-500 mr-5"
+                                    checked={isCheck.some(
+                                        (el) => el._id === item._id
+                                    )}
                                     onChange={() => handleClickCheckBox(item)}
                                 />
                                 <label htmlFor="checkbox" className="sr-only">

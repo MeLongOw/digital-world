@@ -1,10 +1,6 @@
 import React, { useEffect } from "react";
 
-const SelectVariant = ({
-    variants,
-    payload,
-    setPayload = () => {},
-}) => {
+const SelectVariant = ({ variants, payload, setPayload = () => {} }) => {
     const filterUniqueVariants = (payload) => {
         const uniqueVariants = {};
 
@@ -40,19 +36,21 @@ const SelectVariant = ({
                     <div className="flex gap-2 flex-wrap">
                         {variant?.variants?.map((el) => (
                             <button
+                                disabled={el.quantity <= 0}
                                 key={el.variant}
                                 className={`border text-center px-4 py-3 flex items-center text-sm uppercase
                                  ${
                                      payload.some((item) => {
                                          return (
-                                             item.variant.variant === el.variant &&
+                                             item.variant.variant ===
+                                                 el.variant &&
                                              item.label === variant.label &&
                                              el.quantity > 0
                                          );
                                      })
                                          ? "border-main text-main"
                                          : "hover:border-gray-400"
-                                 }`}
+                                 } ${el.quantity <= 0 && "bg-gray-200 opacity-50 hover:border-transparent"}`}
                                 onClick={() => {
                                     setPayload((prev) =>
                                         filterUniqueVariants([

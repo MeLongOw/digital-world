@@ -28,6 +28,7 @@ const selectSearchOptions = [
 
 const statusSelect = [
     { value: "Processing", label: "Processing" },
+    { value: "Accepted", label: "Accepted" },
     { value: "Shipping", label: "Shipping" },
     { value: "Success", label: "Success" },
     { value: "Returning", label: "Returning" },
@@ -67,7 +68,6 @@ export default function OrderTable() {
             page: currentPage,
             ...query,
         });
-        console.log(response);
         if (response?.success) {
             setData(response.orders);
             setTotalItem(response?.counts);
@@ -77,7 +77,6 @@ export default function OrderTable() {
     };
 
     const handleEdit = (order) => {
-        console.log(order);
         const { status } = order;
         setIsModalOpen(true);
         setIsEdit(true);

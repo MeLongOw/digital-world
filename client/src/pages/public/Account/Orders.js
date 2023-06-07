@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { apiCancelOrder, apiUserOrders } from "../../../apis/order";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { formatMoney } from "../../../utils/helpers";
 import moment from "moment";
 import { Link, useNavigate } from "react-router-dom";
 import path from "../../../utils/path";
 import Swal from "sweetalert2";
-import { userSlice } from "../../../store/user/userSlice";
+
 import { apiUpdateCart } from "../../../apis";
 
-const status = ["Processing", "Shipping", "Success", "Cancelled"];
+const status = ["Processing", "Accepted", "Shipping", "Success", "Cancelled"];
 
 const Orders = () => {
     const token = useSelector((state) => state.user.token);
@@ -212,18 +212,18 @@ const Orders = () => {
                                                 className="rounded-xl border border-gray-400"
                                             />
                                             <div className="bg-gray-600 text-white w-[24px] h-[24px] absolute top-[-8px] right-[-8px] rounded-full flex justify-center items-center">
-                                                {item.quantity}
+                                                {item?.quantity}
                                             </div>
                                         </div>
                                         <span className="flex flex-col justify-center flex-1 pl-5">
                                             <Link
                                                 className="text-base text-gray-900 mb-2 font-semibold hover:text-main"
-                                                to={`/${path.PRODUCTS}/${item.product.slug}`}
+                                                to={`/${path.PRODUCTS}/${item?.product?.slug}`}
                                             >
-                                                {item.product.title}
+                                                {item?.product?.title}
                                             </Link>
                                             <span className="text-sm text-gray-700">
-                                                {item.variant.map(
+                                                {item.variant?.map(
                                                     (vari, index) => {
                                                         return (
                                                             <span key={index}>
@@ -245,7 +245,7 @@ const Orders = () => {
                                             </span>
                                         </span>
                                         <span className="pl-5 flex justify-center items-center text-base font-medium text-gray-900">
-                                            {formatMoney(item.product.price)}{" "}
+                                            {formatMoney(item?.product?.price)}{" "}
                                             VND
                                         </span>
                                     </div>

@@ -45,8 +45,6 @@ function App() {
     const isLoggedIn = useSelector((state) => state.user.isLoggedIn);
     const token = useSelector((state) => state.user.token);
     const { decodedToken, isExpired } = useJwt(token);
-    console.log(decodedToken);
-    console.log();
     useEffect(() => {
         dispatch(getCategories());
     }, []);

@@ -49,8 +49,6 @@ export default function ProductTable() {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isEdit, setIsEdit] = useState(false);
     const [payload, setPayload] = useState(defautPayload);
-    console.log({ payload });
-
     const [brands, setBrands] = useState([]);
     const [categories, setCategories] = useState([]);
 

@@ -48,8 +48,6 @@ const Filter = ({ setPriceFilter = () => {}, setBrandFilter = () => {} }) => {
         value: "",
         label: "Brand - All",
     });
-    console.log(brands);
-    console.log(defaultBrandSelect);
 
     const fetchBrands = async () => {
         const response = await apiGetBrands();
@@ -107,7 +105,6 @@ const Filter = ({ setPriceFilter = () => {}, setBrandFilter = () => {} }) => {
         }
     };
     useEffect(() => {
-        console.log({ state });
         if (state)
             setDefaultBrandSelect({
                 value: state?.toLowerCase(),

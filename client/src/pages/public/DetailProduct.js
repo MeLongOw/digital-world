@@ -63,7 +63,7 @@ const DetailProduct = () => {
     const [quantity, setQuantity] = useState(1);
     const [available, setAvailable] = useState(0);
     const [payload, setPayload] = useState([{ label: "", variant: "" }]);
-    console.log(payload);
+    console.log(payload)
     const [imageActive, setImageActive] = useState("");
     const dispatch = useDispatch();
     const token = useSelector((state) => state.user.token);
@@ -77,14 +77,6 @@ const DetailProduct = () => {
     };
 
     const handleAddToCart = async (pid) => {
-        console.log({
-            pid,
-            quantity: quantity,
-            variant: payload?.map(({ label, variant }) => ({
-                label,
-                variant: variant.variant,
-            })),
-        });
         const response = await apiAddToCart(token, {
             pid,
             quantity: quantity,

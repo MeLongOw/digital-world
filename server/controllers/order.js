@@ -42,7 +42,29 @@ const createOrder = asyncHandler(async (req, res) => {
     createData.total = total;
 
     const rs = await Order.create(createData);
-
+    //Update Product Quantity
+    if (rs) {
+        promises = products.map(async (el) => {
+            const pid = el?.product._id;
+            const quantity = el?.quantity;
+            const variant = el?.variant;
+            const product = await Product.findById(pid);
+            for (variantItem of variant)
+                product.variants
+                    .find(
+                        (el) =>
+                            el.label.toLowerCase() ===
+                            variantItem.label.toLowerCase()
+                    )
+                    .variants.find(
+                        (el) =>
+                            el.variant.toLowerCase() ===
+                            variantItem.variant.toLowerCase()
+                    ).quantity -= quantity;
+            return product.save();
+        });
+        Promise.all(promises);
+    }
     return res.status(200).json({
         success: rs ? true : false,
         rs: rs ? rs : "Can not create new order",
@@ -58,6 +80,39 @@ const updateStatus = asyncHandler(async (req, res) => {
         { status },
         { new: true }
     );
+    if (response && response?.status === "Cancelled") {
+        promises = response.products.map(async (el) => {
+            const pid = el?.product._id;
+            const quantity = el?.quantity;
+            const variant = el?.variant;
+            const product = await Product.findById(pid);
+            for (variantItem of variant)
+                product.variants
+                    .find(
+                        (el) =>
+                            el.label.toLowerCase() ===
+                            variantItem.label.toLowerCase()
+                    )
+                    .variants.find(
+                        (el) =>
+                            el.variant.toLowerCase() ===
+                            variantItem.variant.toLowerCase()
+                    ).quantity += quantity;
+            return product.save();
+        });
+        Promise.all(promises);
+    }
+
+    if (response && response?.status === "Success") {
+        promises = response.products.map(async (el) => {
+            const pid = el?.product._id;
+            const quantity = el?.quantity;
+            const product = await Product.findById(pid);
+            product.sold += +quantity;
+            return product.save();
+        });
+        Promise.all(promises);
+    }
 
     return res.status(200).json({
         success: response ? true : false,
@@ -87,8 +142,8 @@ const userCancelOrders = asyncHandler(async (req, res) => {
     const { oid } = req.params;
     if (!oid) throw new Error("Missing order id");
     const cancelOrder = await Order.findById(oid);
-    if (!cancelOrder || cancelOrder?.status !== "Processing")
-        throw new Error("Can not cancel order");
+    // if (!cancelOrder || cancelOrder?.status !== "Processing")
+    //     throw new Error("Can not cancel order");
     queries = { _id: oid, orderBy: _id };
     const response = await Order.findOneAndUpdate(
         queries,
@@ -99,6 +154,28 @@ const userCancelOrders = asyncHandler(async (req, res) => {
         .populate("products.product")
         .select("-orderBy");
 
+    if (response) {
+        promises = response.products.map(async (el) => {
+            const pid = el?.product._id;
+            const quantity = el?.quantity;
+            const variant = el?.variant;
+            const product = await Product.findById(pid);
+            for (variantItem of variant)
+                product.variants
+                    .find(
+                        (el) =>
+                            el.label.toLowerCase() ===
+                            variantItem.label.toLowerCase()
+                    )
+                    .variants.find(
+                        (el) =>
+                            el.variant.toLowerCase() ===
+                            variantItem.variant.toLowerCase()
+                    ).quantity += quantity;
+            return product.save();
+        });
+        Promise.all(promises);
+    }
     return res.status(200).json({
         success: response ? true : false,
         userOrders: response ? response : "Can not update status",

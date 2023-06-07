@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useMemo } from "react";
+import React, { memo, useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { apiRemoveFromCart, apiUpdateCart } from "../apis";
@@ -15,12 +15,13 @@ const { AiOutlineClose, AiOutlineArrowRight } = icons;
 const Cart = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
-
+    const [isCheck, setIsCheck] = useState([]);
+    console.log({ isCheck });
     const token = useSelector((state) => state.user.token);
     const currentUser = useSelector((state) => state.user.current);
 
     const totalPrice = useMemo(() => {
-        const arrPrice = currentUser?.cart?.map(
+        const arrPrice = isCheck?.map(
             (item) => item.product?.price * item.quantity
         );
         const totalPrice = arrPrice?.reduce(
@@ -28,10 +29,19 @@ const Cart = () => {
             0
         );
         return totalPrice;
-    }, [currentUser]);
+    }, [isCheck]);
 
     const fetchCurrent = async () => {
         dispatch(getCurrent(token));
+    };
+
+    const handleClickCheckBox = (item) => {
+        console.log(123123,isCheck.some((el) => el._id === item._id));
+        if (isCheck.some((el) => el._id === item._id)) {
+            setIsCheck(isCheck.filter((el) => el._id !== item._id));
+        } else {
+            setIsCheck([...isCheck, item]);
+        }
     };
 
     const handleRemoveFromCart = async (cid) => {
@@ -60,11 +70,6 @@ const Cart = () => {
         window.scrollTo(0, 0);
     }, []);
 
-    useEffect(() => {
-        fetchCurrent();
-        window.scrollTo(0, 0);
-    }, []);
-
     return (
         <div className="w-full h-screen flex flex-col px-[30px] text-white">
             <div className="h-[80px] p-[10px] flex justify-between border-b-2 border-gray-700">
@@ -85,6 +90,20 @@ const Cart = () => {
                         key={item._id}
                         className="pb-5 mb-5 border-gray-700 border-b flex relative"
                     >
+                        <div className="flex items-center mr-3">
+                            <input
+                                id="checkbox-all"
+                                type="checkbox"
+                                className="text-blue-600 border-gray-200 rounded focus:ring-blue-500"
+                                checked={isCheck.some(
+                                    (el) => el._id === item._id
+                                )}
+                                onChange={() => handleClickCheckBox(item)}
+                            />
+                            <label htmlFor="checkbox" className="sr-only">
+                                Checkbox
+                            </label>
+                        </div>
                         <img
                             src={item.product?.thumb}
                             alt=""
@@ -160,8 +179,10 @@ const Cart = () => {
                     iconsAfter={<AiOutlineArrowRight size={16} />}
                     name={"CHECK OUT"}
                     handleClick={() => {
-                        if (currentUser?.cart?.length) {
-                            navigate(`/${path.CHECKOUT}`);
+                        if (isCheck.length) {
+                            navigate(`/${path.CHECKOUT}`, {
+                                state: { selectedProducts: isCheck },
+                            });
                             dispatch(appSlice.actions.toggleCart());
                         }
                     }}

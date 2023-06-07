@@ -27,7 +27,6 @@ const Button = ({
     let isNotPreventOnClick = true;
     if (disabled) {
         isNotPreventOnClick = undefined;
-        console.log(name, isNotPreventOnClick)
     }
 
     return (

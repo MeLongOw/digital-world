@@ -15,6 +15,7 @@ var orderSchema = new mongoose.Schema(
             default: "Processing",
             enum: [
                 "Cancelled",
+                "Accepted",
                 "Shipping",
                 "Processing",
                 "Returning",
