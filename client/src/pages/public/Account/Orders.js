@@ -6,14 +6,15 @@ import moment from "moment";
 import { Link, useNavigate } from "react-router-dom";
 import path from "../../../utils/path";
 import Swal from "sweetalert2";
-
 import { apiUpdateCart } from "../../../apis";
+import Rating from "../../../components/Rating";
 
 const status = ["Processing", "Accepted", "Shipping", "Success", "Cancelled"];
 
 const Orders = () => {
     const token = useSelector((state) => state.user.token);
     const [data, setData] = useState([]);
+    console.log({ data });
     const [statusSelected, setStatusSelected] = useState("Processing");
     const [viewDetail, setViewDetail] = useState([]);
     const navigate = useNavigate();
@@ -83,7 +84,7 @@ const Orders = () => {
             <h3 className="h-[48px] flex items-center font-semibold text-xl uppercase">
                 Orders
             </h3>
-            <div className="flex flex-col gap-3 pt-4 mb-5">
+            <div className="flex flex-col gap-4 pt-4 mb-5">
                 <div className="text-lg font-semibold flex gap-3">
                     {status.map((status, index) => (
                         <span
@@ -164,7 +165,9 @@ const Orders = () => {
                                             viewDetailProducts(order?._id)
                                         }
                                     >
-                                        View detail
+                                        {statusSelected === "Success"
+                                            ? "Ratings"
+                                            : "View detail"}
                                     </span>
 
                                     {statusSelected === "Processing" && (
@@ -175,16 +178,6 @@ const Orders = () => {
                                             }
                                         >
                                             Cancel order
-                                        </span>
-                                    )}
-                                    {statusSelected === "Success" && (
-                                        <span
-                                            className="hover:text-main hover:cursor-pointer font-semibold border-l pl-3 ml-3 border-gray-500"
-                                            onClick={() =>
-                                                handleCancelOrder(order?._id)
-                                            }
-                                        >
-                                            Rating products
                                         </span>
                                     )}
                                     {statusSelected === "Cancelled" && (
@@ -202,52 +195,73 @@ const Orders = () => {
                             {viewDetail.some((el) => el === order?._id) &&
                                 order?.products?.map((item) => (
                                     <div
-                                        className="flex mb-3 mt-3"
+                                        className={
+                                            statusSelected === "Success" &&
+                                            "border border-gray-500 p-3 rounded-lg mb-4"
+                                        }
                                         key={`${item._id}`}
                                     >
-                                        <div className="w-[76px] aspect-square relative">
-                                            <img
-                                                alt="product"
-                                                src={item?.product?.thumb}
-                                                className="rounded-xl border border-gray-400"
-                                            />
-                                            <div className="bg-gray-600 text-white w-[24px] h-[24px] absolute top-[-8px] right-[-8px] rounded-full flex justify-center items-center">
-                                                {item?.quantity}
+                                        <div className="flex mb-3 mt-3">
+                                            <div className="w-[76px] aspect-square relative">
+                                                <img
+                                                    alt="product"
+                                                    src={item?.product?.thumb}
+                                                    className="rounded-xl border border-gray-400"
+                                                />
+                                                <div className="bg-gray-600 text-white w-[24px] h-[24px] absolute top-[-8px] right-[-8px] rounded-full flex justify-center items-center">
+                                                    {item?.quantity}
+                                                </div>
                                             </div>
-                                        </div>
-                                        <span className="flex flex-col justify-center flex-1 pl-5">
-                                            <Link
-                                                className="text-base text-gray-900 mb-2 font-semibold hover:text-main"
-                                                to={`/${path.PRODUCTS}/${item?.product?.slug}`}
-                                            >
-                                                {item?.product?.title}
-                                            </Link>
-                                            <span className="text-sm text-gray-700">
-                                                {item.variant?.map(
-                                                    (vari, index) => {
-                                                        return (
-                                                            <span key={index}>
-                                                                {index !==
-                                                                    0 && (
-                                                                    <span className="p-1">
-                                                                        /
+                                            <span className="flex flex-col justify-center flex-1 pl-5">
+                                                <Link
+                                                    className="text-base text-gray-900 mb-2 font-semibold hover:text-main"
+                                                    to={`/${path.PRODUCTS}/${item?.product?.slug}`}
+                                                >
+                                                    {item?.product?.title}
+                                                </Link>
+                                                <span className="text-sm text-gray-700">
+                                                    {item.variant?.map(
+                                                        (vari, index) => {
+                                                            return (
+                                                                <span
+                                                                    key={index}
+                                                                >
+                                                                    {index !==
+                                                                        0 && (
+                                                                        <span className="p-1">
+                                                                            /
+                                                                        </span>
+                                                                    )}
+                                                                    <span>
+                                                                        {
+                                                                            vari?.variant
+                                                                        }
                                                                     </span>
-                                                                )}
-                                                                <span>
-                                                                    {
-                                                                        vari?.variant
-                                                                    }
                                                                 </span>
-                                                            </span>
-                                                        );
-                                                    }
-                                                )}
+                                                            );
+                                                        }
+                                                    )}
+                                                </span>
                                             </span>
-                                        </span>
-                                        <span className="pl-5 flex justify-center items-center text-base font-medium text-gray-900">
-                                            {formatMoney(item?.product?.price)}{" "}
-                                            VND
-                                        </span>
+                                            <span className="pl-5 flex justify-center items-center text-base font-medium text-gray-900">
+                                                <span>
+                                                    {formatMoney(
+                                                        item?.product?.price
+                                                    )}{" "}
+                                                    VND
+                                                </span>
+                                            </span>
+                                        </div>
+                                        {statusSelected === "Success" && (
+                                            <Rating
+                                                starStore={item?.product?.ratings[0]?.star}
+                                                commentStore={item?.product?.ratings[0]?.comment}
+                                                pid={item?.product?._id}
+                                                oid={order?._id}
+                                                token={token}
+                                                fetch={async ()=> await fetchUserOrders(statusSelected)}
+                                            />
+                                        )}
                                     </div>
                                 ))}
                         </div>

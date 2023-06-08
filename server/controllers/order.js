@@ -127,7 +127,14 @@ const getUserOrders = asyncHandler(async (req, res) => {
     if (status) queries = { status, orderBy: _id };
     const response = await Order.find(queries)
         .populate("coupon")
-        .populate("products.product")
+        .populate({
+            path: "products.product",
+            populate: {
+                path: "ratings.postedBy",
+                match: { _id },
+                select: "_id",
+            },
+        })
         .select("-orderBy")
         .sort("-updatedAt");
 

@@ -4,5 +4,5 @@ export { default as Products } from "./Products";
 export { default as Brands } from "./Brands";
 export { default as Categories } from "./Categories";
 export { default as Orders } from "./Orders";
-export { default as Reviews } from "./Reviews";
+export { default as Ratings } from "./Ratings";
 export { default as Coupons } from "./Coupons";

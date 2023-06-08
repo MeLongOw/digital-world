@@ -24,7 +24,7 @@ import {
     Brands,
     Categories,
     Orders,
-    Reviews,
+    Ratings as RatingsAdmin,
     Coupons,
 } from "./pages/private";
 import { getCategories } from "./store/app/asyncThunk";
@@ -38,6 +38,7 @@ import {
 
 import User from "./pages/private/Users";
 import Checkout from "./pages/public/Checkout";
+import RATINGS from "./pages/private/Ratings";
 
 function App() {
     const dispatch = useDispatch();
@@ -113,8 +114,8 @@ function App() {
                         />
                         <Route path={`/${path.ORDERS}`} element={<Orders />} />
                         <Route
-                            path={`/${path.REVIEWS}`}
-                            element={<Reviews />}
+                            path={`/${path.RATINGS}`}
+                            element={<RatingsAdmin />}
                         />
                         <Route
                             path={`/${path.COUPONS}`}

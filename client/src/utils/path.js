@@ -27,7 +27,7 @@ const path = {
     BRANDS: "admin/brands",
     CATEGOGIES: "admin/categories",
     ORDERS: "admin/orders",
-    REVIEWS: "admin/reviews",
+    RATINGS: "admin/ratings",
     COUPONS: "admin/coupons",
     USERS: "admin/users",
 };

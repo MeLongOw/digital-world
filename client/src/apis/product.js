@@ -54,3 +54,39 @@ export const apiUpdateImageProduct = (token, pid, data) =>
         },
         data,
     });
+
+export const apiRatingProduct = (token, data = {}) =>
+    axios({
+        url: `/product/ratings`,
+        method: "put",
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+        data,
+    });
+
+export const apiGetProductRatings = (token, params) =>
+    axios({
+        url: "/product/ratings",
+        method: "get",
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+        params,
+    });
+
+export const apiDeleteProductRating = (token, pid, data) =>
+    axios({
+        url: `/product/deleterating/${pid}`,
+        method: "put",
+        headers: { Authorization: `Bearer ${token}` },
+        data,
+    });
+
+export const apiDeleteManyProductRatings = (token, data) =>
+    axios({
+        url: `/product/deleteratings`,
+        method: "put",
+        headers: { Authorization: `Bearer ${token}` },
+        data,
+    });

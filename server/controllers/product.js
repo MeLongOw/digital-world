@@ -1,6 +1,7 @@
 const Product = require("../models/product");
 const ProductCategory = require("../models/productCategory");
 const Brand = require("../models/brand");
+const Order = require("../models/order");
 const asyncHandler = require("express-async-handler");
 const slugify = require("slugify");
 const cloudinary = require("cloudinary").v2;
@@ -253,9 +254,15 @@ const deleteManyProducts = asyncHandler(async (req, res) => {
 
 const ratings = asyncHandler(async (req, res) => {
     const { _id } = req.user;
-    const { star, comment, pid } = req.body;
-    if ((!star, !pid)) throw new Error("Missing input(s)");
+    const { star, comment, pid, oid } = req.body;
+    if (!star || !pid || !oid) throw new Error("Missing input(s)");
     const ratingProduct = await Product.findById(pid);
+    const authOrder = await Order.findById(oid);
+    if (
+        authOrder?.orderBy.toString() !== _id &&
+        !authOrder?.products.some((el) => el.product === pid)
+    )
+        throw new Error("Not found product in this order of this user");
     const alreadyRating = ratingProduct?.ratings?.find(
         (rating) => rating.postedBy.toString() === _id
     );
@@ -277,7 +284,7 @@ const ratings = asyncHandler(async (req, res) => {
         );
     } else {
         //Add star and comment
-        const response = await Product.findByIdAndUpdate(
+        await Product.findByIdAndUpdate(
             pid,
             {
                 $push: { ratings: { star, comment, postedBy: _id } },
@@ -299,6 +306,121 @@ const ratings = asyncHandler(async (req, res) => {
     return res.status(200).json({
         status: true,
         updatedProduct,
+    });
+});
+
+const getAllRatings = asyncHandler(async (req, res) => {
+    const queries = { ...req.query };
+    const excludeFields = ["limit", "sort", "page", "fields"];
+    excludeFields.forEach((el) => delete queries[el]);
+
+    // Format operator Mongoose
+    let queryString = JSON.stringify(queries);
+    queryString = queryString.replace(
+        /\b(gte|gt|lt|lte)\b/g,
+        (matchedEl) => `$${matchedEl}`
+    );
+    let formattedQueries = JSON.parse(queryString);
+
+    //Filtering
+    if (queries?.title)
+        formattedQueries.title = { $regex: queries.title, $options: "i" };
+
+    if (queries?.ratings?._id)
+        formattedQueries = { "ratings._id": queries?.ratings?._id };
+    if (queries?.ratings?.star)
+        formattedQueries = { "ratings.star": queries?.ratings?.star };
+    if (queries?.ratings?.postedBy)
+        formattedQueries = { "ratings.postedBy": queries?.ratings?.postedBy };
+
+    let queryCommand = Product.find({
+        $and: [{ ratings: { $exists: true, $ne: [] } }, formattedQueries],
+    });
+
+    //Sorting
+    if (req.query.sort) {
+        const sortBy = req.query.sort.split(",").join(" ");
+        queryCommand.sort(sortBy);
+    }
+
+    //Fields limiting
+    if (req.query.fields) {
+        const fields = req.query.fields.split(",").join(" ");
+        queryCommand.select(fields);
+    }
+    //Pagination
+    const page = +req.query.page || 1;
+    const limit = +req.query.limit || process.env.LIMIT_PRODUCTS;
+    const skip = (page - 1) * limit;
+
+    //Execute query
+    queryCommand.skip(skip).limit(limit);
+
+    queryCommand
+        .populate({ path: "ratings.postedBy", select: "firstName lastName" })
+        .select("_id title ratings.star ratings._id ratings.comment")
+        .exec()
+        .then(async (response) => {
+            const counts = await Product.countDocuments({
+                $and: [
+                    { ratings: { $exists: true, $ne: [] } },
+                    formattedQueries,
+                ],
+            });
+
+            return res.status(200).json({
+                success: response ? true : false,
+                counts,
+                products: response ? response : "Can not get product ratings.",
+            });
+        })
+        .catch((err) => {
+            return res.status(500).json({ success: false, err: err.message });
+        });
+});
+
+const deleleProductRating = asyncHandler(async (req, res) => {
+    const { pid } = req.params;
+    const { rid } = req.body;
+    const deleteProductRating = await Product.findByIdAndUpdate(
+        pid,
+        {
+            $pull: {
+                ratings: {
+                    _id: rid,
+                },
+            },
+        },
+        { new: true }
+    );
+
+    return res.status(200).json({
+        success: deleteProductRating ? true : false,
+        deleteProductRating: deleteProductRating
+            ? deleteProductRating
+            : "Can not delete product rating",
+    });
+});
+const deleteManyProductRatings = asyncHandler(async (req, res) => {
+    const { _ids } = req.body;
+    if (!_ids?.length) throw new Error("Missing input (_ids)");
+
+    promises = _ids.map(({ pid, rid }) =>
+        Product.findByIdAndUpdate(
+            pid,
+            {
+                $pull: {
+                    ratings: {
+                        _id: rid,
+                    },
+                },
+            },
+            { new: true }
+        )
+    );
+    const response = await Promise.all(promises);
+    return res.status(200).json({
+        success: response ? true : false,
     });
 });
 
@@ -338,6 +460,9 @@ module.exports = {
     updateProduct,
     deleteProduct,
     deleteManyProducts,
-    ratings,
     uploadImageProduct,
+    ratings,
+    getAllRatings,
+    deleleProductRating,
+    deleteManyProductRatings,
 };

@@ -16,7 +16,6 @@ const Cart = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const [isCheck, setIsCheck] = useState([]);
-    console.log({ isCheck });
     const token = useSelector((state) => state.user.token);
     const currentUser = useSelector((state) => state.user.current);
 
@@ -36,7 +35,6 @@ const Cart = () => {
     };
 
     const handleClickCheckBox = (item) => {
-        console.log(123123,isCheck.some((el) => el._id === item._id));
         if (isCheck.some((el) => el._id === item._id)) {
             setIsCheck(isCheck.filter((el) => el._id !== item._id));
         } else {
