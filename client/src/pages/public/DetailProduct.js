@@ -55,6 +55,7 @@ const serviceBox = [
         title: "Consultancy",
         content: "Lifetime 24/7/365",
     },
+    
 ];
 
 const DetailProduct = () => {
@@ -63,7 +64,6 @@ const DetailProduct = () => {
     const [quantity, setQuantity] = useState(1);
     const [available, setAvailable] = useState(0);
     const [payload, setPayload] = useState([{ label: "", variant: "" }]);
-    console.log(payload)
     const [imageActive, setImageActive] = useState("");
     const dispatch = useDispatch();
     const token = useSelector((state) => state.user.token);
@@ -158,7 +158,7 @@ const DetailProduct = () => {
                                     )}
                                     <span className="pl-2 text-sm text-gray-600">
                                         {product?.ratings?.length
-                                            ? `${product?.ratings?.length} reviews`
+                                            ? `${product?.ratings?.length} ${product?.ratings?.length > 1 ?  'reviews' : 'review'}`
                                             : "0 review"}
                                     </span>
                                 </span>
@@ -225,6 +225,7 @@ const DetailProduct = () => {
                                         </span>
                                     </div>
                                 ))}
+                                
                             </div>
                         </div>
                     </div>
@@ -237,7 +238,7 @@ const DetailProduct = () => {
                         <IoIosArrowRoundBack size={20} />
                         {`back to ${product?.category?.title}`}
                     </Link>
-                    <DetailDescription description={product?.description} />
+                    <DetailDescription description={product?.description} review={product?.ratings}/>
                 </>
             )}
         </div>

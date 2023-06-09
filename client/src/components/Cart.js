@@ -181,6 +181,7 @@ const Cart = () => {
                             navigate(`/${path.CHECKOUT}`, {
                                 state: { selectedProducts: isCheck },
                             });
+                            setIsCheck([]);
                             dispatch(appSlice.actions.toggleCart());
                         }
                     }}

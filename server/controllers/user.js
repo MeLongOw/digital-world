@@ -43,7 +43,7 @@ const register = asyncHandler(async (req, res) => {
         sendMail({
             email,
             html,
-            subject: "Complete registration on To the Moon Bakery",
+            subject: "Complete registration on Digital World",
         });
 
         return res.status(200).json({

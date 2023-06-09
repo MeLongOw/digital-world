@@ -21,8 +21,10 @@ const createProduct = asyncHandler(async (req, res) => {
     );
     if (!quantitiesEachVariant?.every((el) => el === quantitiesEachVariant[0]))
         throw new Error("Total of variants have to be equal");
-    const quantity = Math.max(...quantitiesEachVariant);
-    if (quantity) req.body.quantity = +quantity;
+    // const quantity = Math.max(...quantitiesEachVariant);
+    // if (quantity) req.body.quantity = +quantity;
+
+
 
     const newProduct = await Product.create(req.body);
     return res.status(200).json({
@@ -35,7 +37,11 @@ const getProduct = asyncHandler(async (req, res) => {
     const { slug } = req.params;
     const product = await Product.findOne({ slug })
         .populate("brand")
-        .populate("category");
+        .populate("category")
+        .populate({
+            path: "ratings.postedBy",
+            select: "firstName lastName -_id",
+        });
     return res.status(200).json({
         success: product ? true : false,
         product: product ? product : "Not found product.",
@@ -193,6 +199,7 @@ const updateProduct = asyncHandler(async (req, res) => {
     const quantitiesEachVariant = variants.map((el) =>
         el.variants.reduce((total, el) => (total += el.quantity), 0)
     );
+    console.log({quantitiesEachVariant})
     if (!quantitiesEachVariant?.every((el) => el === quantitiesEachVariant[0]))
         throw new Error("Total of variants have to be equal");
     const quantity = Math.max(...quantitiesEachVariant);
@@ -202,6 +209,7 @@ const updateProduct = asyncHandler(async (req, res) => {
     let updatedProduct = await Product.findByIdAndUpdate(pid, req.body, {
         new: true,
     });
+
     if (updatedProduct) {
         const pendingRemoveFromCloudImgs = getDifferentElementsFromArrays(
             beforeUpdated.images,
@@ -276,6 +284,7 @@ const ratings = asyncHandler(async (req, res) => {
                 $set: {
                     "ratings.$.star": star,
                     "ratings.$.comment": comment,
+                    "ratings.$.createdAt": Date.now(),
                 },
             },
             {

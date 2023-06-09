@@ -11,7 +11,7 @@ export const removeAccentAndCreateSlug = (string) =>
         .join("-");
 export const formatMoney = (num) => {
     if (!Number(num)) return;
-    return Number(num.toFixed(1)).toLocaleString();
+    return Number(Number(num).toFixed(1)).toLocaleString();
 };
 
 export const capitalizeFirstLetter = (str) => {
@@ -29,8 +29,7 @@ export const capitalize = (str) => {
 };
 
 export const renderStarFromNumber = (num, size = 16) => {
-    if (!Number(num)) return;
-
+    if (!Number(num)) num = 5;
     const stars = [];
     for (let i = 0; i < +num; i++)
         stars.push(<AiFillStar color="orange" size={size} />);

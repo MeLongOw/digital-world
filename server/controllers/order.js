@@ -63,8 +63,9 @@ const createOrder = asyncHandler(async (req, res) => {
                     ).quantity -= quantity;
             return product.save();
         });
-        Promise.all(promises);
+        await Promise.all(promises);
     }
+
     return res.status(200).json({
         success: rs ? true : false,
         rs: rs ? rs : "Can not create new order",

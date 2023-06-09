@@ -57,6 +57,8 @@ var productSchema = new mongoose.Schema(
                 star: { type: Number },
                 postedBy: { type: mongoose.Types.ObjectId, ref: "User" },
                 comment: { type: String },
+                createdAt: { type: Date, default: Date.now },
+                updatedAt: { type: Date, default: Date.now },
             },
         ],
         totalRatings: {
@@ -78,19 +80,14 @@ productSchema.pre("updateOne", function (next) {
 });
 
 productSchema.pre("save", function (next) {
-    let totalQuantity = 0;
-    for (const variant of this.variants) {
-      if (variant.variants && variant.variants.length > 0) {
-        for (const variantItem of variant.variants) {
-          if (variantItem.quantity) {
-            totalQuantity += variantItem.quantity;
-          }
-        }
-      }
-    }
+    let totalQuantity = Math.max(
+        ...this.variants.map((el) =>
+            el.variants.reduce((total, el) => (total += el.quantity), 0)
+        )
+    );
     this.quantity = totalQuantity;
     next();
-  });
+});
 
 //Export the model
 module.exports = mongoose.model("Product", productSchema);

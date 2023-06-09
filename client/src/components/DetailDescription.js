@@ -1,6 +1,9 @@
 import React, { memo, useState } from "react";
+import { capitalize, renderStarFromNumber } from "../utils/helpers";
+import moment from "moment";
 
-const DetailDescription = ({ description }) => {
+const DetailDescription = ({ description = [], review = [] }) => {
+    console.log({ review });
     const contentBox = [
         { id: 1, label: "DESCRIPTION", title: "", content: description },
         {
@@ -42,11 +45,25 @@ const DetailDescription = ({ description }) => {
                 "In preparation for your delivery, please remove existing furniture, pictures, mirrors, accessories, etc. to prevent damages. Also insure that the area where you would like your furniture placed is clear of any old furniture and any other items that may obstruct the passageway of the delivery team. Shopify Shop will deliver, assemble, and set-up your new furniture purchase and remove all packing materials from your home. Our delivery crews are not permitted to move your existing furniture or other household items. Delivery personnel will attempt to deliver the purchased items in a safe and controlled manner but will not attempt to place furniture if they feel it will result in damage to the product or your home. Delivery personnel are unable to remove doors, hoist furniture or carry furniture up more than 3 flights of stairs. An elevator must be available for deliveries to the 4th floor and above.",
             ],
         },
+        {
+            id: 5,
+            label: "CUSTOMER REVIEW",
+            title: "CUSTOMERS REVIEWS",
+            content: review.sort((a, b) => {
+                if (a?.createdAt > b?.createdAt) {
+                    return -1;
+                }
+                if (a?.createdAt < b?.createdA) {
+                    return 1;
+                }
+                return 0;
+            }),
+        },
     ];
 
     const [boxActive, setboxActive] = useState(1);
     return (
-        <div className="flex flex-col mb-[50px]">
+        <div className="flex flex-col mb-[50px] max-h-screen overflow-y-scroll">
             <div className="flex gap-1">
                 {contentBox.map((item) => (
                     <div
@@ -65,8 +82,8 @@ const DetailDescription = ({ description }) => {
                 ))}
             </div>
             <div className="w-full border mt-[-1px] text-gray-700 p-5">
-                {contentBox.map((item, index) => {
-                    if (index === 0)
+                {contentBox.map((item) => {
+                    if (item.id === 1)
                         return (
                             <div
                                 key={item.id}
@@ -93,6 +110,51 @@ const DetailDescription = ({ description }) => {
                                     ) : (
                                         <br key={index} />
                                     )
+                                )}
+                            </div>
+                        );
+                    else if (item.id === 5)
+                        return (
+                            <div
+                                key={item.id}
+                                className={`${
+                                    item.id === boxActive ? "" : "hidden"
+                                } animate-slide-in-fwd-center`}
+                                onClick={() => {
+                                    setboxActive(item.id);
+                                }}
+                            >
+                                {item.title && (
+                                    <h3 className="mb-[10px] text-xl text-gray-700 font-semibold">
+                                        {item.title}
+                                    </h3>
+                                )}
+                                {item.content.length ? (
+                                    item.content.map((item) => (
+                                        <div
+                                            className="flex flex-col gap-2 text-sm pb-3 mb-4 border-b"
+                                            key={item._id}
+                                        >
+                                            <span className="font-medium">
+                                                {capitalize(
+                                                    `${item?.postedBy?.firstName} ${item?.postedBy?.lastName}`
+                                                )}
+                                            </span>
+                                            <span className="flex">
+                                                {renderStarFromNumber(
+                                                    +item?.star
+                                                )}
+                                            </span>
+                                            <i>
+                                                {moment(item?.createdAt).format(
+                                                    "HH:mm:ss DD/MM/YYYY"
+                                                )}
+                                            </i>
+                                            <span>{item?.comment}</span>
+                                        </div>
+                                    ))
+                                ) : (
+                                    <i>This product has no rating</i>
                                 )}
                             </div>
                         );

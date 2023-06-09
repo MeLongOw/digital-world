@@ -267,7 +267,7 @@ const Orders = () => {
                         </div>
                     ))
                 ) : (
-                    <i>There is no order yet</i>
+                    <i>{`There is no order in "${statusSelected?.toLowerCase()}" yet`}</i>
                 )}
             </div>
         </div>
