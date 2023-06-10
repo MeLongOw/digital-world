@@ -9,6 +9,9 @@ module.exports = {
             width: {
                 main: "1220px",
             },
+            maxWidth:{
+                main: '1220px'
+            },
             backgroundColor: {
                 main: "#ee3131",
                 overlay: "rgba(0,0,0,0.6)",
@@ -58,8 +61,8 @@ module.exports = {
                         transform: " translateX(0);",
                     },
                     "100%": {
-                        "-webkit-transform": "translateX(-400px);",
-                        transform: "translateX(-400px);",
+                        "-webkit-transform": "translateX(-375px);",
+                        transform: "translateX(-375px);",
                     },
                 },
                 "slide-right": {
@@ -68,14 +71,14 @@ module.exports = {
                         transform: " translateX(0);",
                     },
                     "100%": {
-                        "-webkit-transform": "translateX(400px);",
-                        transform: "translateX(400px);",
+                        "-webkit-transform": "translateX(375px);",
+                        transform: "translateX(375px);",
                     },
                 },
                 "slide-in-fwd-center": {
                     "0%": {
-                        "-webkit-transform": "translateZ(-1400px);",
-                        transform: "translateZ(-1400px);",
+                        "-webkit-transform": "translateZ(-1375px);",
+                        transform: "translateZ(-1375px);",
                         opacity: 0,
                     },
                     "100%": {

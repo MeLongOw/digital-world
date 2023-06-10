@@ -107,14 +107,14 @@ const DetailProduct = () => {
         window.scrollTo(0, 0);
     }, []);
     return (
-        <div className="w-main">
+        <div className="max-w-main full">
             {product && (
                 <>
-                    <div className="flex mb-[50px]">
-                        <div className="w-2/5">
+                    <div className="flex mb-[50px] max-lg:flex-col">
+                        <div className="w-2/5 max-lg:w-full">
                             <div className=" border mb-5 flex justify-center items-center">
                                 <img
-                                    className="w-[458px] h-[458px] object-contain "
+                                    className="max-w-[458px] w-full aspect-square object-contain "
                                     src={imageActive}
                                     alt=""
                                 />
@@ -146,8 +146,8 @@ const DetailProduct = () => {
                                 </div>
                             </div>
                         </div>
-                        <div className="flex w-3/5">
-                            <div className="flex-2 pl-[45px] pr-2">
+                        <div className="flex w-3/5 max-lg:w-full max-md:flex-col  max-lg:pt-3">
+                            <div className="md:flex-2 pl-[45px] max-lg:pl-0  pr-2 max-lg:pr-0 max-lg:mb-4 ">
                                 <span className="text-[30px] font-semibold">
                                     {formatMoney(product?.price)} VNĐ
                                 </span>
@@ -206,7 +206,7 @@ const DetailProduct = () => {
                                 </div>
                             </div>
 
-                            <div className=" flex-1">
+                            <div className="md:flex-1 ">
                                 {serviceBox.map((box) => (
                                     <div
                                         key={box.title}

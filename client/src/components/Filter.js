@@ -126,8 +126,8 @@ const Filter = ({ setPriceFilter = () => {}, setBrandFilter = () => {} }) => {
     }, []);
 
     return (
-        <div className="flex gap-2">
-            <div className="w-1/4">
+        <div className="flex gap-2 flex-wrap">
+            <div className="w-1/4 max-md:w-full">
                 <CustomSelect
                     placeholder="Price"
                     defaultValue={priceOptions[0]}
@@ -136,7 +136,7 @@ const Filter = ({ setPriceFilter = () => {}, setBrandFilter = () => {} }) => {
                     onChange={(e) => setPriceFilter(e.value)}
                 />
             </div>
-            <div className="w-1/4">
+            <div className="w-1/4 max-md:w-full">
                 <CustomSelect
                     placeholder="Brand"
                     value={defaultBrandSelect}

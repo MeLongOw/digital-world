@@ -53,7 +53,7 @@ const BestSeller = () => {
             <div className="mt-5 mx-[-10px]">
                 <CustomSlider products={products} activeTab={activeTab} />
             </div>
-            <div className="w-full flex gap-4 mt-5">
+            <div className="w-full flex gap-4 mt-5 max-sm:flex-col">
                 <Link className="flex-1" to={`/${path.PRODUCTS}`}>
                     <img
                         className="w-full object-contain hover:animate-pulsate-fwd"

@@ -62,16 +62,16 @@ const Products = () => {
 
     return (
         <div>
-            <div className="my-[15px] p-[10px] h-[108px] border flex items-center font-semibold text-sm text-gray-600">
-                <div className="flex-4 flex flex-col">
+            <div className="my-[15px] p-[10px] min-h-[108px] border flex items-center font-semibold text-sm text-gray-600 flex-wrap">
+                <div className="w-4/5 flex flex-col flex-wrap max-md:w-full">
                     <p className="mb-[10px]">Fillter by</p>
                     <Filter
                         setBrandFilter={setbrandFilter}
                         setPriceFilter={setPriceFilter}
                     />
                 </div>
-                <div className="flex-1 ">
-                    <p className="mb-[10px]">Sort by</p>
+                <div className="w-1/5 max-md:w-full ">
+                    <p className="max-md:mt-3 mb-[10px]">Sort by</p>
                     <SortBy setValue={setSort} />
                 </div>
             </div>
@@ -79,7 +79,7 @@ const Products = () => {
             <div className="flex flex-wrap mx-[-10px] ">
                 {products?.length ? (
                     products?.map((data) => (
-                        <div className="w-1/4 mb-5" key={data._id}>
+                        <div className="w-1/4 max-lg:w-1/3 max-md:w-1/2 max-sm:w-full mb-5" key={data._id}>
                             <Product productData={data} isHasLabel={false} />
                         </div>
                     ))

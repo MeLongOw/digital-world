@@ -54,8 +54,8 @@ const Header = () => {
     }, []);
 
     return (
-        <div className=" w-main flex justify-between h-[110px] py-[35px]">
-            <Link to={`/${path.HOME}`}>
+        <div className=" max-w-main max-xl:px-3 w-full flex justify-between h-[110px] py-[35px]">
+            <Link to={`/${path.HOME}`} className='flex items-center'>
                 <img
                     src={logo}
                     alt="logo"
@@ -64,7 +64,7 @@ const Header = () => {
             </Link>
 
             <div className="flex text-[13px]">
-                <div className="flex flex-col items-center px-6 border-r">
+                <div className="flex flex-col items-center px-6 border-r max-lg:hidden">
                     <span className="flex gap-4 items-center">
                         <AiFillPhone color="red" />
                         <span className="font-semibold">
@@ -74,7 +74,7 @@ const Header = () => {
                     <span>Mon-Sat 9:00AM - 8:00PM</span>
                 </div>
 
-                <div className="flex flex-col items-center px-6 border-r">
+                <div className="flex flex-col items-center px-6 border-r max-md:hidden">
                     <span className="flex gap-4 items-center">
                         <MdEmail color="red" />
                         <span className="font-semibold">
@@ -85,7 +85,7 @@ const Header = () => {
                 </div>
 
                 <div
-                    className="flex items-center justify-center gap-2 px-6 border-r hover:text-main hover:cursor-pointer"
+                    className="flex items-center justify-center gap-2 px-6 max-md:px-3 max-md:ml-3 border-r hover:text-main hover:cursor-pointer flex-wrap"
                     onClick={handleToggleCart}
                 >
                     <BsFillBagFill color="red" size={20} />
@@ -96,7 +96,7 @@ const Header = () => {
                     </span>
                 </div>
 
-                <div className="flex relative items-center  justify-center px-6 text-sm">
+                <div className="flex relative items-cente justify-center px-6 max-md:px-3 text-sm">
                     {isLoggedIn ? (
                         <FaUserCircle
                             size={30}

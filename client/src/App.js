@@ -71,7 +71,7 @@ function App() {
                         ))}
                     </Route>
                     <Route path={path.BLOGS} element={<Blogs />} />
-                    <Route path={path.OUR_SERVICES} element={<Services />} />
+                    <Route path={path.SERVICES} element={<Services />} />
                     <Route path={path.WISHLIST} element={<WishList />} />
                     <Route path={path.CART} element={<Cart />} />
                     <Route path={`/${path.CHECKOUT}`} element={<Checkout />} />

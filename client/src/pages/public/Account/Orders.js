@@ -8,6 +8,7 @@ import path from "../../../utils/path";
 import Swal from "sweetalert2";
 import { apiUpdateCart } from "../../../apis";
 import Rating from "../../../components/Rating";
+import { formatAddress } from "../../../utils/helpers";
 
 const status = ["Processing", "Accepted", "Shipping", "Success", "Cancelled"];
 
@@ -85,7 +86,7 @@ const Orders = () => {
                 Orders
             </h3>
             <div className="flex flex-col gap-4 pt-4 mb-5">
-                <div className="text-lg font-semibold flex gap-3">
+                <div className="text-lg font-semibold flex max-sm:flex-wrap gap-3 max-sm:text-sm">
                     {status.map((status, index) => (
                         <span
                             className={`hover:cursor-pointer ${
@@ -104,7 +105,7 @@ const Orders = () => {
                             className="border w-full rounded-lg shadow-md flex flex-col p-3"
                             key={order?._id}
                         >
-                            <div className="flex justify-between">
+                            <div className="flex md:justify-between max-lg:flex-col ">
                                 <div className="flex flex-col gap-1">
                                     <div>
                                         <span className="font-semibold">{`OrderID: `}</span>
@@ -112,15 +113,9 @@ const Orders = () => {
                                     </div>
                                     <div>
                                         <span className="font-semibold">{`Address: `}</span>
-                                        <span>{`${
-                                            JSON.parse(order?.address)?.address
-                                        }, ward ${
-                                            JSON.parse(order?.address)?.ward
-                                        }, district ${
-                                            JSON.parse(order?.address)?.district
-                                        }, ${
-                                            JSON.parse(order?.address)?.city
-                                        }`}</span>
+                                        <span>
+                                            {formatAddress(order?.address)}
+                                        </span>
                                     </div>
                                     <div>
                                         <span className="font-semibold">{`Phone: `}</span>
@@ -158,7 +153,7 @@ const Orders = () => {
                                         <span>{order?.products?.length}</span>
                                     </div>
                                 </div>
-                                <div className="flex items-center">
+                                <div className="flex items-center max-md:mt-3 max-lg:justify-end">
                                     <span
                                         className="hover:text-main hover:cursor-pointer font-semibold"
                                         onClick={() =>
@@ -201,7 +196,7 @@ const Orders = () => {
                                         }
                                         key={`${item._id}`}
                                     >
-                                        <div className="flex mb-3 mt-3">
+                                        <div className="flex mb-3 mt-3 max-sm:flex-col max-sm:items-center">
                                             <div className="w-[76px] aspect-square relative">
                                                 <img
                                                     alt="product"
@@ -212,9 +207,9 @@ const Orders = () => {
                                                     {item?.quantity}
                                                 </div>
                                             </div>
-                                            <span className="flex flex-col justify-center flex-1 pl-5">
+                                            <span className="flex flex-col justify-center flex-1 pl-5 max-sm:pl-0 max-sm:text-center">
                                                 <Link
-                                                    className="text-base text-gray-900 mb-2 font-semibold hover:text-main"
+                                                    className="text-base text-gray-900 mb-2 font-semibold hover:text-main max-sm:mb-0"
                                                     to={`/${path.PRODUCTS}/${item?.product?.slug}`}
                                                 >
                                                     {item?.product?.title}
@@ -243,7 +238,7 @@ const Orders = () => {
                                                     )}
                                                 </span>
                                             </span>
-                                            <span className="pl-5 flex justify-center items-center text-base font-medium text-gray-900">
+                                            <span className="pl-5 flex justify-center items-center text-base font-medium text-gray-900 max-sm:pl-0">
                                                 <span>
                                                     {formatMoney(
                                                         item?.product?.price
@@ -254,12 +249,22 @@ const Orders = () => {
                                         </div>
                                         {statusSelected === "Success" && (
                                             <Rating
-                                                starStore={item?.product?.ratings[0]?.star}
-                                                commentStore={item?.product?.ratings[0]?.comment}
+                                                starStore={
+                                                    item?.product?.ratings[0]
+                                                        ?.star
+                                                }
+                                                commentStore={
+                                                    item?.product?.ratings[0]
+                                                        ?.comment
+                                                }
                                                 pid={item?.product?._id}
                                                 oid={order?._id}
                                                 token={token}
-                                                fetch={async ()=> await fetchUserOrders(statusSelected)}
+                                                fetch={async () =>
+                                                    await fetchUserOrders(
+                                                        statusSelected
+                                                    )
+                                                }
                                             />
                                         )}
                                     </div>

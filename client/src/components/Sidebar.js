@@ -10,7 +10,7 @@ const Sidebar = () => {
     const { categories } = useSelector((state) => state.app);
 
     return (
-        <div className="flex flex-col border max-h-[438px]">
+        <div className="flex flex-col border max-h-[438px] max-md:hidden">
             <div className="flex text-[16px] items-center px-5 py-[10px] bg-main text-white font-semibold">
                 <span className="mr-3 flex items-center justify-center">
                     <TfiMenu size={18} />

@@ -80,7 +80,7 @@ const Cart = () => {
 
     return (
         <div>
-            <div className="flex border p-5 text-lg text-gray-800 font-semibold">
+            <div className="flex border p-5 text-lg text-gray-800 font-semibold max-sm:hidden">
                 <div className="flex flex-6 items-center">
                     <div className="flex items-center">
                         <input
@@ -102,28 +102,30 @@ const Cart = () => {
             </div>
             {currentUser?.cart?.length ? (
                 currentUser?.cart?.map((item) => (
-                    <div className="border p-5 mt-[-1px] flex" key={item._id}>
-                        <div className="flex flex-6 items-center">
-                            <div className="flex items-center">
-                                <input
-                                    id="checkbox-all"
-                                    type="checkbox"
-                                    className="text-blue-600 border-gray-200 rounded focus:ring-blue-500 mr-5"
-                                    checked={isCheck.some(
-                                        (el) => el._id === item._id
-                                    )}
-                                    onChange={() => handleClickCheckBox(item)}
+                    <div className="border p-5 mt-[-1px] flex max-sm:flex-col" key={item._id}>
+                        <div className="flex flex-6 md:items-center max-md:flex-col">
+                            <div className="flex w-full max-sm:items-center max-sm:flex-col">
+                                <div className="flex items-center ">
+                                    <input
+                                        id="checkbox-all"
+                                        type="checkbox"
+                                        className="text-blue-600 border-gray-200 rounded focus:ring-blue-500 md:mr-5"
+                                        checked={isCheck.some(
+                                            (el) => el._id === item._id
+                                        )}
+                                        onChange={() => handleClickCheckBox(item)}
+                                    />
+                                    <label htmlFor="checkbox" className="sr-only">
+                                        Checkbox
+                                    </label>
+                                </div>
+                                <img
+                                    src={item.product?.thumb}
+                                    alt=""
+                                    className=" max-w-[214px] w-full aspect-square object-contain md:pr-5"
                                 />
-                                <label htmlFor="checkbox" className="sr-only">
-                                    Checkbox
-                                </label>
                             </div>
-                            <img
-                                src={item.product?.thumb}
-                                alt=""
-                                className="h-[214px] w-[214px] object-contain pr-5"
-                            />
-                            <div className="p-5 flex flex-col ">
+                            <div className="md:p-5 flex flex-col max-sm:items-center">
                                 <Link
                                     to={`/${path.DETAIL_PRODUCT}/${item.product?.slug}`}
                                     className="font-base capitalize hover:text-main"
@@ -146,8 +148,8 @@ const Cart = () => {
                                 </span>
                             </div>
                         </div>
-                        <div className="flex flex-4 items-center">
-                            <div className="flex-1 flex justify-center">
+                        <div className="flex flex-4 items-center max-sm:flex-col max-sm:gap-2">
+                            <div className="sm:flex-1 flex justify-center max-sm:order-2">
                                 <InputNumberCart
                                     number={item.quantity}
                                     handleUpdateCart={(quantity) => {
@@ -159,7 +161,7 @@ const Cart = () => {
                                     }}
                                 />
                             </div>
-                            <div className="flex-3 flex justify-end text-lg text-gray-800 font-semibold">
+                            <div className="sm:flex-3 flex justify-end text-lg text-gray-800 font-semibold">
                                 {formatMoney(item.product?.price)} VND
                             </div>
                         </div>
@@ -175,12 +177,12 @@ const Cart = () => {
                 </div>
             )}
 
-            <div className="border p-5 mb-10 mt-[-1px] flex flex-col items-end">
-                <div className="flex items-center w-[40%] mb-[10px]">
-                    <p className="flex-1 text-center text-sm text-gray-600">
+            <div className="border p-5 mb-10 mt-[-1px] flex flex-col sm:items-end">
+                <div className="flex items-center sm:w-[40%] mb-[10px]">
+                    <p className="sm:flex-1 sm:text-center text-sm text-gray-600 max-sm:mr-4">
                         Subtotal
                     </p>
-                    <div className="flex-1 text-end text-xl text-gray-800 font-semibold line-clamp-2">
+                    <div className="flex-1 sm:text-end text-xl text-gray-800 font-semibold line-clamp-2">
                         {formatMoney(totalPrice) || "0"} VND
                     </div>
                     <div></div>
@@ -189,7 +191,7 @@ const Cart = () => {
                     Shipping, and discounts calculated at checkout.
                 </i>
                 <div className="flex gap-3">
-                    <div className="w-[180px]">
+                    <div className="w-[180px] max-sm:w-full">
                         <Button
                             name="CHECK OUT"
                             iconsAfter={<AiOutlineArrowRight />}

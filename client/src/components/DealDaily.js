@@ -33,7 +33,7 @@ const DealDaily = () => {
             </h3>
             {dailydeal ? (
                 <>
-                    <div className="w-full flex flex-col items-center pt-8 gap-2">
+                    <div className="w-full flex flex-col items-center pt-8 gap-2 max-lg:pt-0">
                         <Link to={`${path.DETAIL_PRODUCT}/${dailydeal?.slug}`}>
                             <img
                                 src={

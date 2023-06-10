@@ -8,8 +8,8 @@ const TopHeader = () => {
 
     return (
         <div className="h-[38px] w-full bg-main flex justify-center">
-            <div className="w-main flex items-center justify-between text-xs text-white">
-                <span>ORDER ONLINE OR CALL US (+84) 906 243 XXX</span>
+            <div className="max-w-main max-xl:px-3 w-full flex items-center justify-between text-xs text-white">
+                <span className="mr-4">ORDER ONLINE OR CALL US (+84) 906 243 XXX</span>
                 {isLoggedIn ? (
                     <span>Welcome to Digital World</span>
                 ) : (

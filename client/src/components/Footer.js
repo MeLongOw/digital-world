@@ -12,16 +12,16 @@ const Footer = () => {
         <div className="w-full">
  
             <div className="w-full bg-main flex flex-col items-center">
-                <div className="w-main h-[103px] flex justify-between items-center">
+                <div className="max-w-main max-xl:px-3 w-full min-h-[103px] flex justify-between items-center max-md:flex-col max-md:items-start">
                     <div className="flex flex-1 flex-col">
                         <span className="text-[20px] text-white ">
                             SIGN UP TO NEWSLETTER
                         </span>
-                        <small className="text-[13px] text-gray-300  ">
+                        <small className="text-[13px] text-gray-300 max-md:mb-3">
                             Subscribe now and receive weekly newslette
                         </small>
                     </div>
-                    <div className="flex items-center flex-1 h-[50px] pl-5 bg-[#F04646] rounded-l-full rounded-r-full text-white">
+                    <div className="flex items-center flex-1 h-[50px] pl-5 bg-[#F04646] rounded-l-full rounded-r-full text-white max-md:mb-3 max-md:w-full">
                         <input
                             className="w-full text-[14px] h-[50px] bg-transparent outline-none placeholder:text-sm placeholder:text-gray-300"
                             placeholder="Email address"
@@ -33,9 +33,9 @@ const Footer = () => {
                 </div>
             </div>
             <div className="w-full  bg-[#191919] flex flex-col items-center">
-                <div className="w-main h-[407px] flex items-center text-white text-[13px]">
-                    <div className="w-full flex">
-                        <div className="flex-2 flex flex-col">
+                <div className="max-w-main max-lg:p-3 w-full min-h-[407px] flex items-center text-white text-[13px]">
+                    <div className="w-full flex flex-wrap">
+                        <div className="lg:flex-2 flex flex-col max-lg:w-full ">
                             <h3 className="text-[15px] mb-5 font-medium border-l-[3px] pl-[15px] border-main">
                                 ABOUT US
                             </h3>
@@ -59,7 +59,7 @@ const Footer = () => {
                                 </span>
                             </span>
                         </div>
-                        <div className="flex-1 flex flex-col">
+                        <div className="lg:flex-1 max-lg:w-1/3 max-md:w-full flex flex-col">
                             <h3 className="text-[15px] mb-5 font-medium border-l-[3px] pl-[15px] border-main">
                                 INFORMATION
                             </h3>
@@ -79,7 +79,7 @@ const Footer = () => {
                                 <Link to={path.HOME}>Contact</Link>
                             </div>
                         </div>
-                        <div className="flex-1 flex flex-col">
+                        <div className="lg:flex-1 max-lg:w-1/3 max-md:w-full flex flex-col">
                             <h3 className="text-[15px] mb-5 font-medium border-l-[3px] pl-[15px] border-main">
                                 WHO WE ARE
                             </h3>
@@ -99,7 +99,7 @@ const Footer = () => {
                                 <Link to={path.HOME}>Testimonials</Link>
                             </div>
                         </div>
-                        <div className="flex-1 flex flex-col">
+                        <div className="lg:flex-1 max-lg:w-1/3 max-md:w-full flex flex-col">
                             <h3 className="text-[15px] mb-5 font-medium border-l-[3px] pl-[15px] border-main">
                                 #DIGITALWORLDSTORE
                             </h3>
@@ -108,9 +108,9 @@ const Footer = () => {
                 </div>
             </div>
             <div className="w-full h-[70px] bg-black text-gray-500 flex items-center justify-center">
-                <div className="w-main flex items-center justify-between">
+                <div className="max-w-main max-xl:px-3 w-full flex items-center justify-between">
                     <div className="text-sm">
-                        © 2023, Digital World 2 Powered by Shopify
+                        © 2023, Digital World Powered by Long
                     </div>
                     <div className="flex gap-5">
                         <svg

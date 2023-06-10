@@ -51,7 +51,7 @@ const Ratings = () => {
                                     }
                                     key={`${item._id}`}
                                 >
-                                    <div className="flex mb-3 mt-3">
+                                    <div className="flex mb-3 mt-3 max-sm:flex-col max-sm:items-center">
                                         <div className="w-[76px] aspect-square relative">
                                             <img
                                                 alt="product"
@@ -62,9 +62,9 @@ const Ratings = () => {
                                                 {item?.quantity}
                                             </div>
                                         </div>
-                                        <span className="flex flex-col justify-center flex-1 pl-5">
+                                        <span className="flex flex-col justify-center flex-1 pl-5 max-sm:text-center max-sm:pl-0">
                                             <Link
-                                                className="text-base text-gray-900 mb-2 font-semibold hover:text-main"
+                                                className="text-base text-gray-900 mb-2 font-semibold hover:text-main max-sm:mb-0"
                                                 to={`/${path.PRODUCTS}/${item?.product?.slug}`}
                                             >
                                                 {item?.product?.title}
@@ -91,7 +91,7 @@ const Ratings = () => {
                                                 )}
                                             </span>
                                         </span>
-                                        <span className="pl-5 flex justify-center items-center text-base font-medium text-gray-900">
+                                        <span className="pl-5 flex justify-center items-center text-base font-medium text-gray-900 max-sm:pl-0">
                                             <span>
                                                 {formatMoney(
                                                     item?.product?.price
@@ -156,7 +156,7 @@ const Ratings = () => {
                                                 }
                                             />
                                             <i
-                                                className="flex justify-center underline text-gray-400 hover:cursor-pointer"
+                                                className="flex justify-center underline text-gray-400 hover:cursor-pointer mt-3"
                                                 onClick={() =>
                                                     handleEditRating(item?._id)
                                                 }

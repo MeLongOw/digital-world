@@ -63,14 +63,14 @@ const DetailDescription = ({ description = [], review = [] }) => {
 
     const [boxActive, setboxActive] = useState(1);
     return (
-        <div className="flex flex-col mb-[50px] max-h-screen overflow-y-scroll">
-            <div className="flex gap-1">
+        <div className="flex md:flex-col mb-[50px]">
+            <div className="flex max-md:flex-col gap-1">
                 {contentBox.map((item) => (
                     <div
                         key={item.id}
-                        className={`px-5 py-[9px] text-gray-700 border ${
+                        className={`px-5 py-[9px] max-sm:px-2 max-sm:text-xs text-gray-700 border ${
                             item.id === boxActive
-                                ? "bg-white border-b-white z-10"
+                                ? "bg-white md:border-b-white max-md:border-r-white z-10"
                                 : "bg-gray-200 hover:cursor-pointer"
                         } `}
                         onClick={() => {
@@ -81,7 +81,7 @@ const DetailDescription = ({ description = [], review = [] }) => {
                     </div>
                 ))}
             </div>
-            <div className="w-full border mt-[-1px] text-gray-700 p-5">
+            <div className="w-full border md:mt-[-1px] max-md:ml-[-1px] text-gray-700 p-5">
                 {contentBox.map((item) => {
                     if (item.id === 1)
                         return (
@@ -129,33 +129,37 @@ const DetailDescription = ({ description = [], review = [] }) => {
                                         {item.title}
                                     </h3>
                                 )}
-                                {item.content.length ? (
-                                    item.content.map((item) => (
-                                        <div
-                                            className="flex flex-col gap-2 text-sm pb-3 mb-4 border-b"
-                                            key={item._id}
-                                        >
-                                            <span className="font-medium">
-                                                {capitalize(
-                                                    `${item?.postedBy?.firstName} ${item?.postedBy?.lastName}`
-                                                )}
-                                            </span>
-                                            <span className="flex">
-                                                {renderStarFromNumber(
-                                                    +item?.star
-                                                )}
-                                            </span>
-                                            <i>
-                                                {moment(item?.createdAt).format(
-                                                    "HH:mm:ss DD/MM/YYYY"
-                                                )}
-                                            </i>
-                                            <span>{item?.comment}</span>
-                                        </div>
-                                    ))
-                                ) : (
-                                    <i>This product has no rating</i>
-                                )}
+                                <div className="overflow-y-scroll max-h-screen">
+                                    {item.content.length ? (
+                                        item.content.map((item) => (
+                                            <div
+                                                className="flex flex-col gap-2 text-sm pb-3 mb-4 border-b"
+                                                key={item._id}
+                                            >
+                                                <span className="font-medium">
+                                                    {capitalize(
+                                                        `${item?.postedBy?.firstName} ${item?.postedBy?.lastName}`
+                                                    )}
+                                                </span>
+                                                <span className="flex">
+                                                    {renderStarFromNumber(
+                                                        +item?.star
+                                                    )}
+                                                </span>
+                                                <i>
+                                                    {moment(
+                                                        item?.createdAt
+                                                    ).format(
+                                                        "HH:mm:ss DD/MM/YYYY"
+                                                    )}
+                                                </i>
+                                                <span>{item?.comment}</span>
+                                            </div>
+                                        ))
+                                    ) : (
+                                        <i>This product has no rating</i>
+                                    )}
+                                </div>
                             </div>
                         );
                     else

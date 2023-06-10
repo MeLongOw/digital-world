@@ -19,7 +19,10 @@ const SelectOption = ({ icon, onClick = () => {}, productId, path }) => {
 
     return (
         <Link
-            onClick={handleClick}
+            onClick={(e) => {
+                e.stopPropagation();
+                handleClick();
+            }}
             to={path}
             className="w-10 h-10 bg-white rounded-full border flex items-center shadow-sm justify-center 
          hover:bg-gray-800 hover:text-white hover:border-gray-800 cursor-pointer"

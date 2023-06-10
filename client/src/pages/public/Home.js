@@ -19,6 +19,20 @@ const settings = {
     speed: 300,
     slidesToShow: 5,
     slidesToScroll: 1,
+    responsive: [
+        {
+            breakpoint: 1024,
+            settings: {
+                slidesToShow: 3,
+            },
+        },
+        {
+            breakpoint: 768,
+            settings: {
+                slidesToShow: 2,
+            },
+        },
+    ],
 };
 
 const logo = [
@@ -42,14 +56,22 @@ const Home = () => {
 
     return (
         <>
-            <div className="w-main flex">
-                <div className="flex flex-col gap-5 w-[25%] flex-auto">
-                    <Sidebar />
-                    <DealDaily />
+            <div className="max-w-main w-full flex flex-col">
+                <div className="flex w-full mb-5">
+                    <div className="flex flex-col gap-5 w-[25%] max-md:hidden pr-5">
+                        <Sidebar />
+                    </div>
+                    <div className="flex flex-col gap-5 w-[75%] max-md:w-full">
+                        <Banner />
+                    </div>
                 </div>
-                <div className="flex flex-col gap-5 w-[75%] pl-5 flex-auto">
-                    <Banner />
-                    <BestSeller />
+                <div className="flex gap-5 w-full max-md:flex-col">
+                    <div className="w-1/4 max-md:w-full">
+                        <DealDaily />
+                    </div>
+                    <div className="w-3/4 max-md:w-full">
+                        <BestSeller />
+                    </div>
                 </div>
             </div>
 
@@ -70,10 +92,10 @@ const Home = () => {
                 <h3 className="text-[20px] font-semibold border-b-2 uppercase border-main mb-5">
                     Hot collections
                 </h3>
-                <div className="w-full mt-4 flex flex-wrap [&>*:nth-child(4n)]:pr-0">
+                <div className="w-full mt-4 flex flex-wrap md:[&>*:nth-child(4n)]:pr-0 max-md:[&>*:nth-child(2n)]:pr-0 max-sm:[&>*:nth-child(n)]:pr-0">
                     {categories?.map((item) => (
                         <div
-                            className="w-1/4 max-w-[25%] flex flex-initial pr-5 pb-5"
+                            className="w-1/4 max-md:w-1/2 max-sm:w-full flex flex-initial pr-5 pb-5"
                             key={item._id}
                         >
                             <div className=" border flex w-full min-h-[200px] p-4">
@@ -145,7 +167,7 @@ const Home = () => {
                 </div>
             </div>
             <div className="w-full flex flex-col items-center">
-                <div className="w-main h-[90px] flex justify-between items-center mb-8">
+                <div className="max-w-main max-xl:px-3 w-full h-[90px] flex justify-between items-center mb-8">
                     <div className="w-full">
                         <Slider className="custom-slider" {...settings}>
                             {logo.map((item, index) => (

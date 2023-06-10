@@ -43,7 +43,7 @@ const Product = ({ productData, isNew, isHasLabel = true }) => {
             >
                 <div className="w-full relative overflow-hidden">
                     <div
-                        className="absolute w-full bottom-0 flex justify-center invisible gap-4 group-hover:visible 
+                        className="absolute w-full bottom-0 flex justify-center lg:invisible gap-4 group-hover:visible 
                         group-hover:animate-slide-top"
                     >
                         <SelectOption
@@ -71,7 +71,7 @@ const Product = ({ productData, isNew, isHasLabel = true }) => {
                                 "https://comm.uir.ac.id/wp-content/uploads/2022/09/no-image-found.b1edc35f0fa6.png"
                             }
                             alt=""
-                            className="w-[274px] h-[274px] object-contain"
+                            className="max-w-[274px] w-full aspect-square object-contain max-lg:w-[200]"
                         />
                         {isHasLabel && (
                             <img

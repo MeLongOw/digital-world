@@ -42,9 +42,9 @@ const allServices = [
 const Services = () => {
     return (
         <div className="flex flex-col w-full items-center">
-            <div className="flex gap-5 mb-[50px]">
+            <div className="flex gap-5 mb-[50px] max-lg:flex-col max-lg:items-center">
                 <img
-                    className="w-[580px] object-contain"
+                    className="max-w-[580px] w-full object-contain"
                     src="https://cdn.shopify.com/s/files/1/1636/8779/files/9069783_orig.jpg?v=1491836163"
                     alt=""
                 />
@@ -76,7 +76,7 @@ const Services = () => {
             <div className="flex flex-wrap w-full">
                 {allServices.map((item,index) => (
                     <div
-                        className="w-1/3  flex flex-col items-center text-gray-600 p-[30px]"
+                        className="w-1/3 max-lg:w-1/2 max-sm:w-full  flex flex-col items-center text-gray-600 p-[30px]"
                         key={index}
                     >
                         <img

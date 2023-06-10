@@ -9,7 +9,28 @@ const settings = {
     slidesToShow: 3,
     slidesToScroll: 1,
     autoplay: true,
-    autoplaySpeed: 2000
+    autoplaySpeed: 2000,
+    responsive: [
+        {
+            breakpoint: 1024,
+            settings: {
+                slidesToShow: 2,
+            },
+        },
+        {
+            breakpoint: 768,
+            settings: {
+                slidesToShow: 2,
+            },
+        },
+        {
+            breakpoint: 640,
+            settings: {
+                slidesToShow: 1,
+            },
+        },
+        
+    ],
 };
 
 const CustomSlider = ({ products, activeTab = 2 }) => {

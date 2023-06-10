@@ -30,12 +30,12 @@ const Account = () => {
             navigate(`/${path.ACCOUNT}/${state || "profile"}`);
     }, [state, pathname, navigate]);
     return (
-        <div className="flex mb-10">
+        <div className="flex mb-10 max-md:flex-col">
             <div className="flex-2 border">
                 <div className="h-[48px] bg-main font-semibold text-xl text-white flex items-center justify-center  ">
                     MY ACCOUNT
                 </div>
-                <div className="p-4 text-lg font-medium text-gray-700">
+                <div className="p-4 text-lg font-medium text-gray-700 max-md:flex max-md:gap-4">
                     {sidebar.map((item) => (
                         <NavLink
                             key={item.title}
@@ -52,7 +52,7 @@ const Account = () => {
                     ))}
                 </div>
             </div>
-            <div className="flex-5 border border-l-0 pl-5 pr-[72px] text-gray-700">
+            <div className="flex-5 border border-l-0 pl-5 pr-[72px] max-md:border-l max-md:border-t-0 max-md:pr-5 text-gray-700">
                 <Outlet />
             </div>
         </div>

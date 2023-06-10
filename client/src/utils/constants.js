@@ -18,8 +18,8 @@ export const navigation = [
     // },
     {
         id: 3,
-        value: "OUR SERVICES",
-        path: `/${path.OUR_SERVICES}`,
+        value: "SERVICES",
+        path: `/${path.SERVICES}`,
     },
     {
         id: 4,

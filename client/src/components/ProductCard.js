@@ -5,7 +5,7 @@ import path from "../utils/path";
 
 const ProductCard = ({ slug, price, title, image, totalRatings }) => {
     return (
-        <div className="w-1/3 flex pb-5 pr-5 ">
+        <div className="w-1/3 max-md:w-1/2 max-sm:w-full flex pb-5 pr-5 ">
             <div className="flex w-full border ">
                 <Link
                     to={`/${path.DETAIL_PRODUCT}/${slug}`}

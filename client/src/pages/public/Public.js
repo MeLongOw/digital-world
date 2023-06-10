@@ -28,18 +28,18 @@ const Public = () => {
     return (
         <div className={`flex`}>
             <div
-                className={`w-full flex relative flex-col items-center  ${
+                className={`w-full flex relative flex-col items-center ${
                     isIconCardClick
                         ? isShowCart
                             ? "right[0px] animate-slide-left"
-                            : "right-[400px] animate-slide-right"
+                            : "right-[375px] animate-slide-right"
                         : ""
                 }`}
             >
                 <TopHeader />
                 <Header />
                 <Navigation />
-                <div className="w-main">
+                <div className="max-w-main max-xl:px-3 w-full">
                     <BreadCrumb pathname={pathname} />
                     <div className="w-full mt-6">
                         <Outlet />
@@ -55,12 +55,12 @@ const Public = () => {
                 ></div>
             )}
             <div
-                className={`w-[400px] flex-shirnk-0 h-screen fixed bg-gray-950 ${
+                className={`w-[375px] flex-shirnk-0 h-screen fixed bg-gray-950 ${
                     isIconCardClick
                         ? isShowCart
-                            ? "right-[-400px]  animate-slide-left"
+                            ? "right-[-375px]  animate-slide-left"
                             : " right-[0] animate-slide-right"
-                        : "right-[-400px]"
+                        : "right-[-375px]"
                 } `}
             >
                 <Cart />

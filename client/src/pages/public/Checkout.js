@@ -153,7 +153,7 @@ const Checkout = () => {
     }, []);
 
     return (
-        <div className="flex mb-10">
+        <div className="flex mb-10 max-lg:flex-col">
             <div className="flex-1 border p-[32px]">
                 <h3 className="text-xl font-semibold mb-3">Contact</h3>
                 <div className="flex flex-col font-medium gap-3 mb-3">
@@ -238,7 +238,7 @@ const Checkout = () => {
                 <div className="mb-5 max-h-[512px] overflow-y-scroll">
                     {state?.selectedProducts.length ? (
                         state?.selectedProducts?.map((item) => (
-                            <div className="flex mb-3 mt-3" key={`${item._id}`}>
+                            <div className="flex mb-3 mt-3 max-sm:flex-col max-sm:items-center" key={`${item._id}`}>
                                 <div className="w-[76px] aspect-square relative">
                                     <img
                                         alt="product"
@@ -249,8 +249,8 @@ const Checkout = () => {
                                         {item.quantity}
                                     </div>
                                 </div>
-                                <span className="flex flex-col justify-center flex-1 pl-5">
-                                    <span className="text-base text-gray-900 mb-2 font-semibold">
+                                <span className="flex flex-col justify-center flex-1 pl-5 max-sm:pl-0">
+                                    <span className="text-base text-gray-900 mb-2 font-semibold max-sm:text-center">
                                         {item.product.title}
                                     </span>
                                     <span className="text-sm text-gray-700">
@@ -268,7 +268,7 @@ const Checkout = () => {
                                         })}
                                     </span>
                                 </span>
-                                <span className="pl-5 flex justify-center items-center text-base font-medium text-gray-900">
+                                <span className="pl-5 max-sm:pl-0 flex justify-center items-center text-base font-medium text-gray-900">
                                     {formatMoney(item.product.price)} VND
                                 </span>
                             </div>
