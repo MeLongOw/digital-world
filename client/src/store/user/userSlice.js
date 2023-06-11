@@ -1,11 +1,12 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { getCurrent } from "./asyncThunk";
+import { getCurrent, refreshToken } from "./asyncThunk";
 
 export const userSlice = createSlice({
     name: "user",
     initialState: {
         isLoading: false,
         isLoggedIn: false,
+        isRefreshingToken: false,
         current: null,
         token: null,
         errorMessage: null,
@@ -15,6 +16,9 @@ export const userSlice = createSlice({
             state.isLoggedIn = action.payload.isLoggedIn;
             state.current = action.payload.userData;
             state.token = action.payload.token;
+        },
+        setIsRefreshingToken: (state, action) => {
+            state.isRefreshingToken = action.payload;
         },
         logout: (state, action) => {
             state.isLoggedIn = false;
@@ -36,7 +40,19 @@ export const userSlice = createSlice({
 
         builder.addCase(getCurrent.rejected, (state, action) => {
             state.isLoading = false;
-            state.errorMessage = action.payload.message;
+        });
+
+        builder.addCase(refreshToken.pending, (state) => {
+            state.isLoading = true;
+        });
+
+        builder.addCase(refreshToken.fulfilled, (state, action) => {
+            state.token = action.payload?.newAccessToken;
+        });
+
+        builder.addCase(refreshToken.rejected, (state, action) => {
+            state.isLoading = false;
+            state.errorMessage = action.payload?.message;
         });
     },
 });

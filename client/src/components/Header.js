@@ -17,6 +17,7 @@ const Header = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const menuRef = useRef(null);
+    const iconMenuRef = useRef(null);
     const isIconCardClick = useSelector((state) => state.app.isIconCardClick);
     const currentUser = useSelector((state) => state.user.current);
     const isLoggedIn = useSelector((state) => state.user.isLoggedIn);
@@ -42,7 +43,8 @@ const Header = () => {
 
     const handleClickOutsideMenu = (event) => {
         if (menuRef.current && !menuRef.current.contains(event.target)) {
-            setIsClickAvatar(false);
+            if (!iconMenuRef.current.contains(event.target))
+                setIsClickAvatar(false);
         }
     };
 
@@ -55,7 +57,7 @@ const Header = () => {
 
     return (
         <div className=" max-w-main max-xl:px-3 w-full flex justify-between h-[110px] py-[35px]">
-            <Link to={`/${path.HOME}`} className='flex items-center'>
+            <Link to={`/${path.HOME}`} className="flex items-center">
                 <img
                     src={logo}
                     alt="logo"
@@ -96,22 +98,24 @@ const Header = () => {
                     </span>
                 </div>
 
-                <div className="flex relative items-cente justify-center px-6 max-md:px-3 text-sm">
-                    {isLoggedIn ? (
-                        <FaUserCircle
-                            size={30}
-                            className="cursor-pointer"
-                            onClick={handleToggleMenu}
-                        />
-                    ) : (
-                        <Button
-                            name="Log in"
-                            rounded
-                            handleClick={() => {
-                                navigate(`/login`);
-                            }}
-                        />
-                    )}
+                <div className="flex relative items-center justify-center px-6 max-md:px-3 text-sm">
+                    <div ref={iconMenuRef}>
+                        {isLoggedIn ? (
+                            <FaUserCircle
+                                size={30}
+                                className="cursor-pointer"
+                                onClick={handleToggleMenu}
+                            />
+                        ) : (
+                            <Button
+                                name="Log in"
+                                rounded
+                                handleClick={() => {
+                                    navigate(`/login`);
+                                }}
+                            />
+                        )}
+                    </div>
 
                     <div
                         ref={menuRef}

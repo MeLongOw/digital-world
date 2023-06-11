@@ -31,7 +31,7 @@ export const appSlice = createSlice({
 
         builder.addCase(getCategories.rejected, (state, action) => {
             state.isLoading = false;
-            state.errorMessage = action.payload.message;
+            state.errorMessage = action.payload?.message;
         });
     },
 });

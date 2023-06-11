@@ -29,18 +29,18 @@ const WishList = () => {
 
     useEffect(() => {
         FetchCurrentUser();
-    }, [token]);
+    }, []);
 
     return (
         <div className="mb-10">
-            <div className="flex gap-5 border p-5 font-sm text-gray-700">
+            <div className="flex gap-5 border p-5 font-sm text-gray-700 max-sm:gap-3">
                 <div className="flex-2">IMAGES</div>
                 <div className="flex-3">NAME</div>
                 <div className="flex-2">PRICE</div>
                 <div className="flex-1">REMOVE</div>
                 <div className="flex-2">DETAIL</div>
             </div>
-            {currentUser?.wishlist.length ? (
+            {currentUser?.wishlist?.length ? (
                 currentUser?.wishlist?.map((item) => (
                     <div
                         key={item?._id}
@@ -54,8 +54,8 @@ const WishList = () => {
                                     alt=""
                                 />
                             </div>
-                            <div className="flex-3">{item.title}</div>
-                            <div className="flex-2">
+                            <div className="flex-3 max-sm:text-sm">{item.title}</div>
+                            <div className="flex-2 max-sm:text-sm">
                                 {formatMoney(item.price)} VND
                             </div>
                             <div className="flex-1 hover:text-main hover:cursor-pointer">
@@ -67,7 +67,7 @@ const WishList = () => {
                             </div>
                             <Link
                                 to={`/${path.DETAIL_PRODUCT}/${item.slug}`}
-                                className="flex-2 hover:text-main"
+                                className="flex-2 hover:text-main max-sm:text-sm"
                             >
                                 View More
                             </Link>

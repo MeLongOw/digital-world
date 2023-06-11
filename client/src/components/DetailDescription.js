@@ -3,7 +3,6 @@ import { capitalize, renderStarFromNumber } from "../utils/helpers";
 import moment from "moment";
 
 const DetailDescription = ({ description = [], review = [] }) => {
-    console.log({ review });
     const contentBox = [
         { id: 1, label: "DESCRIPTION", title: "", content: description },
         {

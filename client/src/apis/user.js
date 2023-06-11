@@ -43,6 +43,13 @@ export const apiGetCurrent = (token) =>
         headers: { Authorization: `Bearer ${token}` },
     });
 
+export const apiRefreshToken = () =>
+    axios({
+        url: "/user/refreshtoken",
+        method: "post",
+        withCredentials: true,
+    });
+
 export const apiAddWishList = (token, data) =>
     axios({
         url: "/user/addwishlist",

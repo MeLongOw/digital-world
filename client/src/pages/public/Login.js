@@ -82,7 +82,7 @@ const Login = () => {
                 });
             } else {
                 const response = await apiLogin(data);
-                if (response.success) {
+                if (response?.success) {
                     dispatch(
                         userSlice.actions.login({
                             isLoggedIn: true,
@@ -92,7 +92,7 @@ const Login = () => {
                     );
                     navigate(`/${path.HOME}`);
                 } else {
-                    await Swal.fire("Opps!", response.mes, "error");
+                    await Swal.fire("Opps!", response?.mes, "error");
                 }
             }
         }
@@ -226,6 +226,7 @@ const Login = () => {
                     <>
                         <div className="mt-4 w-full">
                             <Button
+                                disabled
                                 name={"Login with Facebook"}
                                 handleClick={handleLoginWithFacebook}
                                 backgroundColor="bg-blue-600"
@@ -233,6 +234,7 @@ const Login = () => {
                         </div>
                         <div className="mt-4 w-full">
                             <Button
+                                disabled
                                 name={"Login with Google"}
                                 handleClick={handleSubmit}
                                 backgroundColor="bg-orange-500"

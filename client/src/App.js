@@ -35,10 +35,10 @@ import {
     Ratings,
     Orders as ProfileOrders,
 } from "./pages/public/Account";
-
 import User from "./pages/private/Users";
 import Checkout from "./pages/public/Checkout";
-import RATINGS from "./pages/private/Ratings";
+import { getCurrent } from "./store/user/asyncThunk";
+import Cookies from "js-cookie";
 
 function App() {
     const dispatch = useDispatch();
@@ -46,9 +46,14 @@ function App() {
     const isLoggedIn = useSelector((state) => state.user.isLoggedIn);
     const token = useSelector((state) => state.user.token);
     const { decodedToken, isExpired } = useJwt(token);
+   
     useEffect(() => {
         dispatch(getCategories());
     }, []);
+
+    useEffect(() => {
+        dispatch(getCurrent(token));
+    }, [token, dispatch]);
 
     return (
         <div className="min-h-screen font-main">

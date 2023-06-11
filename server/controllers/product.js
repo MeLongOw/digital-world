@@ -199,7 +199,6 @@ const updateProduct = asyncHandler(async (req, res) => {
     const quantitiesEachVariant = variants.map((el) =>
         el.variants.reduce((total, el) => (total += el.quantity), 0)
     );
-    console.log({quantitiesEachVariant})
     if (!quantitiesEachVariant?.every((el) => el === quantitiesEachVariant[0]))
         throw new Error("Total of variants have to be equal");
     const quantity = Math.max(...quantitiesEachVariant);

@@ -15,7 +15,6 @@ const status = ["Processing", "Accepted", "Shipping", "Success", "Cancelled"];
 const Orders = () => {
     const token = useSelector((state) => state.user.token);
     const [data, setData] = useState([]);
-    console.log({ data });
     const [statusSelected, setStatusSelected] = useState("Processing");
     const [viewDetail, setViewDetail] = useState([]);
     const navigate = useNavigate();

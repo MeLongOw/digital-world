@@ -97,7 +97,7 @@ const login = asyncHandler(async (req, res) => {
         const newRefreshToken = generateRefreshToken(response._id);
         await User.findByIdAndUpdate(
             response._id,
-            { refreshToken: newRefreshToken },
+            { refreshToken: newRefreshToken, accessToken: accessToken },
             { new: true }
         );
 
@@ -129,6 +129,7 @@ const getCurrent = asyncHandler(async (req, res) => {
 
 const refreshAccessToken = asyncHandler(async (req, res) => {
     const cookie = req.cookies;
+
     if (!cookie || !cookie.refreshToken)
         throw new Error("Not found refresh token");
 
@@ -137,10 +138,14 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
         _id: rs._id,
         refreshToken: cookie.refreshToken,
     });
+    const newAccessToken = generateAccessToken(response._id, response.role);
+    response.accessToken = newAccessToken;
+    await response.save();
+
     return res.status(200).json({
         success: response ? true : false,
         newAccessToken: response
-            ? generateAccessToken(response._id, response.role)
+            ? newAccessToken
             : "Refresh token not found in DB",
     });
 });
@@ -154,10 +159,8 @@ const logout = asyncHandler(async (req, res) => {
         { refreshToken: "" },
         { new: true }
     );
-    res.clearCookie("refreshToken", {
-        httpOnly: true,
-        secure: true,
-    });
+
+    res.clearCookie("refreshToken", { httpOnly: true });
     res.status(200).json({
         success: true,
         mes: "Logout completed",

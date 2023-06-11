@@ -21,7 +21,7 @@ const DealDaily = () => {
         fetchDailydeal();
     }, []);
     return (
-        <div className="w-full border flex-auto flex flex-col pb-4">
+        <div className="w-full max-h-full border flex-auto flex flex-col pb-4">
             <h3 className="flex items-center justify-between p-4 text-xl">
                 <span className="flex-1 flex justify-center text-red-600">
                     <AiFillStar size={28} />
@@ -34,17 +34,23 @@ const DealDaily = () => {
             {dailydeal ? (
                 <>
                     <div className="w-full flex flex-col items-center pt-8 gap-2 max-lg:pt-0">
-                        <Link to={`${path.DETAIL_PRODUCT}/${dailydeal?.slug}`}>
+                        <Link
+                            to={`${path.DETAIL_PRODUCT}/${dailydeal?.slug}`}
+                            className="flex justify-center"
+                        >
                             <img
                                 src={
                                     dailydeal?.thumb ||
                                     "https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/1200px-No-Image-Placeholder.svg.png"
                                 }
                                 alt=""
-                                className="w-full object-contain"
+                                className="w-full object-contain max-lg:w-1/2"
                             />
                         </Link>
-                        <Link to={`${path.DETAIL_PRODUCT}/${dailydeal?._id}`} className="line-clamp-1 text-center hover:text-main">
+                        <Link
+                            to={`${path.DETAIL_PRODUCT}/${dailydeal?._id}`}
+                            className="line-clamp-1 text-center hover:text-main"
+                        >
                             {dailydeal?.title}
                         </Link>
                         <span className="flex h-4">
@@ -66,7 +72,11 @@ const DealDaily = () => {
                     </div>
                 </>
             ) : (
-                <span className="flex w-full flex-1 items-center justify-center "> <AiOutlineLoading className="animate-spin mr-2"/> Daily deal is loading...</span>
+                <span className="flex w-full flex-1 items-center justify-center ">
+                    {" "}
+                    <AiOutlineLoading className="animate-spin mr-2" /> Daily
+                    deal is loading...
+                </span>
             )}
         </div>
     );

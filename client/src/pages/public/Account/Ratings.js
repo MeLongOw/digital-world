@@ -12,7 +12,6 @@ const Ratings = () => {
     const token = useSelector((state) => state.user.token);
     const [data, setData] = useState([]);
     const [editRatings, setEditRatings] = useState([]);
-    console.log(editRatings);
     const fetchUserOrders = async () => {
         const response = await apiUserOrders(token, { status: "Success" });
         if (response?.success) {

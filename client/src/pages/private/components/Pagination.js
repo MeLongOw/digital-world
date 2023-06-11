@@ -1,5 +1,5 @@
-import React, { useEffect, useMemo } from "react";
-import { Link, NavLink, useLocation } from "react-router-dom";
+import React, { useMemo } from "react";
+import { Link, useLocation } from "react-router-dom";
 import icons from "../../../utils/icons";
 
 const { GrFormNextLink, GrFormPreviousLink } = icons;
