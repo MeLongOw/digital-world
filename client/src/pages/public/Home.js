@@ -66,10 +66,10 @@ const Home = () => {
                     </div>
                 </div>
                 <div className="flex  w-full max-lg:flex-col">
-                    <div className="max-w-[25%] flex-grow-0 pr-5 w-full max-lg:w-full">
+                    <div className="lg:max-w-[25%] flex-grow-0 lg:pr-5 w-full max-lg:w-full">
                         <DealDaily />
                     </div>
-                    <div className="max-w-[75%] w-full max-lg:w-full">
+                    <div className="lg:max-w-[75%] w-full max-lg:w-full">
                         <BestSeller />
                     </div>
                 </div>
