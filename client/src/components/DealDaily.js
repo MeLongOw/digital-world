@@ -21,7 +21,7 @@ const DealDaily = () => {
         fetchDailydeal();
     }, []);
     return (
-        <div className="w-full max-h-full border flex-auto flex flex-col pb-4">
+        <div className="w-full h-full max-h-full border flex-auto flex flex-col pb-4">
             <h3 className="flex items-center justify-between p-4 text-xl">
                 <span className="flex-1 flex justify-center text-red-600">
                     <AiFillStar size={28} />
