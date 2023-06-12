@@ -238,7 +238,10 @@ const Checkout = () => {
                 <div className="mb-5 max-h-[512px] overflow-y-scroll">
                     {state?.selectedProducts.length ? (
                         state?.selectedProducts?.map((item) => (
-                            <div className="flex mb-3 mt-3 max-sm:flex-col max-sm:items-center" key={`${item._id}`}>
+                            <div
+                                className="flex mb-3 mt-3 max-sm:flex-col max-sm:items-center"
+                                key={`${item._id}`}
+                            >
                                 <div className="w-[76px] aspect-square relative">
                                     <img
                                         alt="product"
@@ -283,7 +286,7 @@ const Checkout = () => {
                         <span className="text-lg font-medium mr-4">
                             Coupon:
                         </span>
-                        {coupons ? (
+                        {coupons?.length ? (
                             <div className="flex flex-1 gap-3 max-w-[450px] overflow-x-scroll">
                                 {coupons?.map((coupon) => (
                                     <div
@@ -324,26 +327,35 @@ const Checkout = () => {
                     <div className="flex justify-between mb-2">
                         <span className="text-lg font-medium">Discounts:</span>
                         <span className="text-base font-medium">
-                            {"-"}
-                            {formatMoney(
-                                Math.round(
-                                    (subTotal * selectedCoupon?.discount) / 100
-                                )
-                            )}{" "}
+                            {selectedCoupon
+                                ? "-" +
+                                  formatMoney(
+                                      Math.round(
+                                          (subTotal *
+                                              selectedCoupon?.discount) /
+                                              100
+                                      )
+                                  )
+                                : 0}{" "}
                             VND
                         </span>
                     </div>
                     <div className="flex justify-between border-t py-3">
                         <span className="text-lg font-semibold">TOTAL:</span>
                         <span className="text-lg font-medium">
-                            {formatMoney(
-                                subTotal +
-                                    Math.round(subTotal * 0.02) -
-                                    Math.round(
-                                        (subTotal * selectedCoupon?.discount) /
-                                            100
-                                    )
-                            )}{" "}
+                            {selectedCoupon
+                                ? formatMoney(
+                                      subTotal +
+                                          Math.round(subTotal * 0.02) -
+                                          Math.round(
+                                              (subTotal *
+                                                  +selectedCoupon?.discount) /
+                                                  100
+                                          )
+                                  )
+                                : formatMoney(
+                                      subTotal + Math.round(subTotal * 0.02)
+                                  )}{" "}
                             VND
                         </span>
                     </div>
