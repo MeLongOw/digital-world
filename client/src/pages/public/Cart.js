@@ -104,7 +104,7 @@ const Cart = () => {
                 currentUser?.cart?.map((item) => (
                     <div className="border p-5 mt-[-1px] flex max-sm:flex-col" key={item._id}>
                         <div className="flex flex-6 md:items-center max-md:flex-col">
-                            <div className="flex w-full max-sm:items-center max-sm:flex-col">
+                            <div className="flex w-full max-md:items-center max-md:flex-col">
                                 <div className="flex items-center ">
                                     <input
                                         id="checkbox-all"
@@ -125,10 +125,10 @@ const Cart = () => {
                                     className=" max-w-[214px] w-full aspect-square object-contain md:pr-5"
                                 />
                             </div>
-                            <div className="md:p-5 flex flex-col max-sm:items-center">
+                            <div className="md:p-5 flex flex-col items-end max-md:items-center">
                                 <Link
                                     to={`/${path.DETAIL_PRODUCT}/${item.product?.slug}`}
-                                    className="font-base capitalize hover:text-main"
+                                    className="font-base capitalize hover:text-main text-right"
                                 >
                                     {item.product?.title &&
                                         capitalize(item.product?.title)}
