@@ -13,12 +13,13 @@ const crypto = require("crypto");
 const { arraysEqual } = require("../utils/helper");
 
 const register = asyncHandler(async (req, res) => {
-    const { email, password, firstName, lastName, phone } = req.body;
+    let { email, password, firstName, lastName, phone } = req.body;
     if (!email || !password || !firstName || !lastName || !phone)
         return res.status(400).json({
             success: false,
             mes: "Missing input(s)",
         });
+    password = btoa(password);
 
     const existedUsers = await Promise.all([
         User.findOne({ email }),
@@ -84,7 +85,8 @@ const authRegister = asyncHandler(async (req, res) => {
 });
 
 const login = asyncHandler(async (req, res) => {
-    const { email, password } = req.body;
+    let { email, password } = req.body;
+    password = btoa(password);
     if (!email || !password)
         return res.status(400).json({
             success: false,
@@ -103,6 +105,7 @@ const login = asyncHandler(async (req, res) => {
 
         res.cookie("refreshToken", newRefreshToken, {
             httpOnly: true,
+            secure: true,
             maxAge: 7 * 24 * 60 * 60 * 1000,
         });
 
@@ -160,7 +163,7 @@ const logout = asyncHandler(async (req, res) => {
         { new: true }
     );
 
-    res.clearCookie("refreshToken", { httpOnly: true });
+    res.clearCookie("refreshToken", { httpOnly: true, secure: true });
     res.status(200).json({
         success: true,
         mes: "Logout completed",

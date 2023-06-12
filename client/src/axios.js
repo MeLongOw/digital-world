@@ -9,7 +9,9 @@ import { Navigate } from "react-router-dom";
 import path from "./utils/path";
 
 const instance = axios.create({
+    withCredentials: true,
     baseURL: process.env.REACT_APP_API_URI,
+    credentials: "include",
 });
 
 // Add a request interceptor
@@ -25,7 +27,7 @@ instance.interceptors.request.use(
                 ));
             }
         }
-        
+
         let currentDate = new Date();
         const token = store?.getState()?.user?.token;
         const isRefreshingToken = store?.getState()?.user?.isRefreshingToken;
@@ -59,7 +61,7 @@ instance.interceptors.response.use(
         return response?.data;
     },
     function (error) {
-        console.log(error)
+        console.log(error);
         // Any status codes that falls outside the range of 2xx cause this function to trigger
         // Do something with response error
         return error.response.data;
