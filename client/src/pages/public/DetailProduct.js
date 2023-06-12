@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import Slider from "react-slick";
+import Swal from "sweetalert2";
 import { apiAddToCart, apiGetProduct } from "../../apis";
 import { Button } from "../../components";
 import DetailDescription from "../../components/DetailDescription";
@@ -55,7 +56,6 @@ const serviceBox = [
         title: "Consultancy",
         content: "Lifetime 24/7/365",
     },
-    
 ];
 
 const DetailProduct = () => {
@@ -66,7 +66,26 @@ const DetailProduct = () => {
     const [payload, setPayload] = useState([{ label: "", variant: "" }]);
     const [imageActive, setImageActive] = useState("");
     const dispatch = useDispatch();
+    const navigate = useNavigate();
     const token = useSelector((state) => state.user.token);
+    const isLoggedIn = useSelector((state) => state.user.isLoggedIn);
+
+    const checkIsLoggedIn = async () => {
+        if (!isLoggedIn) {
+            await Swal.fire({
+                title: "Please login!",
+                icon: "question",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Go login",
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    navigate(`/${path.LOGIN}`);
+                }
+            });
+        }
+    };
 
     const fetchProduct = async () => {
         const response = await apiGetProduct(slug);
@@ -158,7 +177,11 @@ const DetailProduct = () => {
                                     )}
                                     <span className="pl-2 text-sm text-gray-600">
                                         {product?.ratings?.length
-                                            ? `${product?.ratings?.length} ${product?.ratings?.length > 1 ?  'reviews' : 'review'}`
+                                            ? `${product?.ratings?.length} ${
+                                                  product?.ratings?.length > 1
+                                                      ? "reviews"
+                                                      : "review"
+                                              }`
                                             : "0 review"}
                                     </span>
                                 </span>
@@ -198,6 +221,7 @@ const DetailProduct = () => {
                                     <Button
                                         name="ADD TO CART"
                                         handleClick={async () => {
+                                            await checkIsLoggedIn();
                                             handleAddToCart(product._id);
                                             return true;
                                         }}
@@ -225,7 +249,6 @@ const DetailProduct = () => {
                                         </span>
                                     </div>
                                 ))}
-                                
                             </div>
                         </div>
                     </div>
@@ -238,7 +261,10 @@ const DetailProduct = () => {
                         <IoIosArrowRoundBack size={20} />
                         {`back to ${product?.category?.title}`}
                     </Link>
-                    <DetailDescription description={product?.description} review={product?.ratings}/>
+                    <DetailDescription
+                        description={product?.description}
+                        review={product?.ratings}
+                    />
                 </>
             )}
         </div>

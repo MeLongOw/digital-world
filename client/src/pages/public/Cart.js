@@ -125,7 +125,7 @@ const Cart = () => {
                                     className=" max-w-[214px] w-full aspect-square object-contain md:pr-5"
                                 />
                             </div>
-                            <div className="md:p-5 flex flex-col items-end max-md:items-center">
+                            <div className="md:p-5 flex flex-col w-full items-end max-md:items-center">
                                 <Link
                                     to={`/${path.DETAIL_PRODUCT}/${item.product?.slug}`}
                                     className="font-base capitalize hover:text-main text-right"

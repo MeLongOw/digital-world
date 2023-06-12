@@ -102,8 +102,9 @@ const login = asyncHandler(async (req, res) => {
         );
 
         res.cookie("refreshToken", newRefreshToken, {
-            httpOnly: true,
             secure: true,
+            sameSite: 'none',
+            // sameSite: 'none',
             maxAge: 7 * 24 * 60 * 60 * 1000,
         });
 
@@ -161,7 +162,7 @@ const logout = asyncHandler(async (req, res) => {
         { new: true }
     );
 
-    res.clearCookie("refreshToken", { httpOnly: true, secure: true });
+    res.clearCookie("refreshToken");
     res.status(200).json({
         success: true,
         mes: "Logout completed",

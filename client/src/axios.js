@@ -16,20 +16,23 @@ const instance = axios.create({
 // Add a request interceptor
 instance.interceptors.request.use(
     async function (config) {
+        let currentDate = new Date();
+        const { token, isRefreshingToken, isLoggedIn } =
+            store?.getState()?.user;
+
         const refToken = Cookies.get("refreshToken");
-        if (refToken) {
+        if (refToken && isLoggedIn) {
             const decodeRefreshToken = jwt_decode(refToken);
             if (decodeRefreshToken.exp * 1000 < currentDate.getTime()) {
-                await store.dispatch(userSlice.actions.logout());
-                await Swal.fire("Opps!", "Please login", "error").then(() => (
-                    <Navigate to={`/${path.LOGIN}`} />
-                ));
+                store.dispatch(userSlice.actions.logout());
+                Swal.fire(
+                    "Opps!",
+                    "your token is expired! Please login again",
+                    "error"
+                );
             }
         }
 
-        let currentDate = new Date();
-        const token = store?.getState()?.user?.token;
-        const isRefreshingToken = store?.getState()?.user?.isRefreshingToken;
         if (token) {
             const decodedToken = jwt_decode(token);
             if (decodedToken.exp * 1000 - 2000 < currentDate.getTime()) {

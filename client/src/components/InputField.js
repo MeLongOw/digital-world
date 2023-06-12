@@ -7,13 +7,18 @@ const InputField = ({
     type,
     title,
     invalidFields,
-    setInvalidFields =()=>{},
+    setInvalidFields = () => {},
+    handleSubmit = () => {},
 }) => {
-
     return (
         <div className="w-full text-sm text-gray-700 mb-2">
             {title && <label>{title}</label>}
             <input
+                onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                        handleSubmit();
+                    }
+                }}
                 type={type || "text"}
                 className="px-4 py-2 rounded-md border w-full mt-2 text-sm placeholder:text-gray-300"
                 placeholder={title}
@@ -21,9 +26,13 @@ const InputField = ({
                 onChange={(e) =>
                     setValue((prev) => ({ ...prev, [nameKey]: e.target.value }))
                 }
-                onFocus={()=> setInvalidFields([])}
+                onFocus={() => setInvalidFields([])}
             />
-           { invalidFields?.some((field => field.name === nameKey)) &&  <small className="text-main italic">{invalidFields?.find((field)=>field.name ===nameKey).mes}</small>}
+            {invalidFields?.some((field) => field.name === nameKey) && (
+                <small className="text-main italic">
+                    {invalidFields?.find((field) => field.name === nameKey).mes}
+                </small>
+            )}
         </div>
     );
 };

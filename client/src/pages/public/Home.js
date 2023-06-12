@@ -65,11 +65,11 @@ const Home = () => {
                         <Banner />
                     </div>
                 </div>
-                <div className="flex gap-5 w-full max-lg:flex-col">
-                    <div className="w-1/4 max-lg:w-full">
+                <div className="flex  w-full max-lg:flex-col">
+                    <div className="max-w-[25%] flex-grow-0 pr-5 w-full max-lg:w-full">
                         <DealDaily />
                     </div>
-                    <div className="w-3/4 max-lg:w-full">
+                    <div className="max-w-[75%] w-full max-lg:w-full">
                         <BestSeller />
                     </div>
                 </div>

@@ -195,6 +195,7 @@ const Login = () => {
                     title={"Password"}
                     invalidFields={invalidFields}
                     setInvalidFields={setInvalidFields}
+                    handleSubmit={handleSubmit}
                 />
                 <div className="flex items-center justify-between my-2 w-full text-sm">
                     {!isRegister ? (
