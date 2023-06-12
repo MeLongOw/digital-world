@@ -153,8 +153,8 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
 
 const logout = asyncHandler(async (req, res) => {
     const cookie = req.cookies;
-    if (!cookie || !cookie.refreshToken)
-        throw new Error("Not found refresh token");
+    // if (!cookie || !cookie.refreshToken)
+    //     throw new Error("Not found refresh token");
     await User.findOneAndUpdate(
         { refreshToken: cookie.refreshToken },
         { refreshToken: "" },
