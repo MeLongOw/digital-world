@@ -13,13 +13,12 @@ const crypto = require("crypto");
 const { arraysEqual } = require("../utils/helper");
 
 const register = asyncHandler(async (req, res) => {
-    let { email, password, firstName, lastName, phone } = req.body;
+    const { email, password, firstName, lastName, phone } = req.body;
     if (!email || !password || !firstName || !lastName || !phone)
         return res.status(400).json({
             success: false,
             mes: "Missing input(s)",
         });
-    password = btoa(password);
 
     const existedUsers = await Promise.all([
         User.findOne({ email }),
@@ -85,8 +84,7 @@ const authRegister = asyncHandler(async (req, res) => {
 });
 
 const login = asyncHandler(async (req, res) => {
-    let { email, password } = req.body;
-    password = btoa(password);
+    const { email, password } = req.body;
     if (!email || !password)
         return res.status(400).json({
             success: false,

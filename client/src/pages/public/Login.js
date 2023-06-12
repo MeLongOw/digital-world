@@ -63,10 +63,7 @@ const Login = () => {
 
         if (!invalidCount) {
             if (isRegister) {
-                const response = await apiRegister({
-                    ...payload,
-                    password: atob(payload.password),
-                });
+                const response = await apiRegister(payload);
                 await Swal.fire(
                     response.success ? "Congratulation" : "Opps!",
                     response.mes,
@@ -84,10 +81,7 @@ const Login = () => {
                     }
                 });
             } else {
-                const response = await apiLogin({
-                    ...data,
-                    password: atob(data.password),
-                });
+                const response = await apiLogin(data);
                 if (response?.success) {
                     dispatch(
                         userSlice.actions.login({

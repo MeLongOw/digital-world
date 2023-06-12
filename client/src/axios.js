@@ -11,7 +11,6 @@ import path from "./utils/path";
 const instance = axios.create({
     withCredentials: true,
     baseURL: process.env.REACT_APP_API_URI,
-    credentials: "include",
 });
 
 // Add a request interceptor
