@@ -7,3 +7,5 @@ Admin site: https://digitalworld-melongow.netlify.app/admin
 Username: admin@123.com
 <br>
 Password: 8267874q
+<br>
+Caution: login first to access to admin page
