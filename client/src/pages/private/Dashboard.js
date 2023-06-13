@@ -23,22 +23,32 @@ const Dashboard = () => {
         yesterday.setHours(0, 0, 0, 0);
         yesterday.setDate(yesterday.getDate() - 1);
 
-        const ordersRes = await apiGetOrders(token);
+        const promises = [];
 
-        const ordersTodayRes = await apiGetOrders(token, {
-            createdAt: { gte: today.getTime() },
-        });
+        promises.push(
+            apiGetOrders(token),
+            apiGetOrders(token, {
+                createdAt: { gte: today.getTime() },
+            }),
+            apiGetOrders(token, {
+                createdAt: { gte: yesterday.getTime(), lt: today.getTime() },
+            }),
+            apiGetOrders(token, {
+                status: "Processing",
+            }),
+            apiGetOrders(token, {
+                status: "Processing",
+                createdAt: { lt: today.getTime() },
+            })
+        );
+        const [
+            ordersRes,
+            ordersTodayRes,
+            ordersYesterdayRes,
+            pendingOrdersRes,
+            pendingOrdersYesterdayRes,
+        ] = await Promise.all(promises);
 
-        const ordersYesterdayRes = await apiGetOrders(token, {
-            createdAt: { gte: yesterday.getTime(), lt: today.getTime() },
-        });
-        const pendingOrdersRes = await apiGetOrders(token, {
-            status: "Processing",
-        });
-        const pendingOrdersYesterdayRes = await apiGetOrders(token, {
-            status: "Processing",
-            createdAt: { lt: today.getTime() },
-        });
         if (ordersRes?.success) setOrderCount(ordersRes.counts);
         if (ordersTodayRes?.success) setOrderCountToday(ordersTodayRes.counts);
         if (ordersYesterdayRes?.success)
@@ -74,7 +84,7 @@ const Dashboard = () => {
                     <div className="flex justify-between">
                         <div className="flex flex-col">
                             <span className="text-5xl font-semibold">
-                                {formatMoney(orderCount)}
+                                {formatMoney(orderCount) || 0}
                             </span>
                             <span className="text-2xl">Orders received</span>
                         </div>
