@@ -14,7 +14,7 @@ const Header = ({ isHideSideBar, setIsHideSideBar }) => {
                     <AiOutlineMenu />
                 </div>
             </div>
-            <div className="flex j">
+            <div className="flex">
                 <div className="border rounded-md w-10 h-10 flex items-center justify-center mr-2 hover:bg-gray-200 hover:cursor-pointer">
                     <BsBell />
                 </div>
