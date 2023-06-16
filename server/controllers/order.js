@@ -257,9 +257,8 @@ const getOrders = asyncHandler(async (req, res) => {
         .populate("products.product")
         .populate("coupon")
         .populate("orderBy")
-        .sort("-updatedAt")
         .select(
-            "Orderby.firstName Orderby.lastName Orderby.email products phone address status coupon _id"
+            "Orderby.firstName Orderby.lastName Orderby.email products phone address status coupon _id, createdAt"
         )
         .exec()
         .then(async (response) => {
