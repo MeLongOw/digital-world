@@ -1,4 +1,5 @@
 import React, { memo, useEffect, useRef, useState } from "react";
+import { useJwt } from "react-jwt";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
@@ -18,6 +19,8 @@ const Header = () => {
     const navigate = useNavigate();
     const menuRef = useRef(null);
     const iconMenuRef = useRef(null);
+    const token = useSelector((state) => state.user.token);
+    const { decodedToken, isExpired } = useJwt(token);
     const isIconCardClick = useSelector((state) => state.app.isIconCardClick);
     const currentUser = useSelector((state) => state.user.current);
     const isLoggedIn = useSelector((state) => state.user.isLoggedIn);
@@ -138,6 +141,17 @@ const Header = () => {
                         >
                             Wish List
                         </Link>
+                        {isLoggedIn &&
+                            decodedToken?.role === "admin" &&
+                            !isExpired && (
+                                <Link
+                                    to={`/${path.ADMIN}`}
+                                    className="p-3 border-b border-gray-300 hover:bg-gray-100 flex font-semibold"
+                                    onClick={handleToggleMenu}
+                                >
+                                    Go To Admin
+                                </Link>
+                            )}
                         <div
                             className="text-main  p-3 hover:bg-gray-100 flex hover:cursor-pointer"
                             onClick={handleLogout}

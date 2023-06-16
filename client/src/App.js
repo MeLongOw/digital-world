@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, useNavigate } from "react-router-dom";
 import { useJwt } from "react-jwt";
 import {
     Login,
@@ -38,7 +38,6 @@ import {
 import User from "./pages/private/Users";
 import Checkout from "./pages/public/Checkout";
 import { getCurrent } from "./store/user/asyncThunk";
-import Cookies from "js-cookie";
 
 function App() {
     const dispatch = useDispatch();
@@ -46,7 +45,7 @@ function App() {
     const isLoggedIn = useSelector((state) => state.user.isLoggedIn);
     const token = useSelector((state) => state.user.token);
     const { decodedToken, isExpired } = useJwt(token);
-   
+
     useEffect(() => {
         dispatch(getCategories());
     }, []);
@@ -54,6 +53,7 @@ function App() {
     useEffect(() => {
         dispatch(getCurrent(token));
     }, [token, dispatch]);
+
 
     return (
         <div className="min-h-screen font-main">
