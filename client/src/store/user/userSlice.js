@@ -4,7 +4,7 @@ import { getCurrent, refreshToken } from "./asyncThunk";
 export const userSlice = createSlice({
     name: "user",
     initialState: {
-        isLoading: false,
+        isLoading: true,
         isLoggedIn: false,
         isRefreshingToken: false,
         current: null,
@@ -35,6 +35,7 @@ export const userSlice = createSlice({
         });
 
         builder.addCase(getCurrent.fulfilled, (state, action) => {
+            state.isLoading = false;
             state.current = action.payload;
         });
 
@@ -47,6 +48,7 @@ export const userSlice = createSlice({
         });
 
         builder.addCase(refreshToken.fulfilled, (state, action) => {
+            state.isLoading = false;
             state.token = action.payload?.newAccessToken;
         });
 

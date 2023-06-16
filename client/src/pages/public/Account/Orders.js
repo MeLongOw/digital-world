@@ -9,11 +9,13 @@ import Swal from "sweetalert2";
 import { apiUpdateCart } from "../../../apis";
 import Rating from "../../../components/Rating";
 import { formatAddress } from "../../../utils/helpers";
+import icons from "../../../utils/icons";
 
+const { AiOutlineLoading } = icons;
 const status = ["Processing", "Accepted", "Shipping", "Success", "Cancelled"];
 
 const Orders = () => {
-    const token = useSelector((state) => state.user.token);
+    const {token, isLoading} = useSelector((state) => state.user);
     const [data, setData] = useState([]);
     const [statusSelected, setStatusSelected] = useState("Processing");
     const [viewDetail, setViewDetail] = useState([]);
@@ -270,8 +272,20 @@ const Orders = () => {
                                 ))}
                         </div>
                     ))
-                ) : (
+                ) : !isLoading ? (
                     <i>{`There is no order in "${statusSelected?.toLowerCase()}" yet`}</i>
+                ) : (
+                    <div className="flex w-full h-[50vh] justify-center items-center ml-[10px]">
+                        <span className="flex items-center">
+                            <AiOutlineLoading
+                                size={20}
+                                className="animate-spin"
+                            />
+                        </span>
+                        <span className="ml-3 text-lg">
+                            Loading orders...
+                        </span>
+                    </div>
                 )}
             </div>
         </div>

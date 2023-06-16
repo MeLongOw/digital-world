@@ -5,11 +5,13 @@ import { formatMoney, renderStarFromNumber } from "../../../utils/helpers";
 import moment from "moment";
 import { Link } from "react-router-dom";
 import path from "../../../utils/path";
-
 import Rating from "../../../components/Rating";
+import icons from "../../../utils/icons";
+
+const { AiOutlineLoading } = icons;
 
 const Ratings = () => {
-    const token = useSelector((state) => state.user.token);
+    const { token, isLoading } = useSelector((state) => state.user);
     const [data, setData] = useState([]);
     const [editRatings, setEditRatings] = useState([]);
     const fetchUserOrders = async () => {
@@ -168,8 +170,20 @@ const Ratings = () => {
                             ))}
                         </div>
                     ))
-                ) : (
+                ) : !isLoading ? (
                     <i>There is no rating yet</i>
+                ) : (
+                    <div className="flex w-full h-[50vh] justify-center items-center ml-[10px]">
+                        <span className="flex items-center">
+                            <AiOutlineLoading
+                                size={20}
+                                className="animate-spin"
+                            />
+                        </span>
+                        <span className="ml-3 text-lg">
+                            Loading ratings...
+                        </span>
+                    </div>
                 )}
             </div>
         </div>

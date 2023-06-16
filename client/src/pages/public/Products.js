@@ -6,6 +6,9 @@ import Filter from "../../components/Filter";
 import Pagination from "../../components/Pagination";
 import SortBy from "../../components/SortBy";
 import noProductFoundImg from "../../assets/no-product.jpg";
+import icons from "../../utils/icons";
+
+const { AiOutlineLoading } = icons;
 
 const Products = () => {
     const { pathname } = useLocation();
@@ -17,6 +20,7 @@ const Products = () => {
     const [sort, setSort] = useState("-createdAt");
     const [priceFilter, setPriceFilter] = useState("");
     const [brandFilter, setbrandFilter] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
 
     const fetchProducts = async (page, limit, pathname, sort) => {
         const arrLocation = pathname.split("/");
@@ -24,7 +28,7 @@ const Products = () => {
         if (arrLocation[1] === "products") {
             category = arrLocation[2];
         }
-
+        setIsLoading(true);
         const response = await apiGetProducts({
             sort,
             limit,
@@ -33,6 +37,7 @@ const Products = () => {
             price: priceFilter,
             brand: brandFilter,
         });
+        if (response) setIsLoading(false);
         if (response.success) {
             setProducts(response.products);
             setTotalItem(response.counts);
@@ -76,20 +81,35 @@ const Products = () => {
                 </div>
             </div>
 
-            <div className="flex flex-wrap mx-[-10px] ">
+            <div className="flex w-full flex-wrap mx-[-10px] ">
                 {products?.length ? (
                     products?.map((data) => (
-                        <div className="w-1/4 max-lg:w-1/3 max-md:w-1/2 max-sm:w-full mb-5" key={data._id}>
+                        <div
+                            className="w-1/4 max-lg:w-1/3 max-md:w-1/2 max-sm:w-full mb-5"
+                            key={data._id}
+                        >
                             <Product productData={data} isHasLabel={false} />
                         </div>
                     ))
-                ) : (
+                ) : !isLoading ? (
                     <div className="w-full flex justify-center items-center">
                         <img
                             className="w-[1000px] object-contain"
                             alt="no-product-found"
                             src={noProductFoundImg}
                         />
+                    </div>
+                ) : (
+                    <div className="flex w-full h-[50vh] justify-center items-center ml-[10px]">
+                        <span className="flex items-center">
+                            <AiOutlineLoading
+                                size={20}
+                                className="animate-spin"
+                            />
+                        </span>
+                        <span className="ml-3 text-lg">
+                            Loading products...
+                        </span>
                     </div>
                 )}
             </div>

@@ -8,11 +8,13 @@ import icons from "../../utils/icons";
 import path from "../../utils/path";
 import { getCurrent } from "../../store/user/asyncThunk";
 
-const { AiOutlineClose } = icons;
+const { AiOutlineClose, AiOutlineLoading } = icons;
 
 const WishList = () => {
-    const currentUser = useSelector((state) => state.user.current);
-    const token = useSelector((state) => state.user.token);
+    const { currentUser, token, isLoading } = useSelector(
+        (state) => state.user
+    );
+
     const dispatch = useDispatch();
 
     const FetchCurrentUser = async () => {
@@ -54,7 +56,9 @@ const WishList = () => {
                                     alt=""
                                 />
                             </div>
-                            <div className="flex-3 max-sm:text-sm">{item.title}</div>
+                            <div className="flex-3 max-sm:text-sm">
+                                {item.title}
+                            </div>
                             <div className="flex-2 max-sm:text-sm">
                                 {formatMoney(item.price)} VND
                             </div>
@@ -74,13 +78,20 @@ const WishList = () => {
                         </>
                     </div>
                 ))
-            ) : (
+            ) : !isLoading ? (
                 <div className="flex justify-center items-center gap-5 border border-t-0 p-5 font-sm text-gray-700">
                     <img
                         className="w-[200px] object-contain"
                         alt="no-data"
                         src={noDataImage}
                     />
+                </div>
+            ) : (
+                <div className="flex w-full h-[50vh] justify-center items-center ml-[10px]">
+                    <span className="flex items-center">
+                        <AiOutlineLoading size={20} className="animate-spin" />
+                    </span>
+                    <span className="ml-3 text-lg">Loading wishlist...</span>
                 </div>
             )}
         </div>

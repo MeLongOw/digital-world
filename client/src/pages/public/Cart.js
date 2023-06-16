@@ -10,13 +10,14 @@ import icons from "../../utils/icons";
 import InputNumberCart from "../../components/InputNumberCart";
 import { getCurrent } from "../../store/user/asyncThunk";
 
-const { AiOutlineArrowRight } = icons;
+const { AiOutlineArrowRight, AiOutlineLoading } = icons;
 
 const Cart = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const token = useSelector((state) => state.user.token);
-    const currentUser = useSelector((state) => state.user.current);
+    const { token, currentUser, isLoading } = useSelector(
+        (state) => state.user
+    );
     const [isCheckAll, setIsCheckAll] = useState(false);
     const [isCheck, setIsCheck] = useState([]);
 
@@ -59,7 +60,7 @@ const Cart = () => {
 
     const handleSelectAll = (e) => {
         setIsCheckAll(!isCheckAll);
-        setIsCheck(currentUser.cart?.map((item) => item));
+        setIsCheck(currentUser?.cart?.map((item) => item));
         if (isCheckAll) {
             setIsCheck([]);
         }
@@ -102,7 +103,10 @@ const Cart = () => {
             </div>
             {currentUser?.cart?.length ? (
                 currentUser?.cart?.map((item) => (
-                    <div className="border p-5 mt-[-1px] flex max-sm:flex-col" key={item._id}>
+                    <div
+                        className="border p-5 mt-[-1px] flex max-sm:flex-col"
+                        key={item._id}
+                    >
                         <div className="flex flex-6 md:items-center max-md:flex-col">
                             <div className="flex w-full max-md:items-center max-md:flex-col">
                                 <div className="flex items-center ">
@@ -113,9 +117,14 @@ const Cart = () => {
                                         checked={isCheck.some(
                                             (el) => el._id === item._id
                                         )}
-                                        onChange={() => handleClickCheckBox(item)}
+                                        onChange={() =>
+                                            handleClickCheckBox(item)
+                                        }
                                     />
-                                    <label htmlFor="checkbox" className="sr-only">
+                                    <label
+                                        htmlFor="checkbox"
+                                        className="sr-only"
+                                    >
                                         Checkbox
                                     </label>
                                 </div>
@@ -167,13 +176,20 @@ const Cart = () => {
                         </div>
                     </div>
                 ))
-            ) : (
+            ) : !isLoading ? (
                 <div className="border p-5 mt-[-1px] flex justify-center items-center">
                     <img
                         className="w-[300px] object-contain"
                         alt="emptycart"
                         src={emptyCart}
                     />
+                </div>
+            ) : (
+                <div className="flex w-full h-[50vh] justify-center items-center ml-[10px]">
+                    <span className="flex items-center">
+                        <AiOutlineLoading size={20} className="animate-spin" />
+                    </span>
+                    <span className="ml-3 text-lg">Loading cart...</span>
                 </div>
             )}
 

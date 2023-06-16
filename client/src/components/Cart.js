@@ -16,8 +16,7 @@ const Cart = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const [isCheck, setIsCheck] = useState([]);
-    const token = useSelector((state) => state.user.token);
-    const currentUser = useSelector((state) => state.user.current);
+    const { token, currentUser } = useSelector((state) => state.user);
 
     const totalPrice = useMemo(() => {
         const arrPrice = isCheck?.map(

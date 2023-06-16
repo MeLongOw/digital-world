@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import Skeleton from "react-loading-skeleton";
 import { useDispatch, useSelector } from "react-redux";
 import { apiUpdateUserAddress, apiUpdateUserInformation } from "../../../apis";
 import { Button, InputField } from "../../../components";
@@ -7,7 +8,7 @@ import { capitalize, compareObjects } from "../../../utils/helpers";
 
 const Profile = () => {
     const dispatch = useDispatch();
-    const currentUser = useSelector((state) => state.user.current);
+    const { currentUser, isLoading } = useSelector((state) => state.user);
     const token = useSelector((state) => state.user.token);
     const [isDisableButtonSave, setIsDisableButtonSave] = useState(true);
 
@@ -77,31 +78,43 @@ const Profile = () => {
                     <div className="flex items-center">
                         <label className="flex-1">First Name</label>
                         <div className="flex-4">
-                            <InputField
-                                nameKey="firstName"
-                                value={capitalize(payload?.firstName)}
-                                setValue={setPayload}
-                            />
+                            {!isLoading ? (
+                                <InputField
+                                    nameKey="firstName"
+                                    value={capitalize(payload?.firstName)}
+                                    setValue={setPayload}
+                                />
+                            ) : (
+                                <Skeleton />
+                            )}
                         </div>
                     </div>
                     <div className="flex items-center">
                         <label className="flex-1">Last Name</label>
                         <div className="flex-4">
-                            <InputField
-                                nameKey="lastName"
-                                value={capitalize(payload?.lastName)}
-                                setValue={setPayload}
-                            />
+                            {!isLoading ? (
+                                <InputField
+                                    nameKey="lastName"
+                                    value={capitalize(payload?.lastName)}
+                                    setValue={setPayload}
+                                />
+                            ) : (
+                                <Skeleton />
+                            )}
                         </div>
                     </div>
                     <div className="flex items-center">
                         <label className="flex-1">Phone</label>
                         <div className="flex-4">
-                            <InputField
-                                nameKey="phone"
-                                value={payload?.phone}
-                                setValue={setPayload}
-                            />
+                            {!isLoading ? (
+                                <InputField
+                                    nameKey="phone"
+                                    value={payload?.phone}
+                                    setValue={setPayload}
+                                />
+                            ) : (
+                                <Skeleton />
+                            )}
                         </div>
                     </div>
                 </div>
@@ -112,41 +125,57 @@ const Profile = () => {
                     <div className="flex items-center">
                         <label className="flex-1">Address</label>
                         <div className="flex-4">
-                            <InputField
-                                nameKey="address"
-                                value={address?.address}
-                                setValue={setAddress}
-                            />
+                            {!isLoading ? (
+                                <InputField
+                                    nameKey="address"
+                                    value={address?.address}
+                                    setValue={setAddress}
+                                />
+                            ) : (
+                                <Skeleton />
+                            )}
                         </div>
                     </div>
                     <div className="flex items-center">
                         <label className="flex-1">Ward</label>
                         <div className="flex-4">
-                            <InputField
-                                nameKey="ward"
-                                value={address?.ward}
-                                setValue={setAddress}
-                            />
+                            {!isLoading ? (
+                                <InputField
+                                    nameKey="ward"
+                                    value={address?.ward}
+                                    setValue={setAddress}
+                                />
+                            ) : (
+                                <Skeleton />
+                            )}
                         </div>
                     </div>
                     <div className="flex items-center">
                         <label className="flex-1">District</label>
                         <div className="flex-4">
-                            <InputField
-                                nameKey="district"
-                                value={address?.district}
-                                setValue={setAddress}
-                            />
+                            {!isLoading ? (
+                                <InputField
+                                    nameKey="district"
+                                    value={address?.district}
+                                    setValue={setAddress}
+                                />
+                            ) : (
+                                <Skeleton />
+                            )}
                         </div>
                     </div>
                     <div className="flex items-center">
                         <label className="flex-1">City</label>
                         <div className="flex-4">
-                            <InputField
-                                nameKey="city"
-                                value={address?.city}
-                                setValue={setAddress}
-                            />
+                            {!isLoading ? (
+                                <InputField
+                                    nameKey="city"
+                                    value={address?.city}
+                                    setValue={setAddress}
+                                />
+                            ) : (
+                                <Skeleton />
+                            )}
                         </div>
                     </div>
                     <div className="flex justify-end">

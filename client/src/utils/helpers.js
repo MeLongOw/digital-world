@@ -64,13 +64,15 @@ export const validate = (payload = {}, setInvalidFields) => {
                 const regex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
                 if (!field[1].match(regex))
                     // eslint-disable-next-line no-loop-func
-                    setInvalidFields((prev) => [
-                        ...prev,
-                        { name: field[0], mes: "Email is incorrect" },
-                    ]);
+                    invalidCount++;
+                setInvalidFields((prev) => [
+                    ...prev,
+                    { name: field[0], mes: "Email is incorrect" },
+                ]);
                 break;
             case "password":
-                if (field[1].trim().length < 6)
+                if (field[1].trim().length < 6) {
+                    invalidCount++;
                     setInvalidFields((prev) => [
                         ...prev,
                         {
@@ -78,6 +80,7 @@ export const validate = (payload = {}, setInvalidFields) => {
                             mes: "Password is at least 6 keywords",
                         },
                     ]);
+                }
                 break;
             default:
                 break;
