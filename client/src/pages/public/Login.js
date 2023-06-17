@@ -60,7 +60,6 @@ const Login = () => {
         const invalidCount = isRegister
             ? validate(payload, setInvalidFields)
             : validate(data, setInvalidFields);
-
         if (!invalidCount) {
             if (isRegister) {
                 const response = await apiRegister(payload);
