@@ -4,7 +4,7 @@ Site: https://digitalworld-melongow.netlify.app/
 <br>
 Admin site: https://digitalworld-melongow.netlify.app/admin
 <br>
-Username: admin@123.com
+Username: admin@gmail.com
 <br>
 Password: 8267874q
 <br>
