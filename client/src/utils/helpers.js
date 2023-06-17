@@ -61,7 +61,8 @@ export const validate = (payload = {}, setInvalidFields) => {
 
         switch (field[0]) {
             case "email":
-                const regex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+                const regex =
+                    /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
                 if (!field[1].match(regex))
                     // eslint-disable-next-line no-loop-func
                     invalidCount++;
