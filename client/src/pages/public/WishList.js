@@ -11,9 +11,11 @@ import { getCurrent } from "../../store/user/asyncThunk";
 const { AiOutlineClose, AiOutlineLoading } = icons;
 
 const WishList = () => {
-    const { currentUser, token, isLoading } = useSelector(
-        (state) => state.user
-    );
+    const {
+        current: currentUser,
+        token,
+        isLoading,
+    } = useSelector((state) => state.user);
 
     const dispatch = useDispatch();
 

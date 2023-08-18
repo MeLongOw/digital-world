@@ -8,7 +8,9 @@ import { capitalize, compareObjects } from "../../../utils/helpers";
 
 const Profile = () => {
     const dispatch = useDispatch();
-    const { currentUser, isLoading } = useSelector((state) => state.user);
+    const { current: currentUser, isLoading } = useSelector(
+        (state) => state.user
+    );
     const token = useSelector((state) => state.user.token);
     const [isDisableButtonSave, setIsDisableButtonSave] = useState(true);
 

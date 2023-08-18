@@ -15,9 +15,11 @@ const { AiOutlineArrowRight, AiOutlineLoading } = icons;
 const Cart = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const { token, currentUser, isLoading } = useSelector(
-        (state) => state.user
-    );
+    const {
+        token,
+        current: currentUser,
+        isLoading,
+    } = useSelector((state) => state.user);
     const [isCheckAll, setIsCheckAll] = useState(false);
     const [isCheck, setIsCheck] = useState([]);
 
